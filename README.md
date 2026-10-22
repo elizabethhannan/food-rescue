@@ -61,3 +61,10 @@ Feed-A-Friend covers the time families spend waiting on slow government and corp
 - **Executive admin access:** fund separation by donor and type, weekly admin against unrestricted cash, programs share against the 93% target, burn-down per gift, and renewal asks drafted two months before each gift runs out, matched to the donor's stated causes. The sign-in is a stand-in; real figures never go on a public page.
 - **Agents talking:** each message lights the line from sender to receiver, with a running list of who is talking to whom.
 - **Tree:** an Arizona eucalyptus that sways; the species follows the viewer's time zone (redwood on the Pacific coast, aspen in the Rockies, maple in the Northeast, oak elsewhere).
+
+### Security, fraud and monthly limits
+
+- **Monthly limits:** one order per address per month; up to $200 for the household, or $300 with pets. At least $75 of the $100 pet bonus must be pet items (food, supplies, Rx or vet costs). Levels set how fast help arrives, not how much.
+- **Fraud detection:** finds repeat and duplicate orders and names the likely cause: a family's mistake, staff error, an AI agent's error, a bot attack, malware, an account attack or a spoofed partner message. Honest duplicates are merged; a second order at one address goes to a person. No agent denies help on its own.
+- **Always-on security agents:** Bot defense, Malware scan, Account security (MFA and failed logins), API integrity (signed partner messages), Payment guard, Data access audit and the Warning agent. They keep running when every other agent is stopped.
+- **"Are we under attack?"** A ribbon on every tab and a Security tab answer it, with warnings by severity and cause, a traffic chart, and MFA coverage. Executive admin access asks for an MFA code (any 6 digits in this prototype; real MFA lives on the sign-in server).
