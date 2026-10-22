@@ -1,0 +1,777 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow, noarchive, noai, noimageai">
+<title>Food Rescue Agents</title>
+<meta name="description" content="A working prototype: AI agents coordinate a week of surplus-food pickups, and a person steps in only when the agents escalate. Self-initiated concept for Feed-A-Friend by Elizabeth Hannan.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Familjen+Grotesk:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a dispatch desk. Escalations and agents on the left, the live pickup board in the middle, the selected pickup's agent trace and decision on the right. */
+:root {
+  --bg: #f3f5f4; --surface: #ffffff; --surface-2: #eaefed; --ink: #121a24; --ink-2: #44515c; --ink-3: #5f6c76; --line: #d3dbdd;
+  --accent: #0b6b66; --accent-ink: #ffffff; --accent-soft: #dcefec; --ai: #5b47b8; --ai-soft: #eeebfb;
+  --good: #1c7a43; --good-soft: #e1f2e7; --warn: #a14d18; --warn-soft: #f8e9df; --crit: #b42a22; --crit-soft: #f9e3e1;
+  --s1: #2a78d6; --s2: #1baf7a; --s3: #eb6834; --focus: #2a78d6;
+  --font-display: "Familjen Grotesk", "Helvetica Neue", Arial, sans-serif;
+  --font-body: "Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+  --radius: 10px; color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0e1518; --surface: #141e22; --surface-2: #1b272c; --ink: #e7edeb; --ink-2: #b6c2c4; --ink-3: #93a1a5; --line: #2a3a40;
+    --accent: #3fb3a8; --accent-ink: #06201e; --accent-soft: #15322f; --ai: #a797ff; --ai-soft: #241f3f;
+    --good: #52c482; --good-soft: #15301f; --warn: #ef8c4e; --warn-soft: #36210f; --crit: #ff7b72; --crit-soft: #3a1714;
+    --s1: #3987e5; --s2: #199e70; --s3: #d95926; --focus: #6aa8f0; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0e1518; --surface: #141e22; --surface-2: #1b272c; --ink: #e7edeb; --ink-2: #b6c2c4; --ink-3: #93a1a5; --line: #2a3a40;
+  --accent: #3fb3a8; --accent-ink: #06201e; --accent-soft: #15322f; --ai: #a797ff; --ai-soft: #241f3f;
+  --good: #52c482; --good-soft: #15301f; --warn: #ef8c4e; --warn-soft: #36210f; --crit: #ff7b72; --crit-soft: #3a1714;
+  --s1: #3987e5; --s2: #199e70; --s3: #d95926; --focus: #6aa8f0; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 16px; line-height: 1.5; }
+button, input, select { font: inherit; color: inherit; }
+:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; border-radius: 6px; }
+h1, h2, h3 { font-family: var(--font-display); margin: 0; line-height: 1.2; text-wrap: balance; }
+.mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+.wrap { max-width: 1480px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.top { background: var(--surface); border-bottom: 1px solid var(--line); }
+.top .wrap { display: flex; flex-wrap: wrap; gap: 10px 24px; align-items: center; padding-block: 14px; }
+.brand h1 { font-size: 1.5rem; }
+.brand p { margin: 0; color: var(--ink-2); }
+.tags { display: flex; flex-wrap: wrap; gap: 8px; margin-left: auto; }
+.tag { font-size: 0.8125rem; padding: 4px 10px; border-radius: 999px; border: 1px solid var(--line); color: var(--ink-2); background: var(--surface-2); }
+.tabbar { background: var(--surface); border-bottom: 1px solid var(--line); }
+.tabs { display: flex; gap: 4px; flex-wrap: wrap; }
+.tab { border: 0; background: none; padding: 12px 14px; cursor: pointer; color: var(--ink-2); border-bottom: 3px solid transparent; font-weight: 700; }
+.tab[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--accent); }
+main { padding-block: 16px 48px; }
+.view[hidden] { display: none !important; }
+
+/* Control bar */
+.controls { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 18px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 12px 16px; }
+.clock { font-family: var(--font-mono); font-size: 1.5rem; font-weight: 500; min-width: 7.5ch; }
+.clock small { display: block; font-family: var(--font-body); font-size: 0.75rem; color: var(--ink-3); }
+.seg { display: inline-flex; background: var(--surface-2); border-radius: 999px; padding: 3px; gap: 2px; }
+.seg button { border: 0; background: none; padding: 6px 12px; border-radius: 999px; cursor: pointer; color: var(--ink-2); font-weight: 700; font-size: 0.9375rem; }
+.seg button[aria-pressed="true"] { background: var(--surface); color: var(--ink); box-shadow: 0 0 0 1px var(--line); }
+.check { display: inline-flex; gap: 8px; align-items: center; font-size: 0.9375rem; color: var(--ink-2); }
+.check input { width: 18px; height: 18px; accent-color: var(--accent); }
+.spacer { flex: 1; }
+.btn { border: 1px solid var(--line); background: var(--surface); color: var(--ink); padding: 8px 14px; border-radius: 8px; cursor: pointer; font-weight: 700; display: inline-flex; gap: 8px; align-items: center; }
+.btn:hover { border-color: var(--ink-3); }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.btn.stop { background: var(--crit); border-color: var(--crit); color: #fff; }
+.btn.stop.on { background: var(--surface); color: var(--crit); border-color: var(--crit); }
+.btn svg { width: 16px; height: 16px; }
+.banner { margin-top: 10px; background: var(--crit-soft); color: var(--crit); border-radius: var(--radius); padding: 10px 14px; font-weight: 700; }
+.banner[hidden] { display: none; }
+
+/* KPI strip */
+.kpis { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); margin-top: 12px; }
+.kpi { padding: 12px 16px; border-right: 1px solid var(--line); display: grid; gap: 2px; min-width: 0; }
+.kpi:last-child { border-right: 0; }
+.kpi .lab { font-size: 0.8125rem; color: var(--ink-2); }
+.kpi .val { font-family: var(--font-display); font-size: 1.625rem; font-weight: 700; font-variant-numeric: tabular-nums; line-height: 1.15; }
+.kpi .sub { font-size: 0.75rem; color: var(--ink-3); }
+
+/* Desk */
+.desk { display: grid; grid-template-columns: minmax(250px, 300px) minmax(0, 1fr) minmax(300px, 400px); gap: 14px; margin-top: 14px; align-items: start; }
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 14px; display: grid; gap: 10px; align-content: start; min-width: 0; }
+.panel h2 { font-size: 1.0625rem; display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.panel h2 span { font-family: var(--font-body); font-size: 0.8125rem; color: var(--ink-3); font-weight: 400; }
+.stack { display: grid; gap: 14px; align-content: start; }
+.esc { text-align: left; width: 100%; border: 1px solid var(--line); background: var(--surface); border-radius: 8px; padding: 10px 12px; cursor: pointer; display: grid; gap: 4px; }
+.esc:hover { border-color: var(--ink-3); }
+.esc[aria-current="true"] { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+.esc .r1 { display: flex; justify-content: space-between; gap: 8px; font-size: 0.8125rem; color: var(--ink-3); }
+.esc .why { font-weight: 700; }
+.esc .due { font-size: 0.8125rem; color: var(--warn); font-weight: 700; }
+.empty { color: var(--ink-3); font-style: italic; margin: 0; }
+.agent { display: grid; grid-template-columns: 1fr auto; gap: 2px 8px; align-items: center; padding: 6px 0; border-bottom: 1px solid var(--line); }
+.agent:last-child { border-bottom: 0; }
+.agent b { font-size: 0.9375rem; }
+.agent small { grid-column: 1; color: var(--ink-3); font-size: 0.8125rem; }
+.agent .state { grid-row: 1 / span 2; grid-column: 2; }
+.pill { display: inline-flex; align-items: center; gap: 5px; font-size: 0.8125rem; padding: 2px 9px; border-radius: 999px; white-space: nowrap; border: 1px solid transparent; }
+.pill svg { width: 12px; height: 12px; }
+.p-run { background: var(--good-soft); color: var(--good); }
+.p-paused { background: var(--warn-soft); color: var(--warn); }
+.p-done { background: var(--good-soft); color: var(--good); }
+.p-person { background: var(--accent-soft); color: var(--accent); }
+.p-wait { background: var(--crit-soft); color: var(--crit); }
+.p-lost { background: var(--crit-soft); color: var(--crit); }
+.p-active { background: var(--ai-soft); color: var(--ai); }
+.p-decl { background: var(--surface-2); color: var(--ink-2); border-color: var(--line); }
+.toggle { border: 1px solid var(--line); background: var(--surface); border-radius: 8px; padding: 4px 10px; cursor: pointer; font-size: 0.8125rem; font-weight: 700; }
+
+/* Pickup board */
+.board-head { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; align-items: center; }
+.table-scroll { overflow-x: auto; }
+table.board { width: 100%; border-collapse: collapse; font-size: 0.9375rem; min-width: 560px; }
+table.board th, table.board td { text-align: left; padding: 8px 8px; border-bottom: 1px solid var(--line); vertical-align: middle; }
+table.board th { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink-3); }
+table.board td.num { text-align: right; font-variant-numeric: tabular-nums; }
+table.board td.mono { white-space: nowrap; }
+table.board tbody tr { cursor: pointer; }
+table.board tbody tr:hover { background: var(--surface-2); }
+table.board tbody tr[aria-selected="true"] { background: var(--accent-soft); }
+.stages { display: flex; gap: 3px; }
+.stages i { width: 14px; height: 6px; border-radius: 3px; background: var(--surface-2); display: block; }
+.stages i.on { background: var(--accent); }
+.stages i.bad { background: var(--crit); }
+
+/* Trace + decision */
+.trace { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; max-height: 420px; overflow: auto; }
+.trace li { display: grid; grid-template-columns: 3.4em 1fr; gap: 2px 10px; padding: 7px 0; border-bottom: 1px solid var(--line); font-size: 0.875rem; }
+.trace li:last-child { border-bottom: 0; }
+.trace .tm { font-family: var(--font-mono); color: var(--ink-3); font-size: 0.8125rem; }
+.trace .who { font-weight: 700; }
+.trace .who .arrow { color: var(--ink-3); font-weight: 400; }
+.trace .msg { grid-column: 2; color: var(--ink-2); }
+.trace .type { font-family: var(--font-mono); font-size: 0.75rem; color: var(--ai); }
+.trace li.person .who { color: var(--accent); }
+.trace li.alert .type { color: var(--crit); }
+.decide { border-radius: var(--radius); background: var(--crit-soft); padding: 12px 14px; display: grid; gap: 8px; }
+.decide h3 { font-size: 1.0625rem; color: var(--ink); }
+.decide p { margin: 0; color: var(--ink-2); font-size: 0.9375rem; }
+.decide .tried { font-size: 0.875rem; color: var(--ink-2); margin: 0; padding-left: 18px; }
+.opts { display: grid; gap: 8px; }
+.opt { text-align: left; border: 1px solid var(--line); background: var(--surface); border-radius: 8px; padding: 8px 12px; cursor: pointer; display: grid; gap: 2px; }
+.opt:hover { border-color: var(--accent); }
+.opt b { font-size: 0.9375rem; }
+.opt span { font-size: 0.8125rem; color: var(--ink-3); }
+.opt.rec { border-color: var(--accent); }
+.opt.rec b::after { content: " · suggested"; font-weight: 400; color: var(--accent); }
+.facts { display: grid; grid-template-columns: auto 1fr; gap: 2px 12px; font-size: 0.875rem; margin: 0; }
+.facts dt { color: var(--ink-3); }
+.facts dd { margin: 0; }
+
+/* Results + contracts */
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px; display: grid; gap: 12px; min-width: 0; align-content: start; }
+.card h2 { font-size: 1.1875rem; }
+.sub { margin: -6px 0 0; color: var(--ink-3); font-size: 0.9375rem; }
+.grid2 { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 16px; margin-top: 16px; }
+.legend { display: flex; flex-wrap: wrap; gap: 14px; font-size: 0.875rem; color: var(--ink-2); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.legend i { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
+.chart { position: relative; }
+.chart svg { display: block; width: 100%; height: auto; }
+.tip { position: absolute; pointer-events: none; background: var(--ink); color: var(--bg); font-size: 0.8125rem; padding: 4px 8px; border-radius: 6px; white-space: nowrap; transform: translate(-50%, -110%); }
+.tip[hidden] { display: none; }
+.rrow { position: relative; display: flex; align-items: center; gap: 10px; min-height: 40px; padding: 0 4px 6px; font-size: 0.9375rem; }
+.rrow .nm { flex: 1; min-width: 0; }
+.rrow .v { font-variant-numeric: tabular-nums; }
+.rrow .sh { width: 3.4em; text-align: right; color: var(--ink-3); font-size: 0.8125rem; font-variant-numeric: tabular-nums; }
+.rrow .trk { position: absolute; left: 4px; right: 4px; bottom: 6px; height: 3px; border-radius: 2px; background: var(--surface-2); overflow: hidden; }
+.rrow .trk i { position: absolute; inset: 0 auto 0 0; border-radius: 2px; background: var(--accent); opacity: 0.8; }
+table.data { width: 100%; border-collapse: collapse; font-size: 0.9375rem; min-width: 560px; }
+table.data th, table.data td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+table.data th { font-size: 0.8125rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink-3); }
+table.data td.num, table.data th.num { text-align: right; font-variant-numeric: tabular-nums; }
+details.tbl summary { cursor: pointer; color: var(--accent); font-weight: 700; font-size: 0.9375rem; }
+details.tbl[open] summary { margin-bottom: 8px; }
+.lead { font-size: 1.0625rem; color: var(--ink-2); max-width: 72ch; margin: 4px 0 16px; }
+.foot { border-top: 1px solid var(--line); margin-top: 32px; padding-top: 16px; color: var(--ink-3); font-size: 0.875rem; display: grid; gap: 6px; }
+.foot p { margin: 0; max-width: 85ch; }
+.foot .hxo { font-style: italic; color: var(--ink-2); }
+
+@media (max-width: 1200px) {
+  .desk { grid-template-columns: minmax(240px, 300px) minmax(0, 1fr); }
+  .desk .right { grid-column: 1 / -1; }
+  .kpis { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .kpi:nth-child(3n) { border-right: 0; }
+  .kpi:nth-child(-n+3) { border-bottom: 1px solid var(--line); }
+}
+@media (max-width: 820px) {
+  .desk, .grid2 { grid-template-columns: 1fr; }
+  .tags { margin-left: 0; }
+}
+@media (max-width: 520px) {
+  .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .kpi { border-bottom: 1px solid var(--line); }
+  .kpi:nth-child(3n) { border-right: 1px solid var(--line); }
+  .kpi:nth-child(2n) { border-right: 0; }
+  .kpi:nth-last-child(-n+2) { border-bottom: 0; }
+  .tab { padding: 10px 8px; font-size: 0.9375rem; }
+}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <div class="brand">
+      <h1>Food Rescue Agents</h1>
+      <p>Agents coordinate surplus food pickups. People step in by exception.</p>
+    </div>
+    <div class="tags">
+      <span class="tag">Simulated week · example data</span>
+      <span class="tag">Self-initiated concept for Feed-A-Friend · Elizabeth Hannan</span>
+    </div>
+  </div>
+</header>
+<div class="tabbar"><div class="wrap">
+  <nav class="tabs" role="tablist" aria-label="Views">
+    <button class="tab" role="tab" id="tab-desk" aria-controls="view-desk" aria-selected="true">Dispatch desk</button>
+    <button class="tab" role="tab" id="tab-results" aria-controls="view-results" aria-selected="false" tabindex="-1">Week so far</button>
+    <button class="tab" role="tab" id="tab-rules" aria-controls="view-rules" aria-selected="false" tabindex="-1">Agent contracts</button>
+  </nav>
+</div></div>
+
+<main class="wrap">
+  <section class="view" id="view-desk" role="tabpanel" aria-labelledby="tab-desk">
+    <div class="controls">
+      <div class="clock" aria-live="off"><span id="clock">Mon 18:00</span><small>simulated time</small></div>
+      <div class="seg" role="group" aria-label="Speed">
+        <button type="button" data-speed="0" aria-pressed="true">Pause</button>
+        <button type="button" data-speed="20" aria-pressed="false">1×</button>
+        <button type="button" data-speed="80" aria-pressed="false">4×</button>
+        <button type="button" data-speed="320" aria-pressed="false">16×</button>
+      </div>
+      <label class="check"><input type="checkbox" id="autopause" checked> Pause when a decision is needed</label>
+      <span class="spacer"></span>
+      <button class="btn" type="button" id="reset">Restart the week</button>
+      <button class="btn stop" type="button" id="stopall"><svg viewBox="0 0 16 16" aria-hidden="true"><rect x="3.5" y="3.5" width="9" height="9" rx="1.5" fill="currentColor"/></svg><span>Stop all agents</span></button>
+    </div>
+    <p class="banner" id="stopbanner" hidden>All agents are stopped. Nothing new is offered, matched or dispatched until you resume them. Drivers already on the road finish their runs.</p>
+    <div class="kpis" id="kpis"></div>
+    <div class="desk">
+      <div class="stack">
+        <div class="panel"><h2>Needs you <span id="esc-count"></span></h2><div id="esc-list" class="stack" style="gap:8px"></div></div>
+        <div class="panel"><h2>Agents <span>pause any one</span></h2><div id="agents"></div></div>
+      </div>
+      <div class="panel">
+        <div class="board-head"><h2>Pickups</h2>
+          <div class="seg" role="group" aria-label="Filter pickups">
+            <button type="button" data-filter="active" aria-pressed="true">In progress</button>
+            <button type="button" data-filter="all" aria-pressed="false">All</button>
+            <button type="button" data-filter="done" aria-pressed="false">Finished</button>
+          </div>
+        </div>
+        <div class="table-scroll"><table class="board" aria-label="Pickups">
+          <thead><tr><th scope="col">Pickup</th><th scope="col">Donor</th><th scope="col">Food</th><th scope="col" style="text-align:right">lb</th><th scope="col">Safe until</th><th scope="col">Progress</th><th scope="col">Status</th></tr></thead>
+          <tbody id="board"></tbody>
+        </table></div>
+      </div>
+      <div class="panel right" id="detail" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <section class="view" id="view-results" role="tabpanel" aria-labelledby="tab-results" hidden>
+    <p class="lead">How the week is going: how much the agents handled on their own, where they needed a person, and what each decision cost in time. Everything here comes from the same simulation as the desk, including your decisions.</p>
+    <div class="grid2">
+      <div class="card">
+        <h2>Most pickups finish without a person</h2>
+        <p class="sub">Pickups by day and how they ended</p>
+        <div class="legend" aria-hidden="true"><span><i style="background:var(--s1)"></i>Agents alone</span><span><i style="background:var(--s2)"></i>With a person</span><span><i style="background:var(--s3)"></i>Lost or declined</span></div>
+        <div class="chart" id="daychart"></div>
+        <details class="tbl"><summary>Show as a table</summary><div class="table-scroll" id="daytable"></div></details>
+      </div>
+      <div class="card">
+        <h2>Why agents asked for help</h2>
+        <p class="sub">Escalations by reason, this week so far</p>
+        <div id="reasons"></div>
+      </div>
+    </div>
+    <div class="card" style="margin-top:16px">
+      <h2>Decisions made by a person</h2>
+      <p class="sub">Every escalation, what was chosen, and how long it took</p>
+      <div class="table-scroll" id="decisions"></div>
+    </div>
+  </section>
+
+  <section class="view" id="view-rules" role="tabpanel" aria-labelledby="tab-rules" hidden>
+    <p class="lead">Each agent has a contract: what it may do on its own, when it must hand the decision to a person, and the messages it sends. The thresholds are the line between the two.</p>
+    <div class="card">
+      <h2>Agents and what they may do</h2>
+      <div class="table-scroll"><table class="data">
+        <thead><tr><th scope="col">Agent</th><th scope="col">Does on its own</th><th scope="col">Hands to a person when</th><th scope="col">Messages it sends</th></tr></thead>
+        <tbody>
+          <tr><td><b>Intake</b></td><td>Turns a donor's message into an offer: food, weight, ready time</td><td>Never directly; unclear offers go back to the donor</td><td class="mono">offer.created</td></tr>
+          <tr><td><b>Safety</b></td><td>Sets the safe window from food type and hold time</td><td>A temperature log is missing for prepared food</td><td class="mono">safety.cleared, safety.flagged</td></tr>
+          <tr><td><b>Matching</b></td><td>Offers food to partners by need, capacity, hours and distance</td><td>Two partners decline, a partner keeps countering, or a donation is over 200 lb</td><td class="mono">match.proposed, match.escalated</td></tr>
+          <tr><td><b>Partner agents</b> (one per partner)</td><td>Accept, decline or counter within that partner's own rules</td><td>Never; they answer the matching agent</td><td class="mono">partner.accepted, partner.declined, partner.countered</td></tr>
+          <tr><td><b>Dispatch</b></td><td>Assigns a volunteer driver whose arrival fits the safe window</td><td>No driver can deliver inside the safe window</td><td class="mono">driver.assigned, driver.unavailable</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+    <div class="card" style="margin-top:16px">
+      <h2>Escalation thresholds</h2>
+      <div class="table-scroll"><table class="data">
+        <thead><tr><th scope="col">Rule</th><th scope="col">Threshold</th><th scope="col">Why a person decides</th></tr></thead>
+        <tbody>
+          <tr><td>No partner</td><td>2 declines</td><td>Widening the search, splitting or turning food away are judgment calls about relationships</td></tr>
+          <tr><td>Agents going in circles</td><td>2 counters on the same offer</td><td>Two agents trading counteroffers will not settle on their own; a person breaks the tie</td></tr>
+          <tr><td>Food safety</td><td>Any missing temperature log on prepared food</td><td>A safety call is never delegated</td></tr>
+          <tr><td>Large donation</td><td>Over 200 lb</td><td>Large loads need extra drivers and partner sign-off</td></tr>
+          <tr><td>Safe window</td><td>Drop-off would land after the window</td><td>Paid couriers and partner pickups cost money or goodwill</td></tr>
+        </tbody>
+      </table></div>
+      <p class="sub" style="margin-top:4px">Message names follow the task pattern used by agent-to-agent protocols such as A2A. In this prototype every agent is simulated in your browser.</p>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <p>Built by Elizabeth Hannan with HXO. <span class="hxo">HXO (Human Experience Optimization) is a design methodology that starts from human outcomes, not features, technology or business requirements, and tests every system with one question: does it help or hurt the full spectrum of human experience?</span></p>
+    <p>Self-initiated concept for Feed-A-Friend, a food rescue nonprofit. Donors, partners, drivers and every number are simulated; nothing here contacts a real person or organization, and nothing you do leaves your browser.</p>
+  </footer>
+</main>
+
+<script>
+(() => {
+  "use strict";
+  // ---------- Seeded randomness ----------
+  function mulberry32(a) { return function () { a |= 0; a = (a + 0x6d2b79f5) | 0; let t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
+  const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+  const fmtT = (t) => { const d = Math.floor(t / 1440), m = Math.floor(t % 1440); return `${DAYS[Math.min(6, d)]} ${String(Math.floor(m / 60)).padStart(2, "0")}:${String(m % 60).padStart(2, "0")}`; };
+  const hhmm = (t) => fmtT(t).slice(4);
+  const due = (t) => (Math.floor(t / 1440) === Math.floor(S.t / 1440) ? hhmm(t) : fmtT(t)); // add the day when it isn't today
+  const esc = (v) => String(v).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const $ = (s, r = document) => r.querySelector(s);
+
+  // ---------- The simulated city ----------
+  const DONORS = [
+    { name: "Corner grocery, Tempe", x: 6, y: 3 }, { name: "Bakery, Roosevelt Row", x: 2, y: 5 }, { name: "Café, Old Town", x: 5, y: 9 },
+    { name: "Market hall, Mesa", x: 10, y: 4 }, { name: "Caterer, Scottsdale", x: 6, y: 10 }, { name: "Produce stand, Chandler", x: 9, y: 0 },
+    { name: "Hotel kitchen, Downtown", x: 2, y: 6 }, { name: "Supermarket, Glendale", x: -3, y: 8 }
+  ];
+  const PARTNERS = [
+    { name: "Southside Pantry", x: 3, y: 2 }, { name: "Mesa Family Kitchen", x: 10, y: 3 },
+    { name: "Glendale Shelter", x: -2, y: 7 }, { name: "Tempe Youth Center", x: 7, y: 4 }
+  ];
+  const DRIVERS = ["Ana", "Marcus", "Priya", "Tom", "Lucía", "Dee"];
+  const FOODS = {
+    bakery: { label: "Bread and pastries", lbs: [20, 90], win: 720 },
+    produce: { label: "Produce", lbs: [30, 160], win: 1440 },
+    prepared: { label: "Prepared meals", lbs: [15, 70], win: 150 },
+    dairy: { label: "Dairy", lbs: [20, 80], win: 300 },
+    packaged: { label: "Packaged goods", lbs: [40, 240], win: 2880 }
+  };
+  const REASON = {
+    safety: "Food safety check", large: "Large donation", loop: "Agents going in circles", nopartner: "No partner accepted", window: "Can't make the safe window"
+  };
+  const dist = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
+  const travel = (a, b) => Math.round(6 + dist(a, b) * 2.6);
+
+  function buildWeek() {
+    const rand = mulberry32(410), out = [];
+    let n = 1001;
+    for (let d = 0; d < 7; d++) {
+      const count = 8 + Math.floor(rand() * 4);
+      for (let i = 0; i < count; i++) {
+        const offerAt = d * 1440 + 7 * 60 + Math.floor(rand() * 13 * 60);
+        out.push(makeOffer(n++, offerAt, rand));
+      }
+    }
+    // two escalations waiting on Monday evening so the desk opens on a live decision
+    const fixedA = makeOffer(n++, 17 * 60 + 18, mulberry32(7)); fixedA.donor = DONORS[4]; fixedA.food = "prepared"; fixedA.lbs = 45; fixedA.fate = "safety"; fixedA.readyAt = fixedA.offerAt + 25; fixedA.deadline = fixedA.readyAt + FOODS.prepared.win;
+    const fixedB = makeOffer(n++, 17 * 60 + 36, mulberry32(9)); fixedB.donor = DONORS[1]; fixedB.food = "bakery"; fixedB.lbs = 70; fixedB.fate = "nopartner"; fixedB.readyAt = fixedB.offerAt + 40; fixedB.deadline = fixedB.readyAt + FOODS.bakery.win;
+    out.push(fixedA, fixedB);
+    out.sort((a, b) => a.offerAt - b.offerAt);
+    out.forEach((o, i) => { o.id = "P-" + (1001 + i); o.driver = DRIVERS[i % DRIVERS.length]; });
+    return out;
+  }
+  function makeOffer(n, offerAt, rand) {
+    const fk = pick(rand, [["bakery", 0.25], ["produce", 0.25], ["prepared", 0.2], ["dairy", 0.15], ["packaged", 0.15]]);
+    const f = FOODS[fk];
+    const lbs = Math.round(f.lbs[0] + rand() * (f.lbs[1] - f.lbs[0]));
+    const readyAt = offerAt + 30 + Math.floor(rand() * 60);
+    let fate = pick(rand, [["clean", 0.86], ["safety", 0.05], ["loop", 0.02], ["nopartner", 0.02], ["window", 0.04], ["large", 0.01]]);
+    if (fate === "safety" && fk !== "prepared") fate = "clean";
+    if (fate === "window" && fk !== "prepared" && fk !== "dairy") fate = "clean"; // only short-window food can miss its window
+    const donor = DONORS[Math.floor(rand() * DONORS.length)];
+    let w = lbs;
+    if (fate === "large") w = 210 + Math.round(rand() * 120);
+    return { id: "P-" + n, donor, food: fk, lbs: w, offerAt, readyAt, deadline: readyAt + f.win, fate, driver: DRIVERS[n % DRIVERS.length] };
+  }
+  function pick(rand, pairs) { let x = rand(), acc = 0; for (const [v, w] of pairs) { acc += w; if (x <= acc) return v; } return pairs[pairs.length - 1][0]; }
+
+  // ---------- Simulation ----------
+  const AGENTS = ["Intake", "Safety", "Matching", "Partner agents", "Dispatch"];
+  let S;
+  function fresh() {
+    const week = buildWeek();
+    S = { t: 6 * 60, speed: 0, autopause: true, stopped: false, paused: {}, tasks: [], queue: [], week, wi: 0, selected: null, filter: "active", decisions: [], lastFrame: 0 };
+    AGENTS.forEach((a) => (S.paused[a] = false));
+  }
+  function schedule(at, task, step, data) { S.queue.push({ at, task, step, data }); }
+  function log(task, from, to, type, msg, kind) { task.events.push({ t: S.t, from, to, type, msg, kind }); }
+  const agentFor = { intake: "Intake", safety: "Safety", match: "Matching", reply: "Partner agents", dispatch: "Dispatch" };
+
+  function advance(to, past) {
+    while (true) {
+      // next due item: a new offer (unless intake is held) or a queued step (unless its agent is held)
+      const intakeHeld = S.stopped || S.paused.Intake;
+      const nextOffer = !intakeHeld && S.wi < S.week.length ? S.week[S.wi].offerAt : Infinity;
+      let qi = -1, qAt = Infinity;
+      for (let i = 0; i < S.queue.length; i++) {
+        const q = S.queue[i];
+        if (q.at < qAt && !isHeld(q)) { qAt = q.at; qi = i; }
+      }
+      const next = Math.min(nextOffer, qAt);
+      if (next > to) break;
+      S.t = Math.max(S.t, next); // held work resumes at the current time, never in the past
+      if (nextOffer <= qAt) {
+        const o = S.week[S.wi++];
+        const task = { ...o, stage: 0, events: [], outcome: null, touched: false, escalation: null, tries: 0, counters: 0, partnerIdx: 0, ranked: PARTNERS.slice().sort((a, b) => dist(a, o.donor) - dist(b, o.donor)) };
+        S.tasks.push(task);
+        log(task, "Donor", "Intake", "message", `${task.donor.name}: about ${task.lbs} lb of ${FOODS[task.food].label.toLowerCase()}, ready ${hhmm(task.readyAt)}`);
+        schedule(S.t + 2, task, "intake");
+      } else {
+        const q = S.queue.splice(qi, 1)[0];
+        run(q.task, q.step, q.data, past);
+      }
+      expire();
+      if (!past && S._pauseNow) { S._pauseNow = false; return; } // stop the clock at the moment a decision is needed
+    }
+    S.t = Math.max(S.t, to);
+    expire();
+  }
+  function isHeld(q) {
+    if (q.step === "pickup" || q.step === "dropoff") return false; // drivers already on the road finish
+    if (S.stopped) return true;
+    const a = agentFor[q.step];
+    return a ? S.paused[a] : false;
+  }
+
+  function run(task, step, data, past) {
+    if (task.outcome) return;
+    const f = FOODS[task.food];
+    if (step === "intake") {
+      task.stage = 1;
+      log(task, "Intake", "Safety", "offer.created", `${task.lbs} lb ${f.label.toLowerCase()}, ready ${hhmm(task.readyAt)}`);
+      schedule(S.t + 3, task, "safety");
+    } else if (step === "safety") {
+      if (task.fate === "safety" && !task.safetyOk) {
+        log(task, "Safety", "You", "safety.flagged", "No temperature log for prepared food held since lunch service", "alert");
+        return escalate(task, "safety", past);
+      }
+      task.stage = 2;
+      log(task, "Safety", "Matching", "safety.cleared", `Safe until ${hhmm(task.deadline)} (${Math.round(f.win / 60)} h for ${f.label.toLowerCase()})`);
+      schedule(S.t + 1, task, "match");
+    } else if (step === "match") {
+      if (task.lbs > 200 && !task.largeOk) {
+        log(task, "Matching", "You", "match.escalated", `${task.lbs} lb is over the 200 lb limit for one driver and one partner`, "alert");
+        return escalate(task, "large", past);
+      }
+      const p = task.ranked[task.partnerIdx];
+      task.partner = p;
+      log(task, "Matching", p.name, "match.proposed", `${task.lbs} lb, ${(dist(p, task.donor)).toFixed(1)} mi away`);
+      schedule(S.t + 5, task, "reply");
+    } else if (step === "reply") {
+      const p = task.partner;
+      if ((task.fate === "nopartner") && !task.partnerForced) {
+        task.tries++;
+        log(task, p.name, "Matching", "partner.declined", task.tries === 1 ? "Walk-in fridge is full tonight" : "Closing before the food would arrive");
+        if (task.tries >= 2) { log(task, "Matching", "You", "match.escalated", "Two nearest partners declined", "alert"); return escalate(task, "nopartner", past); }
+        task.partnerIdx++; schedule(S.t + 1, task, "match"); return;
+      }
+      if (task.fate === "loop" && !task.loopOk) {
+        task.counters++;
+        const amt = Math.round(task.lbs * (task.counters === 1 ? 0.6 : 0.5));
+        log(task, p.name, "Matching", "partner.countered", `Can take ${amt} lb, not ${task.lbs}`);
+        if (task.counters >= 2) { log(task, "Matching", "You", "match.escalated", "Same partner countered twice; the agents are not converging", "alert"); return escalate(task, "loop", past); }
+        log(task, "Matching", p.name, "match.proposed", `Re-offered ${task.lbs} lb with a later drop-off`);
+        schedule(S.t + 5, task, "reply"); return;
+      }
+      task.stage = 3;
+      log(task, p.name, "Matching", "partner.accepted", `Accepts ${task.takeLbs || task.lbs} lb, open until 21:30`);
+      schedule(S.t + 2, task, "dispatch");
+    } else if (step === "dispatch") {
+      const toPartner = travel(task.donor, task.partner);
+      let arrive = Math.max(S.t + travel({ x: 4, y: 4 }, task.donor), task.readyAt);
+      if (task.fate === "window" && !task.windowOk) {
+        const late = Math.max(arrive, task.deadline - toPartner + 12);
+        log(task, "Dispatch", "You", "driver.unavailable", `Nearest free driver reaches the donor ${hhmm(late)}; drop-off would land after ${hhmm(task.deadline)}`, "alert");
+        task.lateArrive = late;
+        return escalate(task, "window", past);
+      }
+      if (task.courier) arrive = Math.max(S.t + 20, task.readyAt);
+      if (task.partnerPickup) arrive = Math.max(S.t + travel(task.partner, task.donor), task.readyAt);
+      const who = task.courier ? "Backup courier" : task.partnerPickup ? `${task.partner.name} van` : `Driver ${task.driver}`;
+      task.stage = 4; task.who = who;
+      log(task, "Dispatch", who, "driver.assigned", `Pickup ${hhmm(arrive)}, drop-off about ${hhmm(arrive + toPartner)}`);
+      schedule(arrive, task, "pickup");
+      schedule(arrive + toPartner, task, "dropoff");
+    } else if (step === "pickup") {
+      task.stage = 5;
+      log(task, task.who, "Dispatch", "pickup.done", `Picked up ${task.takeLbs || task.lbs} lb`);
+    } else if (step === "dropoff") {
+      task.stage = 6;
+      log(task, task.who, "Dispatch", "dropoff.done", `Delivered to ${task.partner.name}`);
+      task.outcome = task.touched ? "person" : "agents";
+      task.doneAt = S.t;
+    }
+  }
+  function expire() {
+    for (const task of S.tasks) {
+      if (task.outcome || task.stage >= 5) continue;
+      if (S.t > task.deadline) {
+        task.outcome = "lost"; task.doneAt = task.deadline;
+        log(task, "Safety", "Dispatch", "offer.expired", `Safe window closed at ${hhmm(task.deadline)} before pickup`, "alert");
+        if (task.escalation && !task.escalation.resolved) {
+          task.escalation.expired = true;
+          S.decisions.unshift({ id: task.id, reason: REASON[task.escalation.reason], choice: "No decision before the safe window closed", at: task.deadline, secs: null, past: false, expired: true });
+        }
+      }
+    }
+  }
+
+  // ---------- Escalations ----------
+  function optionsFor(task, reason) {
+    const next = task.ranked[2] || task.ranked[task.ranked.length - 1];
+    if (reason === "safety") return [
+      { key: "check", label: "Accept with a temperature check at pickup", note: "The driver probes the food; hot food under 135°F or cold food over 41°F is declined at the door", rec: true },
+      { key: "decline", label: "Decline and thank the donor", note: "Ask them to keep a temperature log next time" }
+    ];
+    if (reason === "large") return [
+      { key: "two", label: "Approve: send two drivers to two partners", note: `Splits ${task.lbs} lb between ${task.ranked[0].name} and ${task.ranked[1].name}`, rec: true },
+      { key: "part", label: "Take 200 lb only", note: "The donor keeps the rest" },
+      { key: "decline", label: "Decline and thank the donor", note: "" }
+    ];
+    if (reason === "loop") return [
+      { key: "counter", label: `Take the counteroffer: send ${Math.round(task.lbs * 0.5)} lb`, note: "The rest goes to the next partner", rec: true },
+      { key: "next", label: `Send it all to ${next.name}`, note: `${dist(next, task.donor).toFixed(1)} mi away` },
+      { key: "decline", label: "Decline and thank the donor", note: "" }
+    ];
+    if (reason === "nopartner") return [
+      { key: "far", label: `Widen the search: ${next.name}`, note: `${dist(next, task.donor).toFixed(1)} mi away, open until 22:00`, rec: true },
+      { key: "decline", label: "Decline and thank the donor", note: "Suggest a pickup tomorrow morning instead" }
+    ];
+    if (reason === "window") return [
+      { key: "courier", label: "Send the backup courier", note: "Arrives in about 20 minutes; paid per run", rec: true },
+      { key: "partnerpickup", label: `Ask ${task.partner ? task.partner.name : "the partner"} to collect it themselves`, note: "Uses partner goodwill; they have a van" },
+      { key: "decline", label: "Decline and thank the donor", note: "" }
+    ];
+    return [];
+  }
+  function escalate(task, reason, past) {
+    task.escalation = { reason, raisedAt: S.t, options: optionsFor(task, reason), shownAt: null };
+    if (past) {
+      // history before the desk opens: an earlier dispatcher chose the suggested option a few minutes later
+      resolve(task, task.escalation.options[0].key, true, 6 + ((task.lbs * 7) % 9));
+      return;
+    }
+    if (S.autopause && S.speed > 0) { setSpeed(0); S._pauseNow = true; }
+    if (!S.selected || !currentEsc(S.selected)) S.selected = task.id;
+  }
+  function currentEsc(id) { const t = S.tasks.find((x) => x.id === id); return t && t.escalation && !t.escalation.resolved && !t.outcome; }
+
+  function resolve(task, key, past, pastMinutes) {
+    const e = task.escalation;
+    if (!e || e.resolved || task.outcome) return;
+    const opt = e.options.find((o) => o.key === key);
+    e.resolved = true; e.choice = opt.label;
+    e.secs = past ? null : Math.max(1, Math.round((performance.now() - (e.shownAt || performance.now())) / 1000));
+    e.decidedAt = past ? e.raisedAt + pastMinutes : S.t;
+    task.touched = true;
+    const who = past ? "Dispatcher" : "You";
+    log(task, who, "Agents", "decision", opt.label, "person");
+    S.decisions.unshift({ id: task.id, reason: REASON[e.reason], choice: opt.label, at: e.decidedAt, secs: e.secs, past });
+    const at = past ? e.decidedAt : S.t;
+    if (key === "decline") { task.outcome = "declined"; task.doneAt = at; return; }
+    if (e.reason === "safety") { task.safetyOk = true; schedule(at + 1, task, "safety"); }
+    if (e.reason === "large") { task.largeOk = true; if (key === "part") task.takeLbs = 200; schedule(at + 1, task, "match"); }
+    if (e.reason === "loop") { task.loopOk = true; if (key === "counter") task.takeLbs = Math.round(task.lbs * 0.5); else { task.partnerIdx = Math.min(2, task.ranked.length - 1); task.partner = task.ranked[task.partnerIdx]; } schedule(at + 1, task, key === "counter" ? "reply" : "match"); }
+    if (e.reason === "nopartner") { task.partnerForced = true; task.partnerIdx = Math.min(2, task.ranked.length - 1); schedule(at + 1, task, "match"); }
+    if (e.reason === "window") { task.windowOk = true; if (key === "courier") task.courier = true; else task.partnerPickup = true; schedule(at + 1, task, "dispatch"); }
+  }
+
+  // ---------- Speed ----------
+  function setSpeed(v) {
+    S.speed = v;
+    document.querySelectorAll('[data-speed]').forEach((b) => b.setAttribute("aria-pressed", String(+b.dataset.speed === v)));
+  }
+  function frame(now) {
+    if (S.speed > 0) {
+      const dt = Math.min(0.25, (now - (S.lastFrame || now)) / 1000);
+      const to = Math.min(7 * 1440 - 1, S.t + dt * S.speed);
+      advance(to, false);
+      if (S.t >= 7 * 1440 - 2) setSpeed(0);
+      if (S.speed === 0 || now - (S.lastRender || 0) > 220) { render(); S.lastRender = now; } // a few redraws a second keeps focus and reading steady
+    }
+    S.lastFrame = now;
+    requestAnimationFrame(frame);
+  }
+
+  // ---------- Rendering ----------
+  const STAGES = 6;
+  function statusPill(task) {
+    if (task.outcome === "agents") return `<span class="pill p-done">Delivered</span>`;
+    if (task.outcome === "person") return `<span class="pill p-person">Delivered, with you</span>`;
+    if (task.outcome === "lost") return `<span class="pill p-lost">Lost</span>`;
+    if (task.outcome === "declined") return `<span class="pill p-decl">Declined</span>`;
+    if (task.escalation && !task.escalation.resolved) return `<span class="pill p-wait">Needs you</span>`;
+    const names = ["Offer", "Safety check", "Finding a partner", "Finding a driver", "Driver on the way", "Picked up", "Delivered"];
+    return `<span class="pill p-active">${names[task.stage]}</span>`;
+  }
+  function render() {
+    $("#clock").textContent = fmtT(S.t);
+    const T = S.tasks;
+    const done = T.filter((t) => t.outcome === "agents" || t.outcome === "person");
+    const alone = T.filter((t) => t.outcome === "agents").length;
+    const escs = T.filter((t) => t.escalation).length;
+    const mine = S.decisions.filter((d) => d.secs != null).map((d) => d.secs).sort((a, b) => a - b);
+    const med = mine.length ? mine[mine.length >> 1] : null;
+    const rescued = done.reduce((s, t) => s + (t.takeLbs || t.lbs), 0);
+    const lost = T.filter((t) => t.outcome === "lost").reduce((s, t) => s + t.lbs, 0);
+    const kp = [
+      ["Pickups delivered", done.length, `of ${T.length} offered so far`],
+      ["Agents alone", done.length ? Math.round((100 * alone) / done.length) + "%" : "—", "of deliveries, no person involved"],
+      ["Escalations", T.length ? (Math.round((1000 * escs) / T.length) / 10).toString() : "—", "per 100 pickups"],
+      ["Your time to decide", med == null ? "—" : med + "s", mine.length ? `median of ${mine.length} decisions` : "decide one to start the count"],
+      ["Food rescued", rescued.toLocaleString() + " lb", "delivered to partners"],
+      ["Food lost", lost.toLocaleString() + " lb", "safe window closed first"]
+    ];
+    $("#kpis").innerHTML = kp.map(([l, v, s]) => `<div class="kpi"><span class="lab">${l}</span><span class="val">${v}</span><span class="sub">${s}</span></div>`).join("");
+
+    // escalation queue
+    const open = T.filter((t) => t.escalation && !t.escalation.resolved && !t.outcome).sort((a, b) => a.deadline - b.deadline);
+    const nowMs = performance.now();
+    open.forEach((t) => { if (!t.escalation.shownAt) t.escalation.shownAt = nowMs; }); // your decision time starts when it appears
+    $("#esc-count").textContent = open.length ? `${open.length} waiting` : "";
+    $("#esc-list").innerHTML = open.length ? open.map((t) => `<button class="esc" type="button" data-id="${t.id}" aria-current="${t.id === S.selected}">
+        <span class="r1"><span class="mono">${t.id}</span><span>${esc(t.donor.name)}</span></span>
+        <span class="why">${REASON[t.escalation.reason]}</span>
+        <span class="due">Safe until ${due(t.deadline)} · ${Math.max(0, Math.round(t.deadline - S.t))} min left</span></button>`).join("")
+      : `<p class="empty">Nothing needs you. The agents are handling it.</p>`;
+
+    // agents
+    $("#agents").innerHTML = AGENTS.map((a) => {
+      const paused = S.stopped || S.paused[a];
+      return `<div class="agent"><b>${a}</b><small>${S.stopped ? "stopped with all agents" : paused ? "paused" : "running"}</small>
+        <span class="state"><button class="toggle" type="button" data-agent="${a}" ${S.stopped ? "disabled" : ""} aria-pressed="${S.paused[a]}">${S.paused[a] ? "Resume" : "Pause"}</button></span></div>`;
+    }).join("");
+
+    // board
+    let rows = T.slice().reverse();
+    if (S.filter === "active") rows = rows.filter((t) => !t.outcome);
+    if (S.filter === "done") rows = rows.filter((t) => t.outcome);
+    rows = rows.slice(0, 40);
+    $("#board").innerHTML = rows.length ? rows.map((t) => {
+      const bad = t.outcome === "lost" || t.outcome === "declined";
+      const bars = Array.from({ length: STAGES }, (_, i) => `<i class="${i < t.stage ? "on" : ""}${bad && i === t.stage ? " bad" : ""}"></i>`).join("");
+      return `<tr data-id="${t.id}" aria-selected="${t.id === S.selected}" tabindex="0">
+        <td class="mono">${t.id}</td><td>${esc(t.donor.name)}</td><td>${FOODS[t.food].label}</td><td class="num">${t.lbs}</td>
+        <td class="mono">${due(t.deadline)}</td><td><span class="stages" aria-label="${t.stage} of ${STAGES} steps">${bars}</span></td><td>${statusPill(t)}</td></tr>`;
+    }).join("") : `<tr><td colspan="7" class="empty">${S.filter === "active" ? "No pickups in progress right now." : "None yet."}</td></tr>`;
+
+    renderDetail();
+    if (!$("#view-results").hidden) renderResults();
+  }
+  function renderDetail() {
+    const t = S.tasks.find((x) => x.id === S.selected) || S.tasks[S.tasks.length - 1];
+    const el = $("#detail");
+    if (!t) { el.innerHTML = `<p class="empty">Pickups appear here as donors offer food.</p>`; return; }
+    S.selected = t.id;
+    const e = t.escalation;
+    let decide = "";
+    if (e && !e.resolved && !t.outcome) {
+      if (!e.shownAt) e.shownAt = performance.now();
+      const tried = t.events.filter((v) => v.from !== "Donor" && v.type !== "message").slice(-3).map((v) => `<li>${esc(v.from)}: ${esc(v.msg)}</li>`).join("");
+      decide = `<div class="decide" role="group" aria-label="Decision needed">
+        <h3>${REASON[e.reason]}</h3>
+        <p>Safe until <b>${due(t.deadline)}</b>, ${Math.max(0, Math.round(t.deadline - S.t))} minutes from now. Other pickups keep moving while you decide.</p>
+        <p><b>What the agents tried</b></p><ul class="tried">${tried}</ul>
+        <div class="opts">${e.options.map((o) => `<button class="opt${o.rec ? " rec" : ""}" type="button" data-opt="${o.key}"><b>${esc(o.label)}</b>${o.note ? `<span>${esc(o.note)}</span>` : ""}</button>`).join("")}</div>
+      </div>`;
+    } else if (e && e.resolved) {
+      decide = `<p class="empty" style="font-style:normal">Decided: <b>${esc(e.choice)}</b>${e.secs != null ? ` in ${e.secs}s` : " (before you opened the desk)"}.</p>`;
+    }
+    el.innerHTML = `<h2>${t.id} <span>${esc(t.donor.name)}</span></h2>
+      <dl class="facts"><dt>Food</dt><dd>${t.lbs} lb ${FOODS[t.food].label.toLowerCase()}</dd><dt>Ready</dt><dd>${fmtT(t.readyAt)}</dd><dt>Safe until</dt><dd>${fmtT(t.deadline)}</dd>${t.partner ? `<dt>Partner</dt><dd>${esc(t.partner.name)}</dd>` : ""}<dt>Status</dt><dd>${statusPill(t)}</dd></dl>
+      ${decide}
+      <h2 style="margin-top:4px">Agent trace <span>newest last</span></h2>
+      <ol class="trace">${t.events.map((v) => `<li class="${v.kind || ""}"><span class="tm">${hhmm(v.t)}</span><span class="who">${esc(v.from)} <span class="arrow">→ ${esc(v.to)}</span></span><span class="msg"><span class="type">${esc(v.type)}</span> ${esc(v.msg)}</span></li>`).join("")}</ol>`;
+    el.querySelectorAll("[data-opt]").forEach((b) => b.addEventListener("click", () => { resolve(t, b.dataset.opt, false); render(); }));
+    const tr = el.querySelector(".trace"); if (tr) tr.scrollTop = tr.scrollHeight;
+  }
+
+  // ---------- Results ----------
+  function renderResults() {
+    const T = S.tasks, today = Math.floor(S.t / 1440);
+    const days = DAYS.slice(0, today + 1).map((d, i) => {
+      const ts = T.filter((t) => t.outcome && Math.floor((t.doneAt ?? S.t) / 1440) === i);
+      return { d, alone: ts.filter((t) => t.outcome === "agents").length, person: ts.filter((t) => t.outcome === "person").length, lost: ts.filter((t) => t.outcome === "lost" || t.outcome === "declined").length };
+    });
+    const W = 560, H = 230, padL = 34, padB = 26, padT = 24, bw = 30;
+    const max = Math.max(4, ...days.map((x) => x.alone + x.person + x.lost));
+    const step = max > 12 ? 5 : 2, top = Math.ceil(max / step) * step;
+    const y = (v) => padT + (1 - v / top) * (H - padT - padB);
+    const cx = (i) => padL + 20 + i * ((W - padL - 40) / 6);
+    let svg = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Pickups by day and outcome">`;
+    for (let v = 0; v <= top; v += step) svg += `<line x1="${padL}" x2="${W - 8}" y1="${y(v)}" y2="${y(v)}" stroke="var(--line)"/><text x="${padL - 6}" y="${y(v) + 4}" font-size="11" text-anchor="end" fill="var(--ink-3)">${v}</text>`;
+    days.forEach((x, i) => {
+      let acc = 0;
+      [["alone", "var(--s1)", "agents alone"], ["person", "var(--s2)", "with a person"], ["lost", "var(--s3)", "lost or declined"]].forEach(([k, col, name], ki) => {
+        const v = x[k]; if (!v) return;
+        const y0 = y(acc + v), h = y(acc) - y(acc + v) - (ki ? 2 : 0);
+        svg += `<rect class="seg" x="${cx(i) - bw / 2}" y="${y0}" width="${bw}" height="${Math.max(1, h)}" rx="${ki === 0 ? 3 : 0}" fill="${col}" data-tip="${x.d}: ${v} ${name}"/>`;
+        acc += v;
+      });
+      svg += `<text x="${cx(i)}" y="${H - 8}" font-size="12" text-anchor="middle" fill="var(--ink-3)">${x.d}</text>`;
+      if (acc) svg += `<text x="${cx(i)}" y="${y(acc) - 5}" font-size="11" text-anchor="middle" fill="var(--ink-2)">${acc}</text>`;
+    });
+    svg += `</svg><div class="tip" hidden></div>`;
+    const ch = $("#daychart"); ch.innerHTML = svg;
+    const tip = ch.querySelector(".tip");
+    ch.querySelectorAll(".seg").forEach((s) => { s.addEventListener("pointermove", (ev) => { const r = ch.getBoundingClientRect(); tip.hidden = false; tip.textContent = s.dataset.tip; tip.style.left = ev.clientX - r.left + "px"; tip.style.top = ev.clientY - r.top + "px"; }); s.addEventListener("pointerleave", () => (tip.hidden = true)); });
+    $("#daytable").innerHTML = `<table class="data"><thead><tr><th scope="col">Day</th><th class="num" scope="col">Agents alone</th><th class="num" scope="col">With a person</th><th class="num" scope="col">Lost or declined</th></tr></thead><tbody>${days.map((x) => `<tr><td>${x.d}</td><td class="num">${x.alone}</td><td class="num">${x.person}</td><td class="num">${x.lost}</td></tr>`).join("")}</tbody></table>`;
+
+    const er = {}; T.forEach((t) => { if (t.escalation) er[t.escalation.reason] = (er[t.escalation.reason] || 0) + 1; });
+    const rows = Object.entries(er).sort((a, b) => b[1] - a[1]), tot = rows.reduce((s, r) => s + r[1], 0), mx = rows.length ? rows[0][1] : 1;
+    $("#reasons").innerHTML = tot ? rows.map(([k, n]) => `<div class="rrow"><span class="nm">${REASON[k]}</span><span class="v">${n}</span><span class="sh">${Math.round((100 * n) / tot)}%</span><span class="trk" aria-hidden="true"><i style="width:${(100 * n) / mx}%"></i></span></div>`).join("") + `<p class="sub" style="margin:6px 4px 0">${tot} escalations; shares add to 100%.</p>` : `<p class="empty">No escalations yet.</p>`;
+
+    $("#decisions").innerHTML = S.decisions.length ? `<table class="data"><thead><tr><th scope="col">When</th><th scope="col">Pickup</th><th scope="col">Why</th><th scope="col">Decision</th><th scope="col">Who</th><th class="num" scope="col">Time to decide</th></tr></thead><tbody>${
+      S.decisions.map((d) => `<tr><td class="mono">${fmtT(d.at)}</td><td class="mono">${d.id}</td><td>${d.reason}</td><td>${esc(d.choice)}</td><td>${d.past ? "Earlier dispatcher" : "You"}</td><td class="num">${d.secs == null ? "—" : d.secs + "s"}</td></tr>`).join("")}</tbody></table>` : `<p class="empty">No decisions yet.</p>`;
+  }
+
+  // ---------- Wiring ----------
+  document.querySelectorAll("[data-speed]").forEach((b) => b.addEventListener("click", () => setSpeed(+b.dataset.speed)));
+  $("#autopause").addEventListener("change", (e) => (S.autopause = e.target.checked));
+  $("#stopall").addEventListener("click", () => {
+    S.stopped = !S.stopped;
+    $("#stopall").classList.toggle("on", S.stopped);
+    $("#stopall span").textContent = S.stopped ? "Resume all agents" : "Stop all agents";
+    $("#stopbanner").hidden = !S.stopped;
+    render();
+  });
+  $("#agents").addEventListener("click", (e) => { const b = e.target.closest("[data-agent]"); if (!b) return; S.paused[b.dataset.agent] = !S.paused[b.dataset.agent]; render(); });
+  $("#esc-list").addEventListener("click", (e) => { const b = e.target.closest(".esc"); if (!b) return; S.selected = b.dataset.id; render(); });
+  $("#board").addEventListener("click", (e) => { const r = e.target.closest("tr[data-id]"); if (!r) return; S.selected = r.dataset.id; render(); });
+  $("#board").addEventListener("keydown", (e) => { if (e.key !== "Enter") return; const r = e.target.closest("tr[data-id]"); if (!r) return; S.selected = r.dataset.id; render(); });
+  document.querySelectorAll("[data-filter]").forEach((b) => b.addEventListener("click", () => { S.filter = b.dataset.filter; document.querySelectorAll("[data-filter]").forEach((x) => x.setAttribute("aria-pressed", String(x === b))); render(); }));
+  $("#reset").addEventListener("click", () => { start(); });
+  const TABS = ["desk", "results", "rules"];
+  function selectTab(name, focus) {
+    TABS.forEach((t) => { const on = t === name, tab = $("#tab-" + t); tab.setAttribute("aria-selected", on); tab.tabIndex = on ? 0 : -1; $("#view-" + t).hidden = !on; if (on && focus) tab.focus(); });
+    if (name === "results") renderResults();
+  }
+  TABS.forEach((t, i) => { const tab = $("#tab-" + t); tab.addEventListener("click", () => selectTab(t)); tab.addEventListener("keydown", (e) => { if (e.key === "ArrowRight") selectTab(TABS[(i + 1) % 3], true); if (e.key === "ArrowLeft") selectTab(TABS[(i + 2) % 3], true); }); });
+  document.addEventListener("keydown", (e) => { if (e.key === " " && e.target === document.body) { e.preventDefault(); setSpeed(S.speed ? 0 : 20); } });
+
+  function start() {
+    fresh();
+    S.stopped = false; $("#stopall").classList.remove("on"); $("#stopall span").textContent = "Stop all agents"; $("#stopbanner").hidden = true;
+    S.autopause = $("#autopause").checked;
+    advance(17 * 60, true);          // Monday morning to 17:00 happened before you opened the desk
+    advance(18 * 60, false);         // the last hour is live: these escalations wait for you
+    setSpeed(0);
+    const firstOpen = S.tasks.find((t) => t.escalation && !t.escalation.resolved && !t.outcome);
+    S.selected = firstOpen ? firstOpen.id : (S.tasks[S.tasks.length - 1] || {}).id;
+    render();
+  }
+  start();
+  requestAnimationFrame(frame);
+  if (["results", "rules"].includes(location.hash.slice(1))) selectTab(location.hash.slice(1));
+})();
+</script>
+</body>
+</html>
