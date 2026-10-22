@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<meta name="color-scheme" content="light">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow, noarchive, noai, noimageai">
 <title>Food Rescue Agents</title>
@@ -12,28 +13,15 @@
 <style>
 /* Layout: a dispatch desk. Escalations and agents on the left, the live pickup board in the middle, the selected pickup's agent trace and decision on the right. */
 :root {
-  --bg: #f3f5f4; --surface: #ffffff; --surface-2: #eaefed; --ink: #121a24; --ink-2: #44515c; --ink-3: #5f6c76; --line: #d3dbdd;
-  --accent: #0b6b66; --accent-ink: #ffffff; --accent-soft: #dcefec; --ai: #5b47b8; --ai-soft: #eeebfb;
-  --good: #1c7a43; --good-soft: #e1f2e7; --warn: #a14d18; --warn-soft: #f8e9df; --crit: #b42a22; --crit-soft: #f9e3e1;
-  --s1: #2a78d6; --s2: #1baf7a; --s3: #eb6834; --focus: #2a78d6;
+  --bg: #f7f5ee; --surface: #fffdf8; --surface-2: #eef1e6; --ink: #14201a; --ink-2: #3a4a3f; --ink-3: #4f5f53; --line: #d4dccb;
+  --accent: #2f6b3a; --accent-ink: #ffffff; --accent-soft: #e1eedb; --ai: #5a3d7a; --ai-soft: #efe8f5;
+  --good: #2b7a3d; --good-soft: #e2f1e2; --warn: #9a4a14; --warn-soft: #f8eadf; --crit: #b42a22; --crit-soft: #f9e3e1;
+  --s1: #2f7d4a; --s2: #6a4a8c; --s3: #c95f24; --focus: #2a63c4;
+  --leaf: #3f8a4a; --leaf-2: #6fae5c; --sage: #9cb894; --eggplant: #5a3d7a; --beet: #8e2a52; --carrot: #d9742b; --tomato: #c8402e; --soil: #6b4a35;
   --font-display: "Familjen Grotesk", "Helvetica Neue", Arial, sans-serif;
   --font-body: "Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
   --radius: 10px; color-scheme: light;
-}
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --bg: #0e1518; --surface: #141e22; --surface-2: #1b272c; --ink: #e7edeb; --ink-2: #b6c2c4; --ink-3: #93a1a5; --line: #2a3a40;
-    --accent: #3fb3a8; --accent-ink: #06201e; --accent-soft: #15322f; --ai: #a797ff; --ai-soft: #241f3f;
-    --good: #52c482; --good-soft: #15301f; --warn: #ef8c4e; --warn-soft: #36210f; --crit: #ff7b72; --crit-soft: #3a1714;
-    --s1: #3987e5; --s2: #199e70; --s3: #d95926; --focus: #6aa8f0; color-scheme: dark;
-  }
-}
-:root[data-theme="dark"] {
-  --bg: #0e1518; --surface: #141e22; --surface-2: #1b272c; --ink: #e7edeb; --ink-2: #b6c2c4; --ink-3: #93a1a5; --line: #2a3a40;
-  --accent: #3fb3a8; --accent-ink: #06201e; --accent-soft: #15322f; --ai: #a797ff; --ai-soft: #241f3f;
-  --good: #52c482; --good-soft: #15301f; --warn: #ef8c4e; --warn-soft: #36210f; --crit: #ff7b72; --crit-soft: #3a1714;
-  --s1: #3987e5; --s2: #199e70; --s3: #d95926; --focus: #6aa8f0; color-scheme: dark;
 }
 * { box-sizing: border-box; }
 body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 16px; line-height: 1.5; }
@@ -207,27 +195,15 @@ details.tbl[open] summary { margin-bottom: 8px; }
 /* Soft UI (neumorphic) layer. Surfaces are lifted from one shared base color with paired light and dark shadows; wells and pressed states are inset.
    Accessibility guard: text keeps 4.5:1 or better, and every control also keeps a thin edge so it doesn't rely on shadow alone. */
 :root {
-  --nm-base: #e4e9ef; --nm-well: #dae0e7; --nm-hi: rgba(255,255,255,.95); --nm-lo: rgba(146,160,182,.62);
-  --nm-edge: rgba(70,86,108,.20); --nm-ctl-edge: rgba(52,66,86,.42);
-  --bg: var(--nm-base); --surface: var(--nm-base); --surface-2: var(--nm-well); --line: rgba(70,86,108,.22);
-  --ink: #111924; --ink-2: #364350; --ink-3: #4f5c68; --stage: #d6dde5;
+  --nm-base: #f4f2e9; --nm-well: #eae9dd; --nm-hi: rgba(255,255,255,.96); --nm-lo: rgba(150,148,118,.42);
+  --nm-edge: rgba(70,86,60,.18); --nm-ctl-edge: rgba(52,70,50,.40);
+  --bg: var(--nm-base); --surface: var(--nm-base); --surface-2: var(--nm-well); --line: rgba(70,86,60,.20);
+  --ink: #14201a; --ink-2: #3a4a3f; --ink-3: #4f5f53; --stage: #e6e9dc;
   --radius: 18px;
   --nm-raise: 7px 7px 16px var(--nm-lo), -7px -7px 16px var(--nm-hi);
   --nm-raise-sm: 3px 3px 8px var(--nm-lo), -3px -3px 8px var(--nm-hi);
   --nm-inset: inset 3px 3px 7px var(--nm-lo), inset -3px -3px 7px var(--nm-hi);
   --nm-inset-sm: inset 2px 2px 4px var(--nm-lo), inset -2px -2px 4px var(--nm-hi);
-}
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --nm-base: #222932; --nm-well: #1c222a; --nm-hi: rgba(56,66,80,.75); --nm-lo: rgba(8,11,15,.72);
-    --nm-edge: rgba(200,212,226,.10); --nm-ctl-edge: rgba(200,212,226,.30);
-    --ink: #eaeff3; --ink-2: #c3cdd6; --ink-3: #a3afba; --stage: #1d232b; --line: rgba(200,212,226,.14);
-  }
-}
-:root[data-theme="dark"] {
-  --nm-base: #222932; --nm-well: #1c222a; --nm-hi: rgba(56,66,80,.75); --nm-lo: rgba(8,11,15,.72);
-  --nm-edge: rgba(200,212,226,.10); --nm-ctl-edge: rgba(200,212,226,.30);
-  --ink: #eaeff3; --ink-2: #c3cdd6; --ink-3: #a3afba; --stage: #1d232b; --line: rgba(200,212,226,.14);
 }
 body { background: var(--nm-base); }
 
@@ -305,15 +281,11 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--accent); }
 @media (prefers-reduced-motion: reduce) { .btn, .chip, .tab, .qitem, .esc { transition: none !important; } }
 @media (forced-colors: active) { .card, .panel, .block, .btn, .tab, input { border: 1px solid CanvasText !important; } }
 .btn.stop:not(.on) { background: var(--crit) !important; color: #fff !important; border-color: var(--crit) !important; }
-@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .btn.stop:not(.on) { color: #2a0b08 !important; } }
-:root[data-theme="dark"] .btn.stop:not(.on) { color: #2a0b08 !important; }
 </style>
 <style id="motion">
 /* Motion and depth layer (2026–27): a slow ambient light field behind soft-glass surfaces, a highlight that follows the pointer,
    staged entrances, spring presses and view transitions. Everything here switches off with the Motion toggle or the system's reduced-motion setting. */
-:root { --aur-1: rgba(42,120,214,.20); --aur-2: rgba(11,107,102,.16); --aur-3: rgba(91,71,184,.16); --glass: color-mix(in srgb, var(--nm-base) 80%, transparent); --spot: rgba(255,255,255,.55); --ease-spring: cubic-bezier(.34,1.56,.64,1); --ease-out: cubic-bezier(.16,1,.3,1); }
-@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --aur-1: rgba(57,135,229,.22); --aur-2: rgba(25,158,112,.14); --aur-3: rgba(167,151,255,.18); --spot: rgba(160,190,230,.14); } }
-:root[data-theme="dark"] { --aur-1: rgba(57,135,229,.22); --aur-2: rgba(25,158,112,.14); --aur-3: rgba(167,151,255,.18); --spot: rgba(160,190,230,.14); }
+:root { --aur-1: rgba(111,174,92,.22); --aur-2: rgba(47,125,74,.14); --aur-3: rgba(106,74,140,.12); --glass: color-mix(in srgb, var(--nm-base) 80%, transparent); --spot: rgba(255,255,255,.55); --ease-spring: cubic-bezier(.34,1.56,.64,1); --ease-out: cubic-bezier(.16,1,.3,1); }
 
 body { position: relative; isolation: isolate; }
 body::before {
@@ -372,8 +344,72 @@ html[data-motion="off"] .qitem:hover, html[data-motion="off"] .esc:hover, html[d
 html[data-motion="off"]::view-transition-old(root), html[data-motion="off"]::view-transition-new(root) { animation: none; }
 @media (prefers-reduced-motion: reduce) { body::before { animation: none; } }
 </style>
+<style id="garden-live">
+/* Garden band: vegetables grow up from the bottom of the page, behind everything. It grows with the week's deliveries. */
+main { padding-bottom: 200px !important; }
+.garden { position: fixed; left: 0; right: 0; bottom: 0; height: 200px; z-index: -1; pointer-events: none; overflow: hidden; contain: strict; }
+.garden svg { width: 100%; height: 100%; display: block; overflow: hidden; }
+.garden .grow { transform-box: fill-box; transform-origin: 50% 100%; transform: scale(var(--g, .8)); transition: transform 1.4s cubic-bezier(.34,1.4,.64,1); }
+.garden .sway { transform-box: fill-box; transform-origin: 50% 100%; animation: sway var(--sd, 5s) ease-in-out calc(var(--dl, 0s) + 2.4s) infinite; }
+@keyframes sway { 0%, 100% { transform: rotate(0deg); } 30% { transform: rotate(calc(var(--sa, 2) * 1deg)); } 70% { transform: rotate(calc(var(--sa, 2) * -1deg)); } }
+.garden .stem { fill: none; stroke-linecap: round; stroke-dasharray: 1; stroke-dashoffset: 1; animation: stemup 1.5s cubic-bezier(.2,.7,.2,1) var(--dl, 0s) forwards; }
+@keyframes stemup { to { stroke-dashoffset: 0; } }
+.garden .leaf { transform-box: fill-box; transform-origin: 50% 100%; transform: scale(0); animation: unfurl .9s cubic-bezier(.34,1.56,.64,1) calc(var(--dl, 0s) + var(--ld, .8s)) forwards; }
+.garden .leaf.side-l { transform-origin: 100% 100%; } .garden .leaf.side-r { transform-origin: 0% 100%; }
+@keyframes unfurl { to { transform: scale(1); } }
+.garden .fruit { transform-box: fill-box; transform-origin: 50% 0%; transform: scale(0); animation: unfurl .8s cubic-bezier(.34,1.7,.64,1) calc(var(--dl, 0s) + var(--ld, 1.6s)) forwards; }
+.garden .root { transform-box: fill-box; transform-origin: 50% 100%; transform: scaleY(0); animation: rootup .9s ease-out var(--dl, 0s) forwards; }
+@keyframes rootup { to { transform: scaleY(1); } }
+.garden .puff { animation: puff 2.2s ease-out forwards; }
+@keyframes puff { 0% { opacity: 0; transform: translateY(0); } 15% { opacity: 1; } 100% { opacity: 0; transform: translateY(-70px); } }
+html[data-motion="off"] .garden * { animation-delay: 0s !important; }
+html[data-motion="off"] .garden .sway { animation: none !important; }
+@media (max-width: 820px) { .garden { height: 104px; } main { padding-bottom: 120px !important; } }
+
+/* Live row */
+.live { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr) minmax(0, 1fr); gap: 14px; margin-top: 14px; align-items: stretch; }
+.live .card { padding: 14px 16px; display: grid; grid-template-rows: auto auto 1fr auto; gap: 4px; min-width: 0; }
+.live h2 { font-size: 1.0625rem; display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.live h2 .livedot { display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-body); font-size: .75rem; font-weight: 700; color: var(--good); }
+.live h2 .livedot::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--good); animation: blink 1.6s ease-in-out infinite; }
+@keyframes blink { 50% { opacity: .25; } }
+.live svg { width: 100%; height: auto; display: block; overflow: visible; }
+.live .sub { margin: 0; color: var(--ink-2); font-size: .875rem; }
+.bigc { font-family: var(--font-display); font-weight: 700; font-size: 2rem; line-height: 1.1; color: var(--accent); font-variant-numeric: tabular-nums; }
+.bigc small { font-size: .9375rem; color: var(--ink-2); font-weight: 500; margin-left: 4px; }
+.mlegend { display: flex; flex-wrap: wrap; gap: 4px 12px; font-size: .75rem; color: var(--ink-2); margin-top: 4px; }
+.mlegend i { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 5px; vertical-align: -1px; }
+.mlegend i.sq { border-radius: 2px; }
+#citymap .street { stroke: #d9dfcf; stroke-width: 1; }
+#citymap .river { fill: none; stroke: #b9d6cf; stroke-width: 9; stroke-linecap: round; opacity: .8; }
+#citymap .park { fill: #dcebd2; }
+#citymap .route { fill: none; stroke-width: 1.6; stroke-dasharray: 4 4; opacity: .55; animation: march 1.2s linear infinite; }
+@keyframes march { to { stroke-dashoffset: -8; } }
+#citymap .donor { fill: #fff; stroke: var(--leaf); stroke-width: 2.4; }
+#citymap .partner { fill: var(--eggplant); }
+#citymap .hub { fill: var(--ink); }
+#citymap text { font-size: 10.5px; fill: var(--ink-2); font-family: var(--font-body); paint-order: stroke; stroke: var(--nm-base, #fff); stroke-width: 3px; stroke-linejoin: round; }
+#citymap .alarm { fill: none; stroke: var(--crit); stroke-width: 2.5; animation: alarm 1.4s ease-out infinite; transform-box: fill-box; transform-origin: center; cursor: pointer; pointer-events: all; }
+@keyframes alarm { 0% { transform: scale(.6); opacity: 1; } 100% { transform: scale(2.2); opacity: 0; } }
+#citymap .truck { stroke: #fff; stroke-width: 2; }
+#flow .edge { fill: none; stroke: var(--line); stroke-width: 2; }
+#flow .node circle { fill: var(--nm-base, #fff); stroke: var(--leaf); stroke-width: 2.4; }
+#flow .node.you circle { stroke: var(--ai); }
+#flow .node.ext circle { stroke: var(--ink-3); stroke-dasharray: 3 3; }
+#flow .node text { font-size: 11px; fill: var(--ink); font-weight: 700; text-anchor: middle; font-family: var(--font-body); }
+#flow .node .cnt { font-size: 10px; fill: var(--ink-3); font-weight: 400; font-family: var(--font-mono); }
+#flow .ping { fill: none; stroke-width: 2; }
+#lbschart .grid line { stroke: var(--line); }
+#lbschart .grid text, #lbschart .xlab { font-size: 10px; fill: var(--ink-3); font-family: var(--font-body); }
+#lbschart .now { stroke: var(--ai); stroke-width: 1.5; stroke-dasharray: 3 3; }
+@media (max-width: 1200px) { .live { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } .live .mapcard { grid-column: 1 / -1; } }
+@media (max-width: 820px) { .live { grid-template-columns: 1fr; } }
+.rlist .rrow { transition: opacity .4s; }
+.rrow .trk i { transition: width .7s cubic-bezier(.16,1,.3,1); }
+</style>
 </head>
 <body>
+<div class="garden" aria-hidden="true"><svg id="garden" viewBox="0 0 1440 200" preserveAspectRatio="xMidYMax slice"></svg></div>
 <header class="top">
   <div class="wrap">
     <div class="brand">
@@ -430,6 +466,12 @@ html[data-motion="off"]::view-transition-old(root), html[data-motion="off"]::vie
         </table></div>
       </div>
       <div class="panel right" id="detail" aria-live="polite"></div>
+    </div>
+    <div class="live">
+      <div class="card mapcard"><h2>Across the city <span class="livedot">Live</span></h2><p class="sub">Drivers carry food from donors to partners as the week runs. A red ring means a pickup is waiting for you; click it.</p><div id="citymap"></div>
+        <div class="mlegend" aria-hidden="true"><span><i style="background:#fff;border:2px solid #3f8a4a"></i>Donor</span><span><i class="sq" style="background:#5a3d7a"></i>Partner</span><span><i style="background:#3f8a4a"></i>Produce</span><span><i style="background:#d9742b"></i>Bakery</span><span><i style="background:#b42a22"></i>Prepared</span><span><i style="background:#2a63c4"></i>Dairy</span><span><i style="background:#5a3d7a"></i>Packaged</span></div></div>
+      <div class="card"><h2>Food rescued this week <span class="livedot">Live</span></h2><p class="bigc"><span id="lbsbig">0</span><small>lb delivered · <span id="lostsmall">0</span> lb lost</small></p><div id="lbschart"></div><div class="mlegend" aria-hidden="true"><span><i style="background:#2f6b3a"></i>Delivered, running total</span><span><i style="background:#c95f24"></i>Lost</span></div></div>
+      <div class="card"><h2>Agents talking <span class="livedot">Live</span></h2><p class="sub">Every message between agents as it happens; the numbers count messages received.</p><div id="flow"></div></div>
     </div>
   </section>
 
@@ -493,6 +535,7 @@ html[data-motion="off"]::view-transition-old(root), html[data-motion="off"]::vie
   </footer>
 </main>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
 <script>
 (() => {
   "use strict";
@@ -665,7 +708,7 @@ html[data-motion="off"]::view-transition-old(root), html[data-motion="off"]::vie
       if (task.courier) arrive = Math.max(S.t + 20, task.readyAt);
       if (task.partnerPickup) arrive = Math.max(S.t + travel(task.partner, task.donor), task.readyAt);
       const who = task.courier ? "Backup courier" : task.partnerPickup ? `${task.partner.name} van` : `Driver ${task.driver}`;
-      task.stage = 4; task.who = who;
+      task.stage = 4; task.who = who; task.assignedAt = S.t; task.pickAt = arrive; task.dropAt = arrive + toPartner;
       log(task, "Dispatch", who, "driver.assigned", `Pickup ${hhmm(arrive)}, drop-off about ${hhmm(arrive + toPartner)}`);
       schedule(arrive, task, "pickup");
       schedule(arrive + toPartner, task, "dropoff");
@@ -834,6 +877,7 @@ html[data-motion="off"]::view-transition-old(root), html[data-motion="off"]::vie
 
     renderDetail();
     if (!$("#view-results").hidden) renderResults();
+    Live.update();
   }
   function renderDetail() {
     const t = S.tasks.find((x) => x.id === S.selected) || S.tasks[S.tasks.length - 1];
@@ -870,6 +914,7 @@ html[data-motion="off"]::view-transition-old(root), html[data-motion="off"]::vie
       const ts = T.filter((t) => t.outcome && Math.floor((t.doneAt ?? S.t) / 1440) === i);
       return { d, alone: ts.filter((t) => t.outcome === "agents").length, person: ts.filter((t) => t.outcome === "person").length, lost: ts.filter((t) => t.outcome === "lost" || t.outcome === "declined").length };
     });
+    if (window.d3) dayChartD3(days); else {
     const W = 560, H = 230, padL = 34, padB = 26, padT = 24, bw = 30;
     const max = Math.max(4, ...days.map((x) => x.alone + x.person + x.lost));
     const step = max > 12 ? 5 : 2, top = Math.ceil(max / step) * step;
@@ -892,16 +937,269 @@ html[data-motion="off"]::view-transition-old(root), html[data-motion="off"]::vie
     const ch = $("#daychart"); ch.innerHTML = svg;
     const tip = ch.querySelector(".tip");
     ch.querySelectorAll(".seg").forEach((s) => { s.addEventListener("pointermove", (ev) => { const r = ch.getBoundingClientRect(); tip.hidden = false; tip.textContent = s.dataset.tip; tip.style.left = ev.clientX - r.left + "px"; tip.style.top = ev.clientY - r.top + "px"; }); s.addEventListener("pointerleave", () => (tip.hidden = true)); });
+    }
     $("#daytable").innerHTML = `<table class="data"><thead><tr><th scope="col">Day</th><th class="num" scope="col">Agents alone</th><th class="num" scope="col">With a person</th><th class="num" scope="col">Lost or declined</th></tr></thead><tbody>${days.map((x) => `<tr><td>${x.d}</td><td class="num">${x.alone}</td><td class="num">${x.person}</td><td class="num">${x.lost}</td></tr>`).join("")}</tbody></table>`;
 
     const er = {}; T.forEach((t) => { if (t.escalation) er[t.escalation.reason] = (er[t.escalation.reason] || 0) + 1; });
     const rows = Object.entries(er).sort((a, b) => b[1] - a[1]), tot = rows.reduce((s, r) => s + r[1], 0), mx = rows.length ? rows[0][1] : 1;
-    $("#reasons").innerHTML = tot ? rows.map(([k, n]) => `<div class="rrow"><span class="nm">${REASON[k]}</span><span class="v">${n}</span><span class="sh">${Math.round((100 * n) / tot)}%</span><span class="trk" aria-hidden="true"><i style="width:${(100 * n) / mx}%"></i></span></div>`).join("") + `<p class="sub" style="margin:6px 4px 0">${tot} escalations; shares add to 100%.</p>` : `<p class="empty">No escalations yet.</p>`;
+    if (window.d3) reasonsD3(rows, tot, mx); else $("#reasons").innerHTML = tot ? rows.map(([k, n]) => `<div class="rrow"><span class="nm">${REASON[k]}</span><span class="v">${n}</span><span class="sh">${Math.round((100 * n) / tot)}%</span><span class="trk" aria-hidden="true"><i style="width:${(100 * n) / mx}%"></i></span></div>`).join("") + `<p class="sub" style="margin:6px 4px 0">${tot} escalations; shares add to 100%.</p>` : `<p class="empty">No escalations yet.</p>`;
 
     $("#decisions").innerHTML = S.decisions.length ? `<table class="data"><thead><tr><th scope="col">When</th><th scope="col">Pickup</th><th scope="col">Why</th><th scope="col">Decision</th><th scope="col">Who</th><th class="num" scope="col">Time to decide</th></tr></thead><tbody>${
       S.decisions.map((d) => `<tr><td class="mono">${fmtT(d.at)}</td><td class="mono">${d.id}</td><td>${d.reason}</td><td>${esc(d.choice)}</td><td>${d.past ? "Earlier dispatcher" : "You"}</td><td class="num">${d.secs == null ? "—" : d.secs + "s"}</td></tr>`).join("")}</tbody></table>` : `<p class="empty">No decisions yet.</p>`;
   }
 
+  // ---------- Garden: vegetables that grow with the week's deliveries ----------
+  const motionOn = () => document.documentElement.dataset.motion !== "off";
+  const Garden = (() => {
+    const svg = document.getElementById("garden");
+    if (!svg) return { setProgress() {}, harvest() {} };
+    const NS = "http://www.w3.org/2000/svg";
+    const el = (tag, attrs, parent) => { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if (parent) parent.appendChild(e); return e; };
+    const rr = mulberry32(2026);
+    const TYPES = ["carrot", "lettuce", "beet", "tomato", "eggplant", "peas", "kale", "carrot", "lettuce", "eggplant", "beet", "peas", "tomato", "kale", "lettuce", "carrot", "beet"];
+    const W = 1440, BASE = 184, plants = [];
+    const C = { leaf: "#3f8a4a", leaf2: "#6fae5c", sage: "#9cb894", dark: "#2f5d3a", beet: "#8e2a52", carrot: "#d9742b", tomato: "#c8402e", egg: "#5a3d7a", pod: "#8cc46c", stake: "#8a6a4e" };
+    const backG = el("g", { opacity: 0.5 }, svg);
+    const plantsG = el("g", {}, svg);
+    const BACK = ["kale", "peas", "lettuce", "tomato", "carrot", "beet", "eggplant", "lettuce", "peas", "kale", "carrot", "tomato", "beet", "lettuce", "eggplant", "peas", "kale", "carrot", "lettuce", "tomato", "beet"];
+    const addPlant = (type, i, x, parent, sc, front) => {
+      const outer = el("g", { transform: `translate(${x.toFixed(1)},${BASE - (front ? 0 : 6)}) scale(${sc})` }, parent);
+      const grow = el("g", { class: "grow" }, outer);
+      const g = el("g", { class: "sway", style: `--dl:${(i * 0.13 + rr() * 0.3).toFixed(2)}s;--sd:${(4 + rr() * 3).toFixed(1)}s;--sa:${(1.2 + rr() * 1.6).toFixed(1)}` }, grow);
+      const dl = (i * 0.13 + rr() * 0.3).toFixed(2) + "s";
+      const stem = (d, color, w) => el("path", { d, class: "stem", pathLength: 1, stroke: color, "stroke-width": w, style: `--dl:${dl}` }, g);
+      const leaf = (cx, cy, rx, ry, rot, fill, delay, cls = "leaf") => el("ellipse", { cx, cy, rx, ry, transform: `rotate(${rot} ${cx} ${cy})`, fill, class: cls, style: `--dl:${dl};--ld:${delay}s` }, g);
+      const fruit = (node, delay) => { node.setAttribute("class", "fruit"); node.setAttribute("style", `--dl:${dl};--ld:${delay}s`); g.appendChild(node); return node; };
+      if (type === "carrot") {
+        el("path", { d: "M-8,-3 Q0,-11 8,-3 L5,10 Q0,18 -5,10 Z", fill: C.carrot, class: "root", style: `--dl:${dl}` }, g);
+        for (let k = -2; k <= 2; k++) { const tx = k * 7 + (rr() - 0.5) * 4, ty = -46 - rr() * 22; stem(`M0,-6 Q${k * 3},-24 ${tx},${ty}`, C.leaf, 2); for (let j = 0; j < 3; j++) leaf(tx * (0.55 + j * 0.2), ty * (0.55 + j * 0.2), 2.6, 6, k * 18, j % 2 ? C.leaf2 : C.leaf, 0.7 + j * 0.15); }
+      } else if (type === "lettuce") {
+        for (let k = 0; k < 9; k++) { const a = -70 + k * 17.5, r = k % 2 ? 14 : 20; leaf(Math.sin(a * Math.PI / 180) * 12, -r, 11, r, a, k % 3 ? C.leaf2 : C.sage, 0.4 + k * 0.06); }
+        leaf(0, -16, 8, 15, 0, "#a9d08e", 1.1);
+      } else if (type === "beet") {
+        el("circle", { cx: 0, cy: 2, r: 10, fill: C.beet, class: "root", style: `--dl:${dl}` }, g);
+        for (let k = -1; k <= 1; k++) { const tx = k * 16, ty = -62 - rr() * 14; stem(`M0,-6 Q${k * 6},-30 ${tx},${ty + 22}`, C.beet, 2.4); leaf(tx, ty, 11, 22, k * 22, C.dark, 0.9 + (k + 1) * 0.12); stem(`M${tx},${ty + 20} L${tx},${ty - 16}`, C.beet, 1.2); }
+      } else if (type === "tomato") {
+        el("line", { x1: 4, y1: 4, x2: 4, y2: -108, stroke: C.stake, "stroke-width": 3, "stroke-linecap": "round" }, g);
+        stem("M0,0 C-10,-20 12,-32 0,-50 C-12,-66 12,-80 2,-102", C.leaf, 2.6);
+        [[-9, -22], [10, -36], [-9, -58], [10, -74], [-6, -92]].forEach(([lx, ly], k) => leaf(lx, ly, 7, 11, lx > 0 ? 40 : -40, k % 2 ? C.leaf : C.leaf2, 0.6 + k * 0.15, lx > 0 ? "leaf side-r" : "leaf side-l"));
+        [[7, -28, 7], [-6, -46, 6], [8, -64, 7.5], [-4, -84, 5.5]].forEach(([fx, fy, r], k) => fruit(el("circle", { cx: fx, cy: fy, r, fill: C.tomato }), 1.5 + k * 0.2));
+      } else if (type === "eggplant") {
+        stem("M0,0 Q-4,-34 0,-72", C.dark, 3);
+        stem("M0,-34 Q12,-40 18,-52", C.dark, 2); stem("M0,-48 Q-12,-54 -18,-66", C.dark, 2);
+        leaf(18, -60, 9, 16, 35, C.sage, 0.9, "leaf side-r"); leaf(-20, -74, 9, 16, -35, C.sage, 1.0, "leaf side-l"); leaf(0, -84, 8, 14, 0, C.leaf, 1.1);
+        const e1 = fruit(el("g", {}), 1.6); el("ellipse", { cx: 12, cy: -28, rx: 8, ry: 17, fill: C.egg, transform: "rotate(-12 12 -28)" }, e1); el("path", { d: "M6,-44 L12,-48 L18,-44 Z", fill: C.dark }, e1);
+        const e2 = fruit(el("g", {}), 1.9); el("ellipse", { cx: -10, cy: -40, rx: 6, ry: 13, fill: "#6d4c92", transform: "rotate(14 -10 -40)" }, e2);
+      } else if (type === "peas") {
+        stem("M0,0 C14,-16 -14,-30 4,-48 C20,-62 -10,-78 6,-96 C14,-104 18,-108 12,-116", C.leaf2, 2);
+        stem("M4,-48 q10,-4 8,-12 q-2,-6 -6,-2", C.leaf2, 1.2); stem("M6,-96 q-10,-2 -10,-10 q0,-6 4,-4", C.leaf2, 1.2);
+        [[-8, -18], [12, -40], [-8, -62], [12, -84]].forEach(([lx, ly], k) => leaf(lx, ly, 6, 6, 0, C.leaf2, 0.6 + k * 0.15));
+        [[10, -24], [-6, -54], [12, -72], [-4, -100]].forEach(([px, py], k) => fruit(el("ellipse", { cx: px, cy: py, rx: 3.6, ry: 11, fill: C.pod, transform: `rotate(${k % 2 ? 20 : -20} ${px} ${py})` }), 1.4 + k * 0.2));
+      } else if (type === "kale") {
+        for (let k = 0; k < 6; k++) { const a = -55 + k * 22; const cx = Math.sin(a * Math.PI / 180) * 16, cy = -28 - (k % 2) * 14; stem(`M0,0 Q${cx / 2},${cy / 2} ${cx},${cy}`, C.sage, 1.6); leaf(cx, cy, 9, 19, a, k % 2 ? C.dark : "#3c7350", 0.7 + k * 0.1); }
+      }
+      if (front) plants.push({ x, top: type === "tomato" || type === "peas" ? -110 : -70 });
+    };
+    BACK.forEach((type, i) => addPlant(type, i + 0.5, 10 + i * ((W - 20) / (BACK.length - 1)) + (rr() - 0.5) * 30, backG, 0.68, false));
+    TYPES.forEach((type, i) => addPlant(type, i, 40 + i * ((W - 80) / (TYPES.length - 1)) + (rr() - 0.5) * 26, plantsG, 1.08, true));
+    // soil in front of the stems
+    const soil = el("g", {}, svg);
+    const grad = el("linearGradient", { id: "soilg", x1: 0, y1: 0, x2: 0, y2: 1 }, el("defs", {}, svg));
+    el("stop", { offset: "0", "stop-color": "#7a563d" }, grad); el("stop", { offset: "1", "stop-color": "#5a3f2c" }, grad);
+    let d = `M0,${BASE + 2}`; for (let x = 0; x <= W; x += 40) d += ` Q${x + 20},${BASE - 3 + rr() * 6} ${x + 40},${BASE + 1 + rr() * 3}`; d += ` L${W},200 L0,200 Z`;
+    el("path", { d, fill: "url(#soilg)" }, soil);
+    for (let i = 0; i < 90; i++) el("circle", { cx: rr() * W, cy: BASE + 6 + rr() * 14, r: 0.8 + rr() * 1.8, fill: rr() > 0.5 ? "#8e6a4f" : "#4d3626", opacity: 0.8 }, soil);
+    const puffs = el("g", {}, svg);
+    return {
+      setProgress(p) { svg.style.setProperty("--g", (0.74 + 0.36 * Math.max(0, Math.min(1, p))).toFixed(3)); },
+      harvest(lbs) {
+        if (!motionOn() || puffs.childNodes.length > 6) return;
+        const pl = plants[Math.floor(Math.random() * plants.length)];
+        const t = el("text", { x: pl.x, y: BASE + pl.top - 6, "text-anchor": "middle", class: "puff", fill: "#2f6b3a", "font-size": 15, "font-weight": 700, "font-family": "Atkinson Hyperlegible, sans-serif" }, puffs);
+        t.textContent = `+${lbs} lb`;
+        setTimeout(() => t.remove(), 2300);
+      }
+    };
+  })();
+
+  // ---------- Live views: city map, pounds rescued, agents talking ----------
+  const Live = (() => {
+    if (!window.d3 || !document.getElementById("citymap")) return { update() {}, tick() {}, reset() {} };
+    const FOODC = { produce: "#3f8a4a", bakery: "#d9742b", prepared: "#b42a22", dairy: "#2a63c4", packaged: "#5a3d7a" };
+    // City map
+    const MW = 560, MH = 300;
+    const mx = d3.scaleLinear([-4.5, 11.5], [18, MW - 18]), my = d3.scaleLinear([-1.2, 11.2], [MH - 14, 14]);
+    const map = d3.select("#citymap").append("svg").attr("viewBox", `0 0 ${MW} ${MH}`).attr("role", "img").attr("aria-label", "Map of the simulated city: donors, partners and drivers on the road");
+    const base = map.append("g");
+    base.append("path").attr("class", "park").attr("d", `M${mx(-1)},${my(2)} q40,-30 80,-6 q20,26 -20,40 q-50,8 -60,-34Z`);
+    base.append("path").attr("class", "park").attr("d", `M${mx(8)},${my(9.6)} q34,-12 60,6 q8,24 -30,26 q-36,-4 -30,-32Z`);
+    for (let x = -4; x <= 11; x++) base.append("line").attr("class", "street").attr("x1", mx(x)).attr("x2", mx(x)).attr("y1", my(-1)).attr("y2", my(11));
+    for (let y = -1; y <= 11; y++) base.append("line").attr("class", "street").attr("y1", my(y)).attr("y2", my(y)).attr("x1", mx(-4.5)).attr("x2", mx(11.5));
+    base.append("path").attr("class", "river").attr("d", d3.line().curve(d3.curveBasis)([[mx(-4.5), my(5.4)], [mx(0), my(4.6)], [mx(4.5), my(5.6)], [mx(8), my(6.8)], [mx(11.5), my(6.2)]]));
+    const routesG = map.append("g"), sitesG = map.append("g"), alarmsG = map.append("g"), trucksG = map.append("g"), fxG = map.append("g");
+    const HUB = { x: 4, y: 4 };
+    sitesG.append("rect").attr("class", "hub").attr("x", mx(HUB.x) - 6).attr("y", my(HUB.y) - 6).attr("width", 12).attr("height", 12).attr("rx", 2).attr("transform", `rotate(45 ${mx(HUB.x)} ${my(HUB.y)})`);
+    sitesG.append("text").attr("x", mx(HUB.x) + 10).attr("y", my(HUB.y) + 4).text("Drivers' hub");
+    const short = (n) => n.split(",")[0].replace(/^(Corner|Hotel|Market|Produce) /, (m) => m);
+    DONORS.forEach((d) => { sitesG.append("circle").attr("class", "donor").attr("cx", mx(d.x)).attr("cy", my(d.y)).attr("r", 5.5).append("title").text(d.name); });
+    PARTNERS.forEach((p) => { sitesG.append("rect").attr("class", "partner").attr("x", mx(p.x) - 6).attr("y", my(p.y) - 6).attr("width", 12).attr("height", 12).attr("rx", 3).append("title").text(p.name); sitesG.append("text").attr("x", mx(p.x) + 9).attr("y", my(p.y) - 7).text(p.name.split(" ")[0]); });
+    const P = (o) => [mx(o.x), my(o.y)];
+    const lerp = (a, b, k) => [a[0] + (b[0] - a[0]) * k, a[1] + (b[1] - a[1]) * k];
+    function truckPos(t) {
+      const hub = P(HUB), dn = P(t.donor), pt = P(t.partner);
+      if (S.t < t.pickAt) { const k = Math.max(0, Math.min(1, (S.t - t.assignedAt) / Math.max(1, t.pickAt - t.assignedAt))); return lerp(t.partnerPickup ? pt : hub, dn, d3.easeQuadInOut(k)); }
+      const k = Math.max(0, Math.min(1, (S.t - t.pickAt) / Math.max(1, t.dropAt - t.pickAt))); return lerp(dn, pt, d3.easeQuadInOut(k));
+    }
+    // Pounds rescued
+    const LW = 360, LH = 170, lpad = { l: 40, r: 10, t: 12, b: 22 };
+    const lx = d3.scaleLinear([0, 7 * 1440], [lpad.l, LW - lpad.r]), ly = d3.scaleLinear([0, 1000], [LH - lpad.b, lpad.t]);
+    const lsvg = d3.select("#lbschart").append("svg").attr("viewBox", `0 0 ${LW} ${LH}`).attr("role", "img").attr("aria-label", "Pounds of food rescued over the week");
+    const defs = lsvg.append("defs");
+    const lg = defs.append("linearGradient").attr("id", "lbsg").attr("x1", 0).attr("y1", 0).attr("x2", 0).attr("y2", 1);
+    lg.append("stop").attr("offset", 0).attr("stop-color", "#6fae5c").attr("stop-opacity", 0.75); lg.append("stop").attr("offset", 1).attr("stop-color", "#6fae5c").attr("stop-opacity", 0.08);
+    const clip = defs.append("clipPath").attr("id", "lbsclip").append("rect").attr("x", 0).attr("y", 0).attr("height", LH).attr("width", 0);
+    const lgrid = lsvg.append("g").attr("class", "grid");
+    DAYS.forEach((d, i) => lsvg.append("text").attr("class", "xlab").attr("x", lx(i * 1440 + 720)).attr("y", LH - 6).attr("text-anchor", "middle").text(d));
+    const plot = lsvg.append("g").attr("clip-path", "url(#lbsclip)");
+    const area = plot.append("path").attr("fill", "url(#lbsg)");
+    const line = plot.append("path").attr("fill", "none").attr("stroke", "#2f6b3a").attr("stroke-width", 2.4);
+    const lostLine = plot.append("path").attr("fill", "none").attr("stroke", "#c95f24").attr("stroke-width", 1.6).attr("stroke-dasharray", "4 3");
+    const nowL = lsvg.append("line").attr("class", "now").attr("y1", lpad.t).attr("y2", LH - lpad.b);
+    const head = lsvg.append("circle").attr("r", 4.5).attr("fill", "#2f6b3a").attr("stroke", "#fff").attr("stroke-width", 2);
+    let revealed = false, lastBig = 0, lastTop = 0;
+    // Agents talking
+    const FW = 360, FH = 210;
+    const NODES = { Donors: [40, 172, "ext"], Intake: [44, 84], Safety: [118, 36], Matching: [196, 84], Partners: [280, 40, "ext"], Dispatch: [318, 122], Drivers: [252, 176, "ext"], You: [148, 172, "you"] };
+    const fsvg = d3.select("#flow").append("svg").attr("viewBox", `0 0 ${FW} ${FH}`).attr("role", "img").attr("aria-label", "Messages flowing between the agents");
+    const EDGES = [["Donors", "Intake"], ["Intake", "Safety"], ["Safety", "Matching"], ["Matching", "Partners"], ["Matching", "Dispatch"], ["Dispatch", "Drivers"], ["Safety", "You"], ["Matching", "You"], ["Dispatch", "You"]];
+    const ctrl = (a, b) => { const [x1, y1] = NODES[a], [x2, y2] = NODES[b]; return [(x1 + x2) / 2 + (y2 - y1) * 0.18, (y1 + y2) / 2 - (x2 - x1) * 0.18]; };
+    EDGES.forEach(([a, b]) => { const [x1, y1] = NODES[a], [x2, y2] = NODES[b], [cx, cy] = ctrl(a, b); fsvg.append("path").attr("class", "edge").attr("d", `M${x1},${y1} Q${cx},${cy} ${x2},${y2}`); });
+    const pulseG = fsvg.append("g");
+    const nodeG = fsvg.append("g");
+    const counts = {};
+    Object.entries(NODES).forEach(([name, [x, y, kind]]) => {
+      const g = nodeG.append("g").attr("class", "node" + (kind ? " " + kind : "")).attr("data-n", name).attr("transform", `translate(${x},${y})`);
+      g.append("circle").attr("r", 15);
+      g.append("text").attr("y", -20).text(name === "You" ? "You" : name);
+      g.append("text").attr("class", "cnt").attr("y", 4).attr("text-anchor", "middle").text("0");
+      counts[name] = 0;
+    });
+    const partnerNames = new Set(PARTNERS.map((p) => p.name));
+    const nodeOf = (n) => n in NODES ? n : n === "Dispatcher" ? "You" : n === "Agents" ? "Matching" : n === "Donor" ? "Donors" : n === "Partner agents" || partnerNames.has(n) ? "Partners" : /^Driver|courier| van$/.test(n) ? "Drivers" : null;
+    function pulse(a, b, color) {
+      const [x1, y1] = NODES[a], [x2, y2] = NODES[b]; const has = EDGES.some(([p, q]) => (p === a && q === b) || (p === b && q === a));
+      const [cx, cy] = has ? (EDGES.some(([p, q]) => p === a && q === b) ? ctrl(a, b) : ctrl(b, a)) : [(x1 + x2) / 2, (y1 + y2) / 2];
+      const dot = pulseG.append("circle").attr("r", 4.5).attr("fill", color).attr("cx", x1).attr("cy", y1);
+      dot.transition().duration(650).ease(d3.easeCubicInOut).attrTween("cx", () => (k) => (1 - k) * (1 - k) * x1 + 2 * (1 - k) * k * cx + k * k * x2).attrTween("cy", () => (k) => (1 - k) * (1 - k) * y1 + 2 * (1 - k) * k * cy + k * k * y2)
+        .on("end", () => { dot.remove(); pulseG.append("circle").attr("class", "ping").attr("cx", x2).attr("cy", y2).attr("r", 15).attr("stroke", color).attr("opacity", 0.9).transition().duration(500).attr("r", 26).attr("opacity", 0).remove(); });
+    }
+    let seen = new Map(), delivered = new Set(), firstRun = true, lastSig = "";
+    function reset() { seen = new Map(); delivered = new Set(); firstRun = true; lastSig = ""; Object.keys(counts).forEach((k) => (counts[k] = 0)); pulseG.selectAll("*").remove(); }
+    function tick() {
+      if (!S) return;
+      // trucks on the road, moving with simulated time
+      const road = S.tasks.filter((t) => t.pickAt != null && !t.outcome && t.stage >= 4 && t.partner);
+      routesG.selectAll("path").data(road, (t) => t.id + (t.stage >= 5 ? "b" : "a")).join((e) => e.append("path").attr("class", "route")
+        .attr("stroke", (t) => FOODC[t.food]).attr("d", (t) => d3.line().curve(d3.curveCatmullRom)([t.stage < 5 ? P(t.partnerPickup ? t.partner : HUB) : P(t.donor), P(t.donor), P(t.partner)].filter((p, i, a) => i === 0 || p[0] !== a[i - 1][0] || p[1] !== a[i - 1][1]))));
+      trucksG.selectAll("circle").data(road, (t) => t.id).join((e) => e.append("circle").attr("class", "truck").attr("r", 0).call((c) => c.append("title")).call((c) => c.transition().duration(400).attr("r", 7)))
+        .attr("fill", (t) => FOODC[t.food]).attr("cx", (t) => truckPos(t)[0]).attr("cy", (t) => truckPos(t)[1]).select("title").text((t) => `${t.id}: ${t.lbs} lb ${FOODS[t.food].label.toLowerCase()}, ${t.who}`);
+      const open = S.tasks.filter((t) => t.escalation && !t.escalation.resolved && !t.outcome);
+      alarmsG.selectAll("circle").data(open, (t) => t.id).join((e) => e.append("circle").attr("class", "alarm").attr("r", 9).on("click", (ev, t) => { S.selected = t.id; render(); }).call((c) => c.append("title")))
+        .attr("cx", (t) => mx(t.donor.x)).attr("cy", (t) => my(t.donor.y)).select("title").text((t) => `${t.id} needs you: ${REASON[t.escalation.reason]}`);
+      // deliveries: a ring at the partner and a harvest in the garden
+      for (const t of S.tasks) if ((t.outcome === "agents" || t.outcome === "person") && !delivered.has(t.id)) {
+        delivered.add(t.id);
+        if (!firstRun && motionOn()) { fxG.append("circle").attr("cx", mx(t.partner.x)).attr("cy", my(t.partner.y)).attr("r", 6).attr("fill", "none").attr("stroke", "#2f6b3a").attr("stroke-width", 2.5).transition().duration(900).attr("r", 26).attr("opacity", 0).remove(); Garden.harvest(t.takeLbs || t.lbs); }
+      }
+      // agent messages
+      let spawned = 0;
+      for (const t of S.tasks) {
+        const k = seen.get(t.id) || 0;
+        for (let i = k; i < t.events.length; i++) {
+          const v = t.events[i], a = nodeOf(v.from), b = nodeOf(v.to);
+          if (b) counts[b]++;
+          if (!firstRun && a && b && a !== b && motionOn() && spawned < 6 && pulseG.selectAll("circle:not(.ping)").size() < 30) { pulse(a, b, v.kind === "alert" ? "#b42a22" : v.kind === "person" ? "#5a3d7a" : "#3f8a4a"); spawned++; }
+        }
+        seen.set(t.id, t.events.length);
+      }
+      const sig = Object.values(counts).join(",");
+      if (sig !== lastSig) { lastSig = sig; nodeG.selectAll(".node").each(function () { const n = this.dataset.n; d3.select(this).select(".cnt").text(counts[n]); }); }
+      firstRun = false;
+    }
+    function update() {
+      if (!S) return;
+      const T = S.tasks;
+      const done = T.filter((t) => (t.outcome === "agents" || t.outcome === "person")).sort((a, b) => a.doneAt - b.doneAt);
+      const lostT = T.filter((t) => t.outcome === "lost").sort((a, b) => a.doneAt - b.doneAt);
+      let acc = 0; const pts = [[0, 0]]; done.forEach((t) => { pts.push([t.doneAt, acc]); acc += t.takeLbs || t.lbs; pts.push([t.doneAt, acc]); }); pts.push([S.t, acc]);
+      let lacc = 0; const lpts = [[0, 0]]; lostT.forEach((t) => { lpts.push([t.doneAt, lacc]); lacc += t.lbs; lpts.push([t.doneAt, lacc]); }); lpts.push([S.t, lacc]);
+      const top = Math.max(1000, Math.ceil((acc * 1.15) / 500) * 500);
+      if (top !== lastTop) {
+        ly.domain([0, top]); lastTop = top;
+        const ticks = ly.ticks(4);
+        lgrid.selectAll("g").data(ticks, (d) => d).join((e) => { const g = e.append("g"); g.append("line").attr("x1", lpad.l).attr("x2", LW - lpad.r); g.append("text").attr("x", lpad.l - 6).attr("text-anchor", "end").attr("dy", 3.5); return g; })
+          .call((g) => g.select("line").transition().duration(500).attr("y1", (d) => ly(d)).attr("y2", (d) => ly(d))).call((g) => g.select("text").text((d) => d3.format(",")(d)).transition().duration(500).attr("y", (d) => ly(d)));
+      }
+      area.attr("d", d3.area().x((d) => lx(d[0])).y0(ly(0)).y1((d) => ly(d[1]))(pts));
+      line.attr("d", d3.line().x((d) => lx(d[0])).y((d) => ly(d[1]))(pts));
+      lostLine.attr("d", d3.line().x((d) => lx(d[0])).y((d) => ly(d[1]))(lpts));
+      nowL.attr("x1", lx(S.t)).attr("x2", lx(S.t)); head.attr("cx", lx(S.t)).attr("cy", ly(acc));
+      if (!revealed) { revealed = true; clip.attr("width", 0).transition().duration(motionOn() ? 1400 : 0).ease(d3.easeCubicOut).attr("width", LW); }
+      const big = d3.select("#lbsbig");
+      if (acc !== lastBig) { const from = lastBig; lastBig = acc; big.interrupt().transition().duration(motionOn() ? 700 : 0).tween("text", () => { const i = d3.interpolateNumber(from, acc); return (k) => big.text(Math.round(i(k)).toLocaleString()); }); }
+      d3.select("#lostsmall").text(lacc.toLocaleString());
+      Garden.setProgress(done.length / Math.max(1, S.week.length));
+    }
+    return { update, tick, reset };
+  })();
+  (function liveLoop() { Live.tick(); requestAnimationFrame(liveLoop); })();
+
+
+  // ---------- D3 versions of the results charts: they animate as the week runs ----------
+  let dayState = null;
+  function dayChartD3(days) {
+    const W = 560, H = 240, padL = 34, padB = 26, padT = 24, bw = 34;
+    const ch = d3.select("#daychart");
+    if (!dayState || !ch.select("svg").size()) {
+      ch.html("");
+      const svg = ch.append("svg").attr("viewBox", `0 0 ${W} ${H}`).attr("role", "img").attr("aria-label", "Pickups by day and outcome");
+      dayState = { svg, grid: svg.append("g"), bars: svg.append("g"), tots: svg.append("g"), labs: svg.append("g"), tip: ch.append("div").attr("class", "tip").attr("hidden", true) };
+      DAYS.forEach((d, i) => dayState.labs.append("text").attr("x", padL + 20 + i * ((W - padL - 40) / 6)).attr("y", H - 8).attr("font-size", 12).attr("text-anchor", "middle").attr("fill", "var(--ink-3)").text(d));
+    }
+    const { grid, bars, tots, tip } = dayState;
+    const max = Math.max(4, ...days.map((x) => x.alone + x.person + x.lost));
+    const step = max > 12 ? 5 : 2, top = Math.ceil(max / step) * step;
+    const y = d3.scaleLinear([0, top], [H - padB, padT]);
+    const cx = (i) => padL + 20 + i * ((W - padL - 40) / 6);
+    const T = d3.transition().duration(motionOn() ? 650 : 0).ease(d3.easeCubicOut);
+    grid.selectAll("g").data(d3.range(0, top + 1, step), (d) => d).join(
+      (e) => { const g = e.append("g").attr("opacity", 0); g.append("line").attr("x1", padL).attr("x2", W - 8).attr("stroke", "var(--line)"); g.append("text").attr("x", padL - 6).attr("font-size", 11).attr("text-anchor", "end").attr("fill", "var(--ink-3)").attr("dy", 4); return g; },
+      (u) => u, (x) => x.transition(T).attr("opacity", 0).remove())
+      .call((g) => g.select("text").text((d) => d))
+      .transition(T).attr("opacity", 1).call((g) => g.select("line").attr("y1", (d) => y(d)).attr("y2", (d) => y(d))).call((g) => g.select("text").attr("y", (d) => y(d)));
+    const KEYS = [["alone", "var(--s1)", "agents alone"], ["person", "var(--s2)", "with a person"], ["lost", "var(--s3)", "lost or declined"]];
+    const segs = [];
+    days.forEach((x, i) => { let acc = 0; KEYS.forEach(([k, col, name], ki) => { const v = x[k]; segs.push({ key: x.d + k, i, v, y0: acc, y1: acc + v, col, ki, tipText: `${x.d}: ${v} ${name}` }); acc += v; }); });
+    bars.selectAll("rect").data(segs, (d) => d.key).join(
+      (e) => e.append("rect").attr("class", "seg").attr("x", (d) => cx(d.i) - bw / 2).attr("width", bw).attr("y", y(0)).attr("height", 0).attr("rx", (d) => d.ki === 0 ? 3 : 0).attr("fill", (d) => d.col)
+        .on("pointermove", function (ev, d) { const r = document.getElementById("daychart").getBoundingClientRect(); tip.attr("hidden", null).text(d.tipText).style("left", ev.clientX - r.left + "px").style("top", ev.clientY - r.top + "px"); })
+        .on("pointerleave", () => tip.attr("hidden", true)))
+      .each(function (d) { this.dataset.tip = d.tipText; })
+      .transition(T).delay((d) => motionOn() ? d.i * 40 : 0).attr("y", (d) => y(d.y1)).attr("height", (d) => d.v ? Math.max(1, y(d.y0) - y(d.y1) - (d.ki && d.y0 ? 2 : 0)) : 0);
+    const totals = days.map((x, i) => ({ i, d: x.d, n: x.alone + x.person + x.lost }));
+    tots.selectAll("text").data(totals, (d) => d.d).join((e) => e.append("text").attr("font-size", 11).attr("text-anchor", "middle").attr("fill", "var(--ink-2)").attr("x", (d) => cx(d.i)).attr("y", y(0) - 5))
+      .text((d) => d.n || "").transition(T).attr("y", (d) => y(d.n) - 5);
+  }
+  function reasonsD3(rows, tot, mx) {
+    const host = d3.select("#reasons");
+    if (!tot) { host.html(`<p class="empty">No escalations yet.</p>`); return; }
+    let list = host.select(".rlist"); if (!list.size()) { host.html(""); list = host.append("div").attr("class", "rlist"); host.append("p").attr("class", "sub rsum").style("margin", "6px 4px 0"); }
+    list.selectAll(".rrow").data(rows, (d) => d[0]).join((e) => { const r = e.append("div").attr("class", "rrow").style("opacity", 0); r.append("span").attr("class", "nm").text((d) => REASON[d[0]]); r.append("span").attr("class", "v"); r.append("span").attr("class", "sh"); r.append("span").attr("class", "trk").attr("aria-hidden", "true").append("i").style("width", "0%"); return r; })
+      .order().style("opacity", 1)
+      .call((r) => r.select(".v").text((d) => d[1])).call((r) => r.select(".sh").text((d) => Math.round((100 * d[1]) / tot) + "%"))
+      .call((r) => r.select(".trk i").style("width", (d) => (100 * d[1]) / mx + "%"));
+    host.select(".rsum").text(`${tot} escalations; shares add to 100%.`);
+  }
   // ---------- Wiring ----------
   document.querySelectorAll("[data-speed]").forEach((b) => b.addEventListener("click", () => setSpeed(+b.dataset.speed)));
   $("#autopause").addEventListener("change", (e) => (S.autopause = e.target.checked));
@@ -928,6 +1226,7 @@ html[data-motion="off"]::view-transition-old(root), html[data-motion="off"]::vie
 
   function start() {
     fresh();
+    Live.reset();
     S.stopped = false; $("#stopall").classList.remove("on"); $("#stopall span").textContent = "Stop all agents"; $("#stopbanner").hidden = true;
     S.autopause = $("#autopause").checked;
     advance(17 * 60, true);          // Monday morning to 17:00 happened before you opened the desk
