@@ -4,7 +4,7 @@ Five AI agents coordinate a week of surplus-food pickups for a food rescue nonpr
 
 **Live prototype:** https://elizabethhannan.github.io/food-rescue/  
 **Designer:** Elizabeth Hannan · designer and builder · 2026  
-**Status:** Self-initiated concept for Feed-A-Friend with simulated data. Nothing here contacts a real person or organization.
+**Status:** Prototype for Feed-A-Friend, a 501(c)(3) philanthropic initiative, with simulated data. Nothing here contacts a real person or organization.
 
 ## What it shows
 

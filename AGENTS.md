@@ -1,9 +1,9 @@
 # AGENTS.md
 
-- What it is: Food Rescue Agents, a self-initiated prototype by Elizabeth Hannan. One self-contained `index.html`, no build step, served by GitHub Pages.
+- What it is: Food Rescue Agents, a prototype by Elizabeth Hannan for Feed-A-Friend, a 501(c)(3) philanthropic initiative. One self-contained `index.html`, no build step, served by GitHub Pages.
 - The week is a seeded simulation; keep it deterministic so every view agrees.
 - Views: Dispatch desk, Week so far (`#results`), Agent contracts (`#rules`).
-- Keep the "Simulated week" and "Self-initiated concept" labels visible.
+- Keep the "Simulated week" and "Feed-A-Friend · 501(c)(3) Philanthropic Initiative" labels visible.
 - HXO appears only as its name and core sentence, word for word.
 - No mention of AI assistants used to build this repo, in files or commit messages.
 - Views added: Household bridge (`#bridge`), Donor network (`#donors`). The bridge runs its own seeded week on the same clock.
