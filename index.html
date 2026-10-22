@@ -468,6 +468,27 @@ html[data-motion="off"] .garden .sway { animation: none !important; }
 .draft p { margin: 0; font-size: .9375rem; color: var(--ink-2); }
 .draft .acts { display: flex; flex-wrap: wrap; gap: 8px; }
 .trace li.pend { opacity: .55; }
+.pipeline { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 4px 0 12px; }
+.pstage { display: grid; gap: 0; padding: 8px 14px; border-radius: 14px; background: var(--nm-well); box-shadow: var(--nm-inset-sm); border: 1px solid var(--nm-edge); min-width: 120px; }
+.pstage b { font-family: var(--font-display); font-size: 1.375rem; color: var(--accent); }
+.pstage small { color: var(--ink-2); font-size: .8125rem; }
+.pstage .pn { font-size: .75rem; color: var(--ink-3); }
+.parrow { color: var(--ink-3); font-size: 1.25rem; }
+#view-cases .desk { grid-template-columns: minmax(0, 1fr) minmax(320px, 440px); }
+.facts.qa { grid-template-columns: 1fr auto; }
+.facts.qa dd { text-align: right; font-weight: 700; }
+.doclist { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.doclist li { display: grid; grid-template-columns: 1fr auto; gap: 2px 8px; padding: 8px 10px; border-radius: 12px; background: var(--nm-well); box-shadow: var(--nm-inset-sm); font-size: .875rem; }
+.doclist small { grid-column: 1; color: var(--ink-3); }
+.doclist .pill { grid-row: 1 / span 2; grid-column: 2; align-self: center; }
+#rchart svg { width: 100%; height: auto; display: block; }
+#rchart text { font-size: 11px; fill: var(--ink-2); font-family: var(--font-body); }
+@media (max-width: 1000px) { #view-cases .desk { grid-template-columns: 1fr; } }
+@media (max-width: 1200px) { #view-bridge .desk { grid-template-columns: minmax(230px, 280px) minmax(0, 1fr); } #view-bridge .desk .right { grid-column: 1 / -1; } }
+@media (max-width: 820px) { #view-bridge .desk { grid-template-columns: minmax(0, 1fr); } }
+.refs li, .refs a, .pcard .fact a { overflow-wrap: anywhere; }
+.board-head { min-width: 0; } .board-head .seg { flex-wrap: wrap; }
+
 .pools .rrow .nm small { color: var(--ink-3); font-size: .75rem; margin-left: 6px; }
 .pools .rrow .trk i.low { background: var(--crit) !important; }
 .mini p { margin: 0; color: var(--ink-2); font-size: .9375rem; }
@@ -501,6 +522,8 @@ html[data-motion="off"] .garden .sway { animation: none !important; }
     <button class="tab" role="tab" id="tab-bridge" aria-controls="view-bridge" aria-selected="false" tabindex="-1">Household bridge</button>
     <button class="tab" role="tab" id="tab-results" aria-controls="view-results" aria-selected="false" tabindex="-1">Week so far</button>
     <button class="tab" role="tab" id="tab-donors" aria-controls="view-donors" aria-selected="false" tabindex="-1">Donor network</button>
+    <button class="tab" role="tab" id="tab-cases" aria-controls="view-cases" aria-selected="false" tabindex="-1">Client records</button>
+    <button class="tab" role="tab" id="tab-reports" aria-controls="view-reports" aria-selected="false" tabindex="-1">State reports</button>
     <button class="tab" role="tab" id="tab-rules" aria-controls="view-rules" aria-selected="false" tabindex="-1">Agent contracts</button>
   </nav>
 </div></div>
@@ -628,6 +651,49 @@ html[data-motion="off"] .garden .sway { animation: none !important; }
     </div>
   </section>
 
+  <section class="view" id="view-cases" role="tabpanel" aria-labelledby="tab-cases" hidden>
+    <p class="lead">Feed-A-Friend sits under its food, pet food and health partners as a clean-data research effort on social services and public policy. Every family gets a case. To receive support they answer an experience survey honestly, sign an honesty statement and upload the letters they have from their state agency. Agents read, redact and verify; a person reviews anything that disagrees. Verified, consented cases feed the State reports tab.</p>
+    <p class="disclaim"><b>Two separate choices.</b> The survey and letters are required for support. Use of a family's answers in state reports needs its own consent; declining never affects support. Crisis-level families get food first and finish the survey within 7 days. All data here is simulated.</p>
+    <div class="pipeline" id="pipeline" aria-label="How a case moves into state reports"></div>
+    <div class="kpis bridge-kpis" id="ckpis"></div>
+    <div class="desk cases">
+      <div class="panel">
+        <div class="board-head"><h2>Cases</h2>
+          <div class="seg" role="group" aria-label="Filter cases">
+            <button type="button" data-cfilter="all" aria-pressed="true">All</button>
+            <button type="button" data-cfilter="review" aria-pressed="false">Needs review</button>
+            <button type="button" data-cfilter="open" aria-pressed="false">Survey open</button>
+          </div>
+        </div>
+        <div class="table-scroll"><table class="board" aria-label="Cases">
+          <thead><tr><th scope="col">Case</th><th scope="col">Where</th><th scope="col">Programs</th><th scope="col">Survey</th><th scope="col" style="text-align:right">Letters</th><th scope="col">Report consent</th><th scope="col">Status</th></tr></thead>
+          <tbody id="cboard"></tbody>
+        </table></div>
+      </div>
+      <div class="panel right" id="cdetail" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <section class="view" id="view-reports" role="tabpanel" aria-labelledby="tab-reports" hidden>
+    <p class="lead">State reports read the client records: only cases where the family consented and the agency letters were verified. They measure each state agency that runs SNAP and Medicaid against federal processing standards and against families' own experience. The Report agent drafts; a person approves before anything goes to an agency.</p>
+    <p class="disclaim"><b>Simulated data.</b> Agency names show who each report is addressed to; no numbers here are findings about any real agency. Standards: SNAP applications within 30 days (7 C.F.R. § 273.2(g)); Medicaid within 45 days for most applicants (42 C.F.R. § 435.912).</p>
+    <div class="kpis" id="rkpis" style="grid-template-columns:repeat(4,minmax(0,1fr))"></div>
+    <div class="grid2">
+      <div class="card"><h2>Cases past the 30-day SNAP standard <span class="livedot" style="color:var(--good)">Live</span></h2><p class="sub">Share of each state's verified, consented cases this month. States with fewer than 10 cases are left out.</p><div id="rchart"></div></div>
+      <div class="card"><h2>Report drafts <span>person approves</span></h2><p class="sub">One monthly report per state. Approving marks it ready to send; each downloads as CSV.</p><div class="drafts" id="rdrafts"></div></div>
+    </div>
+    <div class="card" style="margin-top:16px"><h2>State audit table <span class="livedot" style="color:var(--good)">Live</span></h2><div class="table-scroll" id="rtable"></div></div>
+    <div class="card" style="margin-top:16px"><h2>How the data is kept clean</h2><div class="table-scroll"><table class="data"><thead><tr><th scope="col">Rule</th><th scope="col">What it means</th></tr></thead><tbody>
+      <tr><td>Honesty statement</td><td>Every survey is signed; answers are the family's own account and are kept as given.</td></tr>
+      <tr><td>Document check</td><td>The Document reader matches each agency letter to the survey (dates, programs, notice type). Blurry letters get a request for a clearer photo; disagreements go to a person.</td></tr>
+      <tr><td>Redaction</td><td>Case numbers, names, addresses and ID numbers are removed from letters before any agent or report sees them.</td></tr>
+      <tr><td>Consent</td><td>Only cases with consent to anonymized use are counted. Declining never changes support.</td></tr>
+      <tr><td>Small numbers</td><td>Any state or measure with fewer than 10 cases is suppressed so no family can be identified.</td></tr>
+      <tr><td>Required fields</td><td>The survey cannot be submitted with a required answer missing, so every counted case is complete.</td></tr>
+      <tr><td>Human review</td><td>No report goes to an agency until a person approves it.</td></tr>
+    </tbody></table></div></div>
+  </section>
+
   <section class="view" id="view-results" role="tabpanel" aria-labelledby="tab-results" hidden>
     <p class="lead">How the week is going: how much the agents handled on their own, where they needed a person, and what each decision cost in time. Everything here comes from the same simulation as the desk, including your decisions.</p>
     <div class="grid2">
@@ -692,6 +758,10 @@ html[data-motion="off"] .garden .sway { animation: none !important; }
           <tr><td><b>Pet care</b></td><td>Adds the pet bonus and orders pet food from a pet supply donor</td><td>A pet is sick or injured</td><td class="mono">pet.added, pet.vet_needed</td></tr>
           <tr><td><b>Vet care</b></td><td>Holds donated vet supplies and partner clinic slots</td><td>Always: a person books the clinic and talks with the family</td><td class="mono">vet.requested</td></tr>
           <tr><td><b>Donor care</b></td><td>Sends micro-donor receipts, tracks fund balances and restrictions, drafts impact reports and top-up requests</td><td>Anything to a company or fund sponsor: a person approves, edits or holds every draft</td><td class="mono">donor.receipt, donor.draft</td></tr>
+          <tr><td><b>Survey</b></td><td>Texts the experience survey, sends one reminder, checks every required answer and the signed honesty statement</td><td>No answers after 24 hours: a person calls or sends food first</td><td class="mono">survey.sent, survey.completed, survey.stalled</td></tr>
+          <tr><td><b>Document reader</b></td><td>Reads uploaded agency letters, redacts personal details, matches dates and programs to the survey</td><td>A letter disagrees with the survey; it never withholds support</td><td class="mono">docs.read, docs.mismatch</td></tr>
+          <tr><td><b>Case manager</b></td><td>Keeps each family's case file and starts the promise clock when the survey and letters are in</td><td>Any case a person must review</td><td class="mono">case.ready, case.reviewed</td></tr>
+          <tr><td><b>Report</b></td><td>Builds monthly state reports from consented, verified cases; suppresses anything under 10 cases</td><td>Always: a person approves every report before it goes to an agency</td><td class="mono">report.drafted</td></tr>
           <tr><td><b>Benefits link</b></td><td>With consent, checks the state SNAP agency for the family's status; when benefits are confirmed, flags the current order as the last purchase this month</td><td>The state's answer conflicts with what the family says; a person calls</td><td class="mono">benefits.checked, benefits.approved</td></tr>
           <tr><td><b>Order tracker</b></td><td>Follows each order from cart to checkout, shipped or picked, out for delivery and delivered; confirms delivery to the address on file without showing it</td><td>A delivery is late past the promise or not confirmed</td><td class="mono">order.checked_out, order.shipped, order.delivered</td></tr>
           <tr><td><b>Insight</b></td><td>Builds the Assistance Delay Index and the need map from counts only</td><td>Never publishes; a person shares it with agencies</td><td class="mono">insight.updated</td></tr>
@@ -722,6 +792,8 @@ html[data-motion="off"] .garden .sway { animation: none !important; }
           <tr><td><b>Benefits link</b></td><td><span class="status built">In this prototype</span></td><td>Consent-based status checks with each state's SNAP agency; flags the last purchase of the month when benefits start</td><td>The family consents; a person resolves any conflict</td></tr>
           <tr><td><b>Order tracker</b></td><td><span class="status built">In this prototype</span></td><td>Cart, checkout, shipped, out for delivery, delivered and confirmed, for every partner</td><td>A person follows up on any late or unconfirmed order</td></tr>
           <tr><td><b>Cart mix and waste</b></td><td><span class="status built">In this prototype</span></td><td>Reports organic and non-GMO, processed, baby food and toiletry spend by store, and tons of food kept from waste</td><td>A person chooses what goes in public reports</td></tr>
+          <tr><td><b>Client records and state reports</b></td><td><span class="status built">In this prototype</span></td><td>Case file per family, experience survey, letter verification, clean-data rules, monthly state reports with CSV export</td><td>A person reviews disagreements and approves every report</td></tr>
+          <tr><td><b>Policy brief</b></td><td><span class="status next">Next</span></td><td>Turns a quarter of state reports into a plain-language brief for legislators and agency leaders</td><td>A person edits and signs it</td></tr>
           <tr><td><b>Donor retention</b></td><td><span class="status next">Next</span></td><td>Spots micro-donors and companies likely to lapse from giving gaps and opened reports; suggests the right next touch</td><td>Chooses who to contact and how</td></tr>
           <tr><td><b>DAF grant</b></td><td><span class="status next">Next</span></td><td>Prepares grant requests to donor-advised fund sponsors and the reports their restrictions require</td><td>Signs and submits</td></tr>
           <tr><td><b>Gift-card wallet</b></td><td><span class="status next">Next</span></td><td>Issues digital gift cards by text, tracks balances, returns unused money to the fund</td><td>Approves any card over the level amount</td></tr>
@@ -1454,9 +1526,9 @@ html[data-motion="off"] .garden .sway { animation: none !important; }
       { key: "petsmart", name: "PetSmart", type: "Pet supplies", pet: true, bal: 1200 }
     ];
     const LEVEL = { 1: { name: "Level 1 · Bridge", amt: 200, hrs: 72 }, 2: { name: "Level 2 · Priority", amt: 300, hrs: 24 }, 3: { name: "Level 3 · Crisis", amt: 400, hrs: 8 } };
-    const BREASON = { borderline: "Close call on level", medical: "Medical need mentioned", gap: "No delivery inside the promise", spend: "Over $500 for one family", nofund: "No fund can pay", vet: "Sick pet" };
-    const BAGENTS = ["Need", "Privacy guard", "Fulfillment", "Fund", "Pet care", "Benefits link", "Donor care"];
-    const stepAgent = { need: "Need", privacy: "Privacy guard", route: "Fulfillment", fund: "Fund", pet: "Pet care", order: "Fulfillment" };
+    const BREASON = { borderline: "Close call on level", medical: "Medical need mentioned", gap: "No delivery inside the promise", spend: "Over $500 for one family", nofund: "No fund can pay", vet: "Sick pet", survey: "Survey not answered" };
+    const BAGENTS = ["Need", "Privacy guard", "Survey", "Document reader", "Fulfillment", "Fund", "Pet care", "Benefits link", "Donor care"];
+    const stepAgent = { survey: "Survey", survey_stall: "Survey", survey_done: "Survey", docs: "Document reader", need: "Need", privacy: "Privacy guard", route: "Fulfillment", fund: "Fund", pet: "Pet care", order: "Fulfillment" };
     const chName = (k) => (CH[k] ? CH[k].name : "Volunteer driver");
     const money = (n) => "$" + Math.round(n).toLocaleString();
     const hashR = (s) => { let h = 2166136261; for (const c of s) h = Math.imul(h ^ c.charCodeAt(0), 16777619); return ((h >>> 0) % 10000) / 10000; };
@@ -1521,7 +1593,7 @@ html[data-motion="off"] .garden .sway { animation: none !important; }
         const m = t % 1440; if (m < 7 * 60 || m > 23 * 60) continue;
         gifts.push({ at: t, amt: pick(rand, [[5, 0.22], [10, 0.22], [15, 0.15], [20, 0.12], [25, 0.12], [50, 0.11], [100, 0.06]]), kind: pick(rand, [["One-time gift", 0.45], ["Round-up at checkout", 0.25], ["Monthly gift", 0.18], ["Employee giving", 0.12]]) });
       }
-      B = { t: 6 * 60, fams, fi: 0, q: [], list: [], decisions: [], corrections: [], filter: "active", selected: null, paused: {}, gifts, gi: 0, given: [], receipts: 0, impactNotes: 0, drafts: [], toppedUp: false, reportsDrafted: false, vetSlots: 6,
+      B = { t: 6 * 60, fams, fi: 0, q: [], list: [], decisions: [], corrections: [], filter: "active", selected: null, paused: {}, gifts, gi: 0, given: [], receipts: 0, impactNotes: 0, drafts: [], toppedUp: false, reportsDrafted: false, vetSlots: 6, cfilter: "all", cselected: null, rstate: {},
         funds: FUND_DEF.map((f) => ({ ...f, start: f.bal, drawn: 0, uses: 0, drafted: false })) };
       BAGENTS.forEach((a) => (B.paused[a] = false));
     }
@@ -1583,6 +1655,8 @@ html[data-motion="off"] .garden .sway { animation: none !important; }
 
     function step(h, st, past) {
       if (st === "benefit") return benefitStep(h);
+      if (st === "survey_done" || st === "docs") return surveyStep(h, st, past);
+      if (st === "survey" || st === "survey_stall") { if (h.outcome) return; return surveyStep(h, st, past); }
       if (h.outcome) return;
       if (st === "ship") { const s = trackerSteps(h)[2]; return blog(h, chName(h.ch), "Order tracker", h.ch === "amazon" ? "order.shipped" : "order.picked", s[2]); }
       if (st === "out") return blog(h, chName(h.ch), "Order tracker", "order.out_for_delivery", trackerSteps(h)[3][2]);
@@ -1602,7 +1676,7 @@ html[data-motion="off"] .garden .sway { animation: none !important; }
         if (h.medical && !h.medOk) { blog(h, "Privacy guard", "You", "privacy.flagged", "The family mentioned a prescription need. The note is not stored and no agent decides on it.", "alert"); return raise(h, "medical", past); }
         h.stage = 2;
         blog(h, "Privacy guard", "Fulfillment", "privacy.cleared", `Area only: ${h.region.name}, ${h.region.st}. Household details reduced to counts.`);
-        sched(S.t + (h.callFirst ? 45 : 2), h, "route", curTag);
+        sched(S.t + (h.callFirst ? 45 : 2), h, "survey", curTag);
       } else if (st === "route") {
         const limit = LEVEL[h.level].hrs;
         if (h.routeFix) { h.ch = h.routeFix.ch; h.eta = h.routeFix.eta; h.via = h.routeFix.via; }
@@ -1675,6 +1749,9 @@ html[data-motion="off"] .garden .sway { animation: none !important; }
         ...(alt ? [{ key: "alt", label: `Pay from ${alt.name}`, note: `${money(alt.bal)} left`, rec: true, fund: alt.key }] : []),
         { key: "partial", label: "Send Level 1 groceries now from what is left", note: "$200 instead of the full level", rec: !alt },
         { key: "hold", label: "Hold until Friday's top-ups", note: "Only if a top-up request was approved" }]; }
+      if (reason === "survey") return [
+        { key: "phone", label: "Call the family and complete the survey by phone", note: "About 40 minutes; a person reads the questions", rec: true },
+        { key: "later", label: "Send the food now; finish the survey within 7 days", note: "The case stays open until it is done" }];
       if (reason === "vet") return [
         { key: "slot", label: "Book a donated vet clinic slot and send the pet bonus", note: `${B.vetSlots} donated slots left this week`, rec: true },
         { key: "list", label: "Send the pet bonus and a list of low-cost clinics", note: "" }];
@@ -1705,6 +1782,7 @@ html[data-motion="off"] .garden .sway { animation: none !important; }
       if (e.reason === "gap") { const b = h.gapBest; h.routeFix = key === "vol" ? { ch: "volunteer", eta: 6, via: "Feed-A-Friend volunteer driver" } : key === "card" ? { ch: "walmart", eta: 3, via: "gift card by text, in-store pickup" } : { ch: b.c.key, eta: b.eta, via: b.c.via }; go("route"); }
       if (e.reason === "spend") { h.spendOk = true; if (key === "cap") h.petCap = 500 - LEVEL[h.level].amt; go("fund"); }
       if (e.reason === "nofund") { if (key === "alt") h.fundFix = opt.fund; if (key === "partial") { h.amtOverride = 200; h.level = 1; } if (key === "hold") { sched(Math.max(at + 1, 4 * 1440 + 9 * 60 + 5), h, "fund", e.tag); return; } go("fund"); }
+      if (e.reason === "survey") { if (key === "phone") { h.case.survey = "phone"; sched(at + 40, h, "survey_done", e.tag); } else { sched(at + 1, h, "route", e.tag); sched(at + 1440, h, "survey_done", e.tag); } }
       if (e.reason === "vet") { h.vetOk = true; if (key === "slot" && B.vetSlots > 0) { B.vetSlots--; h.vetBooked = true; } go("pet"); }
     }
     function undo(h) {
@@ -1788,6 +1866,164 @@ html[data-motion="off"] .garden .sway { animation: none !important; }
       const st = [...new Set(REGIONS.map((r) => r.st))];
       $("#benefits").innerHTML = `<table class="data"><thead><tr><th scope="col">State</th><th scope="col">Agency</th><th class="num" scope="col">Families checked</th><th class="num" scope="col">Benefits confirmed</th><th class="num" scope="col">Last purchase flagged</th></tr></thead><tbody>${st.map((s) => { const hs = B.list.filter((h) => h.region.st === s && h.stage >= 1); return `<tr><td>${s}</td><td>${AGENCY[s]}</td><td class="num">${hs.length}</td><td class="num">${hs.filter((h) => h.benefit).length}</td><td class="num">${hs.filter((h) => h.lastFlag).length}</td></tr>`; }).join("")}</tbody></table>`;
     }
+
+    // ---------- Client records (CMS): experience survey, agency letters, verification, clean data ----------
+    const DOCS = [["receipt", "Application received notice"], ["rfi", "Request for information letter"], ["interview", "Interview appointment notice"], ["pending", "Pending status printout"], ["denial", "Denial or closure notice"], ["medicaid", "Medicaid application receipt"]];
+    function answersFor(h) {
+      const r = (k) => hashR(h.id + k), slow = h.wait > 30;
+      return {
+        programs: r("mc") < 0.48 ? "SNAP and Medicaid" : "SNAP",
+        medicaidDays: r("mc") < 0.48 ? Math.round(10 + r("md") * 95) : null,
+        interviewMissed: r("im") < (slow ? 0.32 : 0.14),
+        rfi: r("rf") < (slow ? 0.66 : 0.38),
+        lostDocs: r("ld") < (slow ? 0.27 : 0.09),
+        ease: Math.max(1, Math.min(5, Math.round(4.2 - h.wait / 40 + (r("ea") - 0.5) * 1.6))),
+        respect: Math.max(1, Math.min(5, Math.round(3.9 - h.wait / 70 + (r("rs") - 0.5) * 1.8))),
+        hungryDays: Math.round((4 - Math.min(4, h.foodDays)) * 2 + r("hd") * 6),
+        petSkip: h.pets.length ? r("ps") < 0.3 : null,
+        consent: r("cn") < 0.86
+      };
+    }
+    function docsFor(h) {
+      const n = 1 + Math.floor(hashR(h.id + "dc") * 3), out = [];
+      const types = [DOCS[0], ...(answersFor(h).rfi ? [DOCS[1]] : []), DOCS[2], DOCS[3], ...(answersFor(h).programs.includes("Medicaid") ? [DOCS[5]] : [])];
+      for (let i = 0; i < n && i < types.length; i++) {
+        const r = hashR(h.id + "dv" + i), [k, label] = types[i];
+        out.push({ k, label, agency: AGENCY[h.region.st], status: r < 0.08 && i === 0 ? "mismatch" : r < 0.2 ? "unclear" : "verified",
+          applied: i === 0 ? h.wait + (r < 0.08 ? 9 + Math.round(r * 60) : 0) : null, redactions: 2 + Math.floor(r * 4) });
+      }
+      return out;
+    }
+    function surveyStep(h, st, past) {
+      const lvl3 = h.level === 3;
+      if (st === "survey") {
+        h.case = { survey: "sent", sentAt: S.t, docs: [], review: null };
+        const r = hashR(h.id + "sv"), stall = r < 0.07 && !lvl3;
+        blog(h, "Survey", "Family", "survey.sent", `Experience survey sent by text: 12 questions about SNAP${answersFor(h).programs.includes("Medicaid") ? ", Medicaid" : ""}, food and pets, plus a photo upload for agency letters.${lvl3 ? " Crisis level: food goes first; the survey is due within 7 days." : " Support is sent once it is complete."}`);
+        if (lvl3) { sched(S.t + 1, h, "route", curTag); sched(S.t + 600 + Math.round(r * 2400), h, "survey_done", curTag); return; }
+        if (stall) { sched(S.t + 1440, h, "survey_stall", curTag); return; }
+        sched(S.t + 15 + Math.round(r * 225), h, "survey_done", curTag);
+      } else if (st === "survey_stall") {
+        if (h.case.survey === "complete") return;
+        blog(h, "Survey", "You", "survey.stalled", "No answers after 24 hours and one reminder text", "alert");
+        return raise(h, "survey", past);
+      } else if (st === "survey_done") {
+        if (h.case.survey === "complete") return;
+        const a = answersFor(h);
+        Object.assign(h.case, { survey: h.case.survey === "phone" ? "complete by phone" : "complete", doneAt: S.t, answers: a, attested: true, docs: docsFor(h) });
+        h.case.survey = h.case.survey.startsWith("complete") ? h.case.survey : "complete";
+        blog(h, "Family", "Survey", "survey.completed", `Answers submitted with the honesty statement signed; ${h.case.docs.length} agency letter${h.case.docs.length > 1 ? "s" : ""} uploaded. ${a.consent ? "Agreed" : "Did not agree"} to anonymized use in state reports.`);
+        sched(S.t + 4, h, "docs", curTag);
+      } else if (st === "docs") {
+        const d = h.case.docs, v = d.filter((x) => x.status === "verified").length, mm = d.find((x) => x.status === "mismatch"), un = d.filter((x) => x.status === "unclear").length;
+        blog(h, "Document reader", "Case manager", "docs.read", `Read ${d.length} letter${d.length > 1 ? "s" : ""} from ${AGENCY[h.region.st]}; redacted case numbers and personal details. ${v} verified${un ? `, ${un} too blurry: asked the family for a clearer photo` : ""}.`);
+        if (mm) { h.case.review = "pending"; blog(h, "Document reader", "You", "docs.mismatch", `The letter shows ${mm.applied} days since applying; the survey says ${h.wait}. Sent to a person to review. Support is not held for this.`, "alert"); }
+        if (!lvl3 && !h.outcome && h.stage < 3) {
+          if (h.level) h.promise = S.t + LEVEL[h.level].hrs * 60;
+          blog(h, "Case manager", "Fulfillment", "case.ready", `Survey and letters on file. Promise clock starts now: ${LEVEL[h.level].hrs} h.`);
+          sched(S.t + 1, h, "route", curTag);
+        }
+      }
+    }
+    // background caseload: the three earlier weeks of the month, already cleaned
+    function priorCases() {
+      const rand = mulberry32(5150), out = [];
+      for (let i = 0; i < 430; i++) {
+        const region = REGIONS[Math.floor(rand() * REGIONS.length)], h = { id: "P" + i, region, wait: 6 + Math.floor(rand() * 110), foodDays: Math.floor(rand() * 4.6), pets: rand() < 0.5 ? [{ type: "dog" }] : [] };
+        const lag = { AZ: 0, TX: 14, GA: 22, MS: 18, TN: 6, IL: 8, MI: 4, NY: 10, CA: 12 }[region.st] || 0;
+        h.wait = Math.min(170, h.wait + Math.round(lag * rand()));
+        const a = answersFor(h), docs = docsFor(h);
+        out.push({ st: region.st, wait: h.wait, a, verified: docs.every((d) => d.status === "verified"), docs: docs.length, prior: true });
+      }
+      return out;
+    }
+    let PRIOR = null;
+    function reportRows() {
+      if (!PRIOR) PRIOR = priorCases();
+      const live = B.list.filter((h) => h.case && h.case.answers && h.case.review !== "excluded").map((h) => ({ st: h.region.st, wait: h.wait, a: h.case.answers, verified: h.case.docs.every((d) => d.status === "verified") || h.case.review === "accepted", docs: h.case.docs.length }));
+      return PRIOR.concat(live);
+    }
+    const MIN_N = 10;
+    function stateStats() {
+      const rows = reportRows(), states = [...new Set(REGIONS.map((r) => r.st))];
+      return states.map((st) => {
+        const all = rows.filter((x) => x.st === st), use = all.filter((x) => x.a.consent && x.verified), n = use.length;
+        const med = (arr) => { const s = arr.slice().sort((a, b) => a - b); return s.length ? s[s.length >> 1] : null; };
+        const pct = (f, base = use) => (base.length ? Math.round((100 * base.filter(f).length) / base.length) : null);
+        const mc = use.filter((x) => x.a.medicaidDays != null), pets = use.filter((x) => x.a.petSkip != null);
+        const avg = (k) => (n ? (use.reduce((s, x) => s + x.a[k], 0) / n).toFixed(1) : null);
+        return { st, agency: AGENCY[st], cases: all.length, n, excluded: all.length - n, ok: n >= MIN_N,
+          medWait: med(use.map((x) => x.wait)), past30: pct((x) => x.wait > 30), mcN: mc.length, past45: pct((x) => x.a.medicaidDays > 45, mc),
+          interview: pct((x) => x.a.interviewMissed), rfi: pct((x) => x.a.rfi), lost: pct((x) => x.a.lostDocs), ease: avg("ease"), respect: avg("respect"),
+          hungry: med(use.map((x) => x.a.hungryDays)), petSkip: pets.length ? pct((x) => x.a.petSkip, pets) : null,
+          complete: all.length ? Math.round((100 * all.filter((x) => x.a).length) / all.length) : 0, verifiedPct: all.length ? Math.round((100 * all.filter((x) => x.verified).length) / all.length) : 0 };
+      });
+    }
+    function caseStatus(h) {
+      const c = h.case; if (!c) return `<span class="pill p-decl">Not started</span>`;
+      if (c.survey === "sent") return `<span class="pill p-active">Survey sent</span>`;
+      if (c.survey === "phone") return `<span class="pill p-active">Phone survey</span>`;
+      if (c.review === "pending") return `<span class="pill p-wait">Needs review</span>`;
+      if (c.review === "excluded") return `<span class="pill p-decl">Excluded from reports</span>`;
+      const v = c.docs.filter((d) => d.status === "verified").length;
+      return `<span class="pill ${v === c.docs.length || c.review === "accepted" ? "p-done" : "p-paused"}">${v} of ${c.docs.length} letters verified</span>`;
+    }
+    function renderCases() {
+      const L = B.list, withCase = L.filter((h) => h.case), done = withCase.filter((h) => h.case.answers);
+      const docs = done.reduce((s, h) => s + h.case.docs.length, 0), ver = done.reduce((s, h) => s + h.case.docs.filter((d) => d.status === "verified").length, 0);
+      const review = withCase.filter((h) => h.case.review === "pending");
+      const k = [["Cases open", withCase.length, `of ${L.length} families this week`], ["Surveys complete", done.length, withCase.length ? `${Math.round((100 * done.length) / withCase.length)}% of cases` : "—"],
+        ["Letters uploaded", docs, `${ver} verified by the Document reader`], ["Needs a person", review.length, "letter and answers disagree"],
+        ["Report consent", done.length ? Math.round((100 * done.filter((h) => h.case.answers.consent).length) / done.length) + "%" : "—", "agreed to anonymized use"], ["Fields complete", done.length ? "100%" : "—", "required answers, checked on submit"]];
+      $("#ckpis").innerHTML = k.map(([l, v, s]) => `<div class="kpi"><span class="lab">${l}</span><span class="val">${v}</span><span class="sub">${s}</span></div>`).join("");
+      const stages = [["Survey sent", withCase.length], ["Answered and signed", done.length], ["Letters read", done.filter((h) => h.events.some((e) => e.type === "docs.read")).length], ["Verified", done.filter((h) => h.case.docs.every((d) => d.status === "verified") || h.case.review === "accepted").length], ["Consented", done.filter((h) => h.case.answers.consent).length], ["In state reports", done.filter((h) => h.case.answers.consent && (h.case.docs.every((d) => d.status === "verified") || h.case.review === "accepted") && h.case.review !== "excluded").length]];
+      $("#pipeline").innerHTML = stages.map(([n, v], i) => `<div class="pstage"><span class="pn">${i + 1}</span><b>${v}</b><small>${n}</small></div>`).join('<span class="parrow" aria-hidden="true">→</span>');
+      let rows = L.filter((h) => h.case).slice().reverse();
+      if (B.cfilter === "review") rows = rows.filter((h) => h.case.review === "pending");
+      if (B.cfilter === "open") rows = rows.filter((h) => !h.case.answers);
+      $("#cboard").innerHTML = rows.length ? rows.slice(0, 50).map((h) => `<tr data-cid="${h.id}" aria-selected="${h.id === B.cselected}" tabindex="0"><td class="mono">${h.id}</td><td>${esc(h.region.name)}, ${h.region.st}</td><td>${h.case.answers ? esc(h.case.answers.programs) : "—"}</td><td>${h.case.answers ? "Signed" : esc(h.case.survey)}</td><td class="num">${h.case.docs.length || "—"}</td><td>${h.case.answers ? (h.case.answers.consent ? "Yes" : "No") : "—"}</td><td>${caseStatus(h)}</td></tr>`).join("")
+        : `<tr><td colspan="7" class="empty">No cases ${B.cfilter === "review" ? "need review" : "yet"}.</td></tr>`;
+      const h = L.find((x) => x.id === B.cselected && x.case) || rows[0];
+      const el = $("#cdetail");
+      if (!h) { el.innerHTML = `<p class="empty">Cases open when a family's request is cleared.</p>`; return; }
+      B.cselected = h.id;
+      const c = h.case, a = c.answers;
+      const yn = (v) => (v == null ? "—" : v ? "Yes" : "No");
+      const qa = a ? [["Programs applied for", a.programs], ["Days since applying for SNAP", h.wait], ...(a.medicaidDays != null ? [["Days since applying for Medicaid", a.medicaidDays]] : []), ["Missed an interview call", yn(a.interviewMissed)], ["Got a request for more documents", yn(a.rfi)], ["The office lost a document", yn(a.lostDocs)], ["Ease of reaching the office (1 to 5)", a.ease], ["Treated with respect (1 to 5)", a.respect], ["Days without enough food, last 30", a.hungryDays], ...(a.petSkip != null ? [["Went without food to feed a pet", yn(a.petSkip)]] : []), ["Honesty statement signed", "Yes"], ["Anonymized use in state reports", a.consent ? "Agreed" : "Declined: support continues; not counted in reports"]] : [];
+      el.innerHTML = `<h2>Case ${h.id} <span>${esc(h.region.name)}, ${h.region.st}</span></h2>
+        <dl class="facts"><dt>Level</dt><dd>${h.level ? LEVEL[h.level].name : "—"}</dd><dt>State agency</dt><dd>${esc(AGENCY[h.region.st])}</dd><dt>Survey</dt><dd>${esc(c.survey)}${c.doneAt ? `, ${fmtT(c.doneAt)}` : ""}</dd><dt>Status</dt><dd>${caseStatus(h)}</dd></dl>
+        ${c.review === "pending" ? (() => { const mm = c.docs.find((d) => d.status === "mismatch"); return `<div class="decide" role="group" aria-label="Review needed"><h3>Letter and answers disagree</h3><dl class="handback"><dt>What I did</dt><dd>Read the ${esc(mm.label.toLowerCase())} and compared it with the survey</dd><dt>What I'm unsure of</dt><dd>The letter shows ${mm.applied} days since applying; the family said ${h.wait}. Either could be right: offices often re-date applications.</dd><dt>What I need</dt><dd>Decide which goes into the record</dd><dt>If no one decides</dt><dd>The case stays out of state reports; the family's support is not affected</dd></dl>
+          <div class="opts"><button class="opt rec" type="button" data-rev="accepted"><b>Use the letter's date in the record</b><span>The family's answer is kept as their account</span></button><button class="opt" type="button" data-rev="ask"><b>Text the family about the difference</b><span>Kind wording; no penalty</span></button><button class="opt" type="button" data-rev="excluded"><b>Leave this case out of reports</b><span>Support continues</span></button></div></div>`; })() : c.review === "asked" ? `<p class="empty" style="font-style:normal">You asked the family about the date. Their reply will update the case.</p>` : ""}
+        ${a ? `<h2 style="margin-top:4px">Experience survey <span>their answers</span></h2><dl class="facts qa">${qa.map(([q, v]) => `<dt>${esc(q)}</dt><dd>${esc(String(v))}</dd>`).join("")}</dl>` : `<p class="empty">Waiting for the family's answers.</p>`}
+        ${c.docs.length ? `<h2 style="margin-top:4px">Agency letters <span>redacted</span></h2><ul class="doclist">${c.docs.map((d) => `<li><b>${esc(d.label)}</b><small>${esc(d.agency)} · ${d.redactions} items redacted${d.applied != null ? ` · shows ${d.applied} days since applying` : ""}</small><span class="pill ${d.status === "verified" ? "p-done" : d.status === "unclear" ? "p-paused" : "p-wait"}">${d.status === "verified" ? "Verified" : d.status === "unclear" ? "Clearer photo requested" : "Disagrees with survey"}</span></li>`).join("")}</ul>` : ""}
+        <p class="sub" style="margin:4px 0 0">No agent closes a case or denies help because of a document. Verification only decides what counts in state reports.</p>`;
+      el.querySelectorAll("[data-rev]").forEach((b) => b.addEventListener("click", () => {
+        const v = b.dataset.rev; c.review = v === "ask" ? "asked" : v;
+        if (v === "accepted") { const mm = c.docs.find((d) => d.status === "mismatch"); mm.status = "verified"; h.wait = mm.applied; }
+        blog(h, "You", "Case manager", "case.reviewed", b.querySelector("b").textContent, "person"); paint();
+      }));
+    }
+    function renderReports() {
+      const ss = stateStats(), rows = reportRows();
+      const tot = rows.length, use = rows.filter((x) => x.a.consent && x.verified).length;
+      $("#rkpis").innerHTML = [["Cases this month", tot, "3 earlier weeks plus this week"], ["In reports", use, `${Math.round((100 * use) / tot)}% consented and verified`], ["States reported", ss.filter((s) => s.ok).length, `of ${ss.length}; fewer than ${MIN_N} cases are suppressed`], ["Past 30-day SNAP standard", Math.round((100 * rows.filter((x) => x.a.consent && x.verified && x.wait > 30).length) / Math.max(1, use)) + "%", "of reported cases, all states"]]
+        .map(([l, v, s]) => `<div class="kpi"><span class="lab">${l}</span><span class="val">${v}</span><span class="sub">${s}</span></div>`).join("");
+      const ok = ss.filter((s) => s.ok).sort((a, b) => b.past30 - a.past30);
+      if (window.d3) hbars("#rchart", ok.map((s) => ({ k: ({ AZ: "Arizona", CA: "California", TX: "Texas", TN: "Tennessee", MS: "Mississippi", GA: "Georgia", IL: "Illinois", MI: "Michigan", NY: "New York" })[s.st], v: s.past30, c: "#5a3d7a" })), 100, (v) => v + "%", { std: null, label: "Share of cases past the 30-day SNAP standard, by state" });
+      const f = (v, suf = "") => (v == null ? "—" : v + suf);
+      $("#rtable").innerHTML = `<table class="data"><thead><tr><th scope="col">State</th><th class="num" scope="col">Cases used</th><th class="num" scope="col">Median SNAP wait</th><th class="num" scope="col">Past 30 days</th><th class="num" scope="col">Medicaid past 45 days</th><th class="num" scope="col">Missed interview</th><th class="num" scope="col">Asked for more documents</th><th class="num" scope="col">Office lost a document</th><th class="num" scope="col">Ease of contact</th><th class="num" scope="col">Respect</th><th class="num" scope="col">Days hungry, median</th><th class="num" scope="col">Skipped meals for pets</th></tr></thead><tbody>${ss.map((s) => s.ok
+        ? `<tr><td><b>${s.st}</b><br><small>${esc(s.agency)}</small></td><td class="num">${s.n}</td><td class="num">${f(s.medWait, " d")}</td><td class="num">${f(s.past30, "%")}</td><td class="num">${s.mcN >= MIN_N ? f(s.past45, "%") : "too few"}</td><td class="num">${f(s.interview, "%")}</td><td class="num">${f(s.rfi, "%")}</td><td class="num">${f(s.lost, "%")}</td><td class="num">${f(s.ease, "/5")}</td><td class="num">${f(s.respect, "/5")}</td><td class="num">${f(s.hungry)}</td><td class="num">${f(s.petSkip, "%")}</td></tr>`
+        : `<tr><td><b>${s.st}</b><br><small>${esc(s.agency)}</small></td><td class="num">${s.n}</td><td colspan="10" class="empty">Suppressed: fewer than ${MIN_N} consented, verified cases</td></tr>`).join("")}</tbody></table>`;
+      $("#rdrafts").innerHTML = ok.map((s) => { const d = (B.rstate[s.st] = B.rstate[s.st] || "draft");
+        return `<div class="draft"><span class="r1"><span><b>${s.st}</b> · monthly report to ${esc(s.agency)}</span><span>${d === "draft" ? "Draft" : d === "approved" ? "Approved (simulated)" : "Held"}</span></span>
+          <p>${s.n} verified cases. ${s.past30}% waited past the 30-day SNAP processing standard (median ${s.medWait} days). ${s.interview}% missed an interview call and ${s.lost}% said the office lost a document. Families rated ease of contact ${s.ease} of 5. Simulated data; not a finding about the real agency.</p>
+          ${d === "draft" ? `<div class="acts"><button class="btn primary" type="button" data-rep="${s.st}" data-act="approved">Approve</button><button class="btn" type="button" data-rep="${s.st}" data-act="held">Hold</button><button class="btn" type="button" data-csv="${s.st}">Download CSV</button></div>` : `<div class="acts"><button class="btn" type="button" data-csv="${s.st}">Download CSV</button></div>`}</div>`; }).join("");
+    }
+    function csv(st) {
+      const s = stateStats().find((x) => x.st === st), keys = ["st", "agency", "cases", "n", "excluded", "medWait", "past30", "mcN", "past45", "interview", "rfi", "lost", "ease", "respect", "hungry", "petSkip", "verifiedPct"];
+      const body = "metric,value\n" + keys.map((k) => `${k},"${String(s[k] ?? "").replace(/"/g, '""')}"`).join("\n") + `\nnote,"Simulated data. Cells under ${MIN_N} cases suppressed."\n`;
+      const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([body], { type: "text/csv" })); a.download = `feed-a-friend-${st}-state-report-simulated.csv`; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+    }
     // ---------- rendering ----------
     const levelPill = (h) => h.level ? `<span class="pill l${h.level}">L${h.level} · ${money(h.paid || LEVEL[h.level].amt)}</span>${h.pets.length ? ` <span class="pill pet">+${money(h.petPaid || petBonus(h))} pets</span>` : ""}` : "—";
     function status(h) {
@@ -1843,6 +2079,7 @@ html[data-motion="off"] .garden .sway { animation: none !important; }
       gap: (h) => [`Checked every partner that serves ${h.region.name}`, `None arrives inside ${LEVEL[h.level].hrs} h; fastest is ${CH[h.gapBest.c.key].name}, about ${Math.round(h.gapBest.eta)} h`, "Choose how the food gets there", "The promise clock keeps running"],
       spend: (h) => ["Found the delivery and priced the full level with the pet bonus", `${money(h.esc.x.total)} is over the $500 line for one family`, "Approve the amount or trim it", "Nothing is charged until you decide"],
       nofund: (h) => ["Tried gift-card money for this retailer, micro-donor gifts, matching DAF grants and corporate cash", `None has ${money(h.esc.x.amt)} left that can buy from ${chName(h.ch)}`, "Pick another fund, send less, or hold", "Nothing is charged until you decide"],
+      survey: () => ["Sent the survey by text and one reminder", "Whether the family can read or reach the survey; nothing is wrong with them", "Choose how to finish it", "No support is sent until it is answered"],
       vet: (h) => ["Priced the pet bonus and held a donated clinic slot", `The family says their ${h.pets[0].type} is sick; that is a medical call`, "Decide how a person follows up", "The pet bonus waits; the groceries are already funded"]
     };
     function detail() {
@@ -1869,6 +2106,7 @@ html[data-motion="off"] .garden .sway { animation: none !important; }
       el.innerHTML = `<h2>${h.id} <span>${esc(h.region.name)}, ${h.region.st}</span></h2>
         <dl class="facts"><dt>Household</dt><dd>${esc(household(h))}</dd><dt>SNAP wait</dt><dd>${h.wait} days</dd><dt>Level</dt><dd>${h.level ? `${LEVEL[h.level].name} ${levelPill(h)}` : "Not set yet"}</dd>${h.promise ? `<dt>Promised by</dt><dd>${fmtT(h.promise)}</dd>` : ""}${h.ch ? `<dt>Delivery</dt><dd>${esc(CH[h.ch] ? CH[h.ch].name : "Volunteer driver")}, ${esc(h.via)}</dd>` : ""}${h.fundKey ? `<dt>Paid by</dt><dd>${esc(fund(h.fundKey).name)}${h.petFund ? `; pets: ${esc(fund(h.petFund).name)}` : ""}</dd>` : ""}<dt>Benefits</dt><dd>${h.benefit ? `SNAP confirmed ${fmtT(h.benefit)} by ${esc(AGENCY[h.region.st])}${h.lastFlag ? "; this is the last Feed-A-Friend purchase this month" : ""}` : `Waiting; checked with ${esc(AGENCY[h.region.st])} with consent`}</dd><dt>Status</dt><dd>${status(h)}</dd></dl>
         ${decide}
+        ${h.case ? `<p style="margin:0"><button class="btn" type="button" data-case="${h.id}">Open case file</button></p>` : ""}
         <h2 style="margin-top:4px">Why this level <span>score ${sc} of 100</span></h2>
         <ul class="why">${fs.slice().sort((a, b) => b[1] - a[1]).map(([n, p, d]) => `<li><span>${n}</span><b class="mono">+${p}</b><small>${esc(d)}</small><span class="bar" aria-hidden="true"><i style="width:${Math.min(100, p * 2.85)}%"></i></span></li>`).join("")}</ul>
         <div class="quals">${rs.map(([l, t]) => `<span class="pill l${l}">${esc(t)} → L${l}+</span>`).join("")}</div>
@@ -1878,6 +2116,7 @@ html[data-motion="off"] .garden .sway { animation: none !important; }
         <h2 style="margin-top:4px">Agent trace <span>newest last</span></h2>
         <ol class="trace">${h.events.map((v) => `<li class="${v.kind || ""}"><span class="tm">${hhmm(v.t)}</span><span class="who">${esc(v.from)} <span class="arrow">→ ${esc(v.to)}</span></span><span class="msg"><span class="type">${esc(v.type)}</span> ${esc(v.msg)}</span></li>`).join("")}</ol>`;
       el.querySelectorAll("[data-bopt]").forEach((b) => b.addEventListener("click", () => { resolve(h, b.dataset.bopt, false); paint(); }));
+      el.querySelectorAll("[data-case]").forEach((b) => b.addEventListener("click", () => { B.cselected = b.dataset.case; document.getElementById("tab-cases").click(); }));
       const u = el.querySelector("#bundo"); if (u) u.addEventListener("click", () => { undo(h); paint(); });
       const form = el.querySelector("#bcorr");
       if (form) form.addEventListener("submit", (ev) => {
@@ -2000,6 +2239,8 @@ html[data-motion="off"] .garden .sway { animation: none !important; }
       advance(S.t, false); mini();
       if (!$("#view-bridge").hidden) render();
       if (!$("#view-donors").hidden) renderDonors();
+      if (!$("#view-cases").hidden) renderCases();
+      if (!$("#view-reports").hidden) renderReports();
     }
     function wire() {
       $("#besc-list").addEventListener("click", (e) => { const b = e.target.closest("[data-bid]"); if (b) { B.selected = b.dataset.bid; paint(); } });
@@ -2007,6 +2248,10 @@ html[data-motion="off"] .garden .sway { animation: none !important; }
       $("#bboard").addEventListener("keydown", (e) => { if (e.key !== "Enter") return; const r = e.target.closest("tr[data-bid]"); if (r) { B.selected = r.dataset.bid; paint(); } });
       $("#bagents").addEventListener("click", (e) => { const b = e.target.closest("[data-bagent]"); if (!b) return; B.paused[b.dataset.bagent] = !B.paused[b.dataset.bagent]; paint(); });
       document.querySelectorAll("[data-bfilter]").forEach((b) => b.addEventListener("click", () => { B.filter = b.dataset.bfilter; document.querySelectorAll("[data-bfilter]").forEach((x) => x.setAttribute("aria-pressed", String(x === b))); paint(); }));
+      document.querySelectorAll("[data-cfilter]").forEach((b) => b.addEventListener("click", () => { B.cfilter = b.dataset.cfilter; document.querySelectorAll("[data-cfilter]").forEach((x) => x.setAttribute("aria-pressed", String(x === b))); paint(); }));
+      $("#cboard").addEventListener("click", (e) => { const r = e.target.closest("tr[data-cid]"); if (r) { B.cselected = r.dataset.cid; paint(); } });
+      $("#cboard").addEventListener("keydown", (e) => { if (e.key !== "Enter") return; const r = e.target.closest("tr[data-cid]"); if (r) { B.cselected = r.dataset.cid; paint(); } });
+      $("#rdrafts").addEventListener("click", (e) => { const c = e.target.closest("[data-csv]"); if (c) return csv(c.dataset.csv); const b = e.target.closest("[data-rep]"); if (b) { B.rstate[b.dataset.rep] = b.dataset.act; paint(); } });
       $("#drafts").addEventListener("click", (e) => { const b = e.target.closest("[data-draft]"); if (!b) return; const d = B.drafts.find((x) => x.id === b.dataset.draft); if (d) d.state = b.dataset.act; paint(); });
     }
     function firstOpen() { const h = B.list.find((x) => x.esc && !x.esc.resolved && !x.outcome); B.selected = h ? h.id : (B.list[B.list.length - 1] || {}).id; }
@@ -2028,11 +2273,11 @@ html[data-motion="off"] .garden .sway { animation: none !important; }
   $("#board").addEventListener("keydown", (e) => { if (e.key !== "Enter") return; const r = e.target.closest("tr[data-id]"); if (!r) return; S.selected = r.dataset.id; render(); });
   document.querySelectorAll("[data-filter]").forEach((b) => b.addEventListener("click", () => { S.filter = b.dataset.filter; document.querySelectorAll("[data-filter]").forEach((x) => x.setAttribute("aria-pressed", String(x === b))); render(); }));
   $("#reset").addEventListener("click", () => { start(); });
-  const TABS = ["desk", "bridge", "results", "donors", "rules"];
+  const TABS = ["desk", "bridge", "results", "donors", "cases", "reports", "rules"];
   function selectTab(name, focus) {
     TABS.forEach((t) => { const on = t === name, tab = $("#tab-" + t); tab.setAttribute("aria-selected", on); tab.tabIndex = on ? 0 : -1; $("#view-" + t).hidden = !on; if (on && focus) tab.focus(); });
     if (name === "results") renderResults();
-    if (name === "bridge" || name === "donors") Bridge.paint();
+    if (["bridge", "donors", "cases", "reports"].includes(name)) Bridge.paint();
   }
   TABS.forEach((t, i) => { const tab = $("#tab-" + t); tab.addEventListener("click", () => selectTab(t)); tab.addEventListener("keydown", (e) => { if (e.key === "ArrowRight") selectTab(TABS[(i + 1) % TABS.length], true); if (e.key === "ArrowLeft") selectTab(TABS[(i + TABS.length - 1) % TABS.length], true); }); });
   Bridge.wire();
@@ -2059,7 +2304,7 @@ html[data-motion="off"] .garden .sway { animation: none !important; }
   }
   start();
   requestAnimationFrame(frame);
-  if (["bridge", "results", "donors", "rules"].includes(location.hash.slice(1))) selectTab(location.hash.slice(1));
+  if (["bridge", "results", "donors", "cases", "reports", "rules"].includes(location.hash.slice(1))) selectTab(location.hash.slice(1));
 })();
 </script>
 <script id="motion-js">

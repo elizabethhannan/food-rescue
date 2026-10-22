@@ -39,3 +39,8 @@ Feed-A-Friend covers the time families spend waiting on slow government and corp
 - **Sustainability and carts:** tons of food kept from waste, and cart dollars by store (Amazon, Walmart, Target, Fry's, local grocery) split into organic and non-GMO, fresh, protein and dairy, processed, baby food and toiletries.
 - **Donor network:** proposed partners (Walmart, Amazon, Instacart, DoorDash, Uber, Target and Shipt, Kroger, Albertsons, Gopuff, Aldi, H-E-B, regional grocers, Chewy, Petco, PetSmart, donor-advised funds, micro-donors). "Already doing" lines cite public sources (APA 7 on the page). No partnership, endorsement, agency connection or data exchange exists.
 - **Agents to build next:** a roadmap in Agent contracts, with where a person stays in control for each.
+
+### Client records and state reports
+
+- **Client records:** one case per family. Support requires an honest experience survey (SNAP, Medicaid, food, pets), a signed honesty statement and photos of agency letters. The Document reader redacts and verifies letters; disagreements go to a person and never withhold support. Consent to anonymized use in reports is separate from support.
+- **State reports:** built only from consented, verified cases (three earlier weeks plus the live week). Each state agency is measured against the 30-day SNAP standard (7 C.F.R. § 273.2(g)) and the 45-day Medicaid standard (42 C.F.R. § 435.912), plus families' reported experience. Cells under 10 cases are suppressed. A person approves each report; each downloads as CSV. Simulated data, not findings about any real agency.
