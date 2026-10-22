@@ -44,3 +44,10 @@ Feed-A-Friend covers the time families spend waiting on slow government and corp
 
 - **Client records:** one case per family. Support requires an honest experience survey (SNAP, Medicaid, food, pets), a signed honesty statement and photos of agency letters. The Document reader redacts and verifies letters; disagreements go to a person and never withhold support. Consent to anonymized use in reports is separate from support.
 - **State reports:** built only from consented, verified cases (three earlier weeks plus the live week). Each state agency is measured against the 30-day SNAP standard (7 C.F.R. § 273.2(g)) and the 45-day Medicaid standard (42 C.F.R. § 435.912), plus families' reported experience. Cells under 10 cases are suppressed. A person approves each report; each downloads as CSV. Simulated data, not findings about any real agency.
+
+### Cart audit, order tracking and messages
+
+- **Cart audit agent:** every family's cart request is reviewed before Feed-A-Friend pays. It deletes alcohol, tobacco, vapes, nicotine, lottery tickets, gift cards and CBD, trims to the level's amount (snacks first), asks a person about questionable items (non-alcoholic beer, kombucha, energy drinks), texts the family what changed, and logs purchases by topic (diapers, formula, produce, toiletries and more) to the case.
+- **All orders map:** on the Dispatch desk, a live network map follows every order from cart request, audit and payment to the delivery partner's drop-off notice and address confirmation. Each family's case shows the same steps as an animated chain.
+- **Messages:** texts with families and emails with state agencies and grant sponsors are filed to each case and collected on the desk.
+- **Background:** a tree grows with the time the dashboard is open and in view each day (it starts again as a seedling each morning), and seagulls fly over once an hour. Both follow the Motion switch.
