@@ -414,7 +414,7 @@ html[data-motion="off"] .garden .sway { animation: none !important; }
 #view-bridge .desk { grid-template-columns: minmax(230px, 270px) minmax(0, 1fr) minmax(300px, 380px); }
 #view-bridge table.board { font-size: .875rem; }
 #view-bridge table.board th, #view-bridge table.board td { padding: 7px 6px; }
-.levels { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-top: 12px; }
+.levels { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; margin-top: 12px; }
 .lvl { display: grid; gap: 4px; padding: 12px 14px; border-radius: 14px; background: var(--nm-well); box-shadow: var(--nm-inset-sm); border: 1px solid var(--nm-edge); }
 .lvl b { font-family: var(--font-display); font-size: 1rem; }
 .lvl .amt { font-family: var(--font-display); font-size: 1.375rem; font-weight: 700; color: var(--accent); }
@@ -468,6 +468,9 @@ html[data-motion="off"] .garden .sway { animation: none !important; }
 .draft p { margin: 0; font-size: .9375rem; color: var(--ink-2); }
 .draft .acts { display: flex; flex-wrap: wrap; gap: 8px; }
 .trace li.pend { opacity: .55; }
+.policy { margin: 8px 0 0; padding-left: 20px; display: grid; gap: 6px; font-size: .9375rem; color: var(--ink-2); } .policy a { color: var(--focus); }
+.notes { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; font-size: .875rem; color: var(--ink-2); } .notes .mono { color: var(--ink-3); font-size: .8125rem; margin-right: 6px; }
+@media (max-width: 1200px) { .levels { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; } }
 .secribbon { position: sticky; top: 0; z-index: 16; padding: 8px max(16px, env(safe-area-inset-left, 0px)); display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: center; font-size: .9375rem; }
 .secribbon[hidden] { display: none !important; }
 .secribbon.attack { background: var(--crit); color: #fff; } .secribbon.attack .btn { color: var(--ink) !important; }
@@ -679,6 +682,7 @@ html[data-motion="off"] .flock { display: none; } html[data-motion="off"] .tree-
       <div class="lvl"><b>Level 1 · Bridge</b><span class="amt">$200</span><small>Groceries within 72 hours. Qualifies: a SNAP application or recertification is pending.</small></div>
       <div class="lvl"><b>Level 2 · Priority</b><span class="amt">$200</span><small>Groceries within 24 hours. Qualifies: need score 55+, waiting past the 30-day federal standard, a child under 5, or a senior or disabled member.</small></div>
       <div class="lvl"><b>Level 3 · Crisis</b><span class="amt">$200</span><small>Groceries within 8 hours and a person checks in. Qualifies: need score 75+, or no food at home with a child under 5.</small></div>
+      <div class="lvl pet"><b>Pet medical bonus</b><span class="amt">Up to $150</span><small>For a sick or injured pet: paid directly to a partner vet clinic, plus a pet-friendly ride to the vet and back for the owner and pet. Never cash.</small></div>
       <div class="lvl pet"><b>Pet bonus</b><span class="amt">+$100</span><small>For homes with pets, $300 in all. At least $75 of the $100 must be pet items: food, supplies, Rx or vet costs. A sick pet is routed to donated vet care.</small></div>
     </div>
     <div class="controls" style="margin-top:12px">
@@ -724,6 +728,10 @@ html[data-motion="off"] .flock { display: none; } html[data-motion="off"] .tree-
       <div class="card"><h2>Food kept out of the landfill <span class="livedot" style="color:var(--good)">Live</span></h2><p class="sub">Surplus food the rescue agents delivered instead of letting it go to waste, in tons (2,000 lb), next to what was lost when a safe window closed. From the dispatch desk's simulated week.</p><div id="waste"></div></div>
       <div class="card"><h2>What's in the carts, by store <span class="livedot" style="color:var(--good)">Live</span></h2><p class="sub">Dollars in every family's cart, grouped by where it was bought. Organic and non-GMO items are counted on their own, apart from processed food, baby food and toiletries.</p><div id="cartmix"></div><div class="mlegend" id="cartlegend" aria-hidden="true"></div></div>
     </div>
+    <div class="card" style="margin-top:16px"><h2>Returns <span class="livedot" style="color:var(--good)">Live</span></h2>
+      <p class="sub">Families can report a damaged, spoiled or wrong item by text with a photo. Feed-A-Friend files the claim on its own account and asks the delivery service for a replacement. If the replacement is not completed within 48 hours, the item's value goes back to the donor fund that paid, never to the family as cash. The Returns watch agent checks every claim.</p>
+      <div class="table-scroll" id="returns"></div>
+      <details class="tbl" open><summary>Recommended returns policy, from research</summary><div id="retpolicy"></div></details></div>
     <div class="card" style="margin-top:16px"><h2>Cart reviewers <span class="livedot" style="color:var(--good)">Live</span></h2><p class="sub">The Roster agent assigns every cart to the volunteer on shift. The agent removes what the program does not buy; the volunteer checks its work and approves. <span id="roster-now"></span></p><div class="table-scroll" id="roster"></div></div>
     <div class="card" style="margin-top:16px"><h2>State benefits link <span class="livedot" style="color:var(--good)">Live</span></h2><p class="sub">With each family's consent, the Benefits link agent checks with the state agency that runs SNAP. When the state confirms benefits, the family's current Feed-A-Friend order is flagged as the last purchase this month, and the bridge closes. Proposed data-sharing agreements; no connection to any agency exists.</p><div class="table-scroll" id="benefits"></div></div>
     <div class="grid2">
@@ -909,6 +917,10 @@ html[data-motion="off"] .flock { display: none; } html[data-motion="off"] .tree-
           <tr><td><b>Fraud detection</b></td><td>Finds repeat and duplicate orders and decides the likely cause: a family's mistake, staff error, an AI agent's error, a bot, malware or fraud; merges honest duplicates</td><td>A second order at one address this month, or anything that looks like fraud; it never denies help alone</td><td class="mono">fraud.repeat, fraud.duplicate</td></tr>
           <tr><td><b>Bot defense, Malware scan, Account security, API integrity, Payment guard, Data access audit</b></td><td>Always-on security agents: rate limits, upload scanning, MFA and login watch, signed partner messages, monthly limits, access logs</td><td>Any critical warning pages the on-call lead</td><td class="mono">security.warning</td></tr>
           <tr><td><b>Warning</b></td><td>Routes every alert by severity to the ribbon on every tab, the security queue and the on-call lead</td><td>Critical warnings until a person acknowledges them</td><td class="mono">warning.raised</td></tr>
+          <tr><td><b>Delivery window</b></td><td>After each cart is paid, pulls the delivery window from the partner, saves it to the case notes and texts the family; watches the window</td><td>A delivery runs past its window (warning) or is not made (Feed-A-Friend is alerted and a person chooses how to reorder)</td><td class="mono">window.recorded, delivery.late, delivery.failed</td></tr>
+          <tr><td><b>Returns</b></td><td>Takes a family's return report by text with a photo, files the claim on Feed-A-Friend's account and asks for a replacement; after 48 hours without one, the item's value goes back to the donor fund</td><td>The Returns watch agent flags a claim</td><td class="mono">return.requested, return.replaced, return.refunded</td></tr>
+          <tr><td><b>Returns watch</b></td><td>Checks every claim: photo present, reused images, repeat claims at one address, item value, refunds owed by partners</td><td>High-risk claims wait for a person; food support is never cut</td><td class="mono">return.checked</td></tr>
+          <tr><td><b>Pet ride</b></td><td>Books a pet-friendly ride (Uber Pet where available) for the owner and pet to the vet and back</td><td>No pet-friendly ride is available; a person arranges another way</td><td class="mono">ride.booked</td></tr>
           <tr><td><b>Roster</b></td><td>Assigns each cart to the volunteer reviewer on shift and tracks their hours; shows who is reviewing now and the next shift</td><td>No one is on shift for a Level 3 cart; the on-call reviewer is paged</td><td class="mono">roster.assigned</td></tr>
           <tr><td><b>Treasury</b></td><td>Keeps every gift separate by type and restriction, pays admin only from unrestricted cash, reports programs share weekly</td><td>Programs fall under the 93% target or a restriction would be broken</td><td class="mono">treasury.weekly</td></tr>
           <tr><td><b>Stewardship</b></td><td>Projects when each gift runs out and drafts a renewal ask two months ahead, matched to the donor's stated causes</td><td>Always: an executive approves every ask</td><td class="mono">renewal.drafted</td></tr>
@@ -953,6 +965,7 @@ html[data-motion="off"] .flock { display: none; } html[data-motion="off"] .tree-
           <tr><td><b>Roster, Treasury and Stewardship</b></td><td><span class="status built">In this prototype</span></td><td>Volunteer reviewers and hours; fund separation, admin against funds, burn-down and renewal timing</td><td>Executives approve every renewal ask</td></tr>
           <tr><td><b>Executive sign-in</b></td><td><span class="status next">Next</span></td><td>Real executive accounts and server-side access control for the finance view</td><td>An administrator grants each executive access</td></tr>
           <tr><td><b>Security and fraud</b></td><td><span class="status built">In this prototype</span></td><td>Always-on security agents, fraud causes, "Are we under attack?" status, MFA on executive access, monthly limits</td><td>A person decides every open warning</td></tr>
+          <tr><td><b>Delivery window, Returns, Returns watch, Pet ride</b></td><td><span class="status built">In this prototype</span></td><td>Delivery windows in case notes, late and missed delivery alerts, returns with refunds to donor funds, pet medical bonus with rides</td><td>A person decides missed deliveries and flagged returns</td></tr>
           <tr><td><b>Car repair bridge</b></td><td><span class="status later">Later</span></td><td>A possible branch: pays licensed repair shops directly so a family keeps the car they need for work, school and appointments while benefits are pending</td><td>A person approves every repair estimate; no cash goes to families</td></tr>
           <tr><td><b>Policy brief</b></td><td><span class="status next">Next</span></td><td>Turns a quarter of state reports into a plain-language brief for legislators and agency leaders</td><td>A person edits and signs it</td></tr>
           <tr><td><b>Donor retention</b></td><td><span class="status next">Next</span></td><td>Spots micro-donors and companies likely to lapse from giving gaps and opened reports; suggests the right next touch</td><td>Chooses who to contact and how</td></tr>
@@ -1728,10 +1741,11 @@ html[data-motion="off"] .flock { display: none; } html[data-motion="off"] .tree-
       { key: "cash", name: "Corporate cash grants", type: "Cash", bal: 2500 },
       { key: "chewy", name: "Chewy", type: "Pet supplies", pet: true, bal: 1500 },
       { key: "petco", name: "Petco", type: "Pet supplies", pet: true, bal: 1200 },
-      { key: "petsmart", name: "PetSmart", type: "Pet supplies", pet: true, bal: 1200 }
+      { key: "petsmart", name: "PetSmart", type: "Pet supplies", pet: true, bal: 1200 },
+      { key: "petmed", name: "Pet medical fund", type: "Vet care grants", vet: true, bal: 1500 }
     ];
     const LEVEL = { 1: { name: "Level 1 · Bridge", amt: 200, hrs: 72 }, 2: { name: "Level 2 · Priority", amt: 200, hrs: 24 }, 3: { name: "Level 3 · Crisis", amt: 200, hrs: 8 } };  // one order per address per month: $200 household, +$100 pets
-    const BREASON = { borderline: "Close call on level", medical: "Medical need mentioned", gap: "No delivery inside the promise", spend: "Over $500 for one family", nofund: "No fund can pay", vet: "Sick pet", survey: "Survey not answered", cart: "Cart item needs a decision", repeat: "Second order this month at one address" };
+    const BREASON = { borderline: "Close call on level", medical: "Medical need mentioned", gap: "No delivery inside the promise", spend: "Over $500 for one family", nofund: "No fund can pay", vet: "Sick pet", survey: "Survey not answered", cart: "Cart item needs a decision", repeat: "Second order this month at one address", dfailed: "Delivery not made" };
     const BAGENTS = ["Need", "Privacy guard", "Survey", "Document reader", "Fulfillment", "Cart audit", "Roster", "Fund", "Pet care", "Benefits link", "Donor care"];
     const stepAgent = { audit: "Cart audit", survey: "Survey", survey_stall: "Survey", survey_done: "Survey", docs: "Document reader", need: "Need", privacy: "Privacy guard", route: "Fulfillment", fund: "Fund", pet: "Pet care", order: "Fulfillment" };
     const chName = (k) => (CH[k] ? CH[k].name : "Delivery service");
@@ -1806,7 +1820,7 @@ html[data-motion="off"] .flock { display: none; } html[data-motion="off"] .tree-
     const fund = (k) => B.funds.find((f) => f.key === k);
     const sched = (at, h, step, tag) => B.q.push({ at, h, step, tag });
     const blog = (h, from, to, type, msg, kind) => h.events.push({ t: S.t, from, to, type, msg, kind });
-    const held = (q) => { if (q.step.startsWith("sec_")) return false;
+    const held = (q) => { if (q.step.startsWith("sec_") || ["dwindow", "dlate", "dfailed", "ret_req", "ret_rep", "ret_exp"].includes(q.step)) return false;
       return held0(q); };
     const held0 = (q) => { if (q.step === "delivered" || q.step === "ship" || q.step === "out") return false; if (q.step === "benefit") return S.stopped || B.paused["Benefits link"]; if (S.stopped) return true; const a = stepAgent[q.step]; return a ? B.paused[a] : false; };
     let curTag = null;
@@ -1873,6 +1887,45 @@ html[data-motion="off"] .flock { display: none; } html[data-motion="off"] .tree-
       if (st === "survey_done" || st === "docs") return surveyStep(h, st, past);
       if (st === "survey" || st === "survey_stall") { if (h.outcome) return; return surveyStep(h, st, past); }
       if (h.outcome) return;
+      if (st === "dwindow") {
+        const w = `${fmtT(h.winStart)}–${hhmm(h.winEnd)}`; h.window = w;
+        blog(h, "Delivery window", "Case manager", "window.recorded", `${chName(h.ch)} confirmed the delivery window: ${w}. Saved to the case notes.`);
+        (h.notes = h.notes || []).push({ t: S.t, text: `Delivery window from ${chName(h.ch)}${h.store && !["walmart", "amazon"].includes(h.ch) ? " (" + h.store + ")" : ""}: ${w}` });
+        return msg(h, "Text", "out", "Feed-A-Friend", `Your delivery window is ${w}.`);
+      }
+      if (st === "dlate") {
+        if (h.outcome) return;
+        secWarn({ sev: "warning", agent: "Delivery window", cause: "partner", fam: h.id, title: `Delivery is late: past the ${h.window} window`, detail: `${chName(h.ch)} has not sent a drop-off notice and the window closed at ${hhmm(h.winEnd)}. The partner's tracking now says about ${fmtT(h.deliverAt)}. The family was texted.`, evidence: ["No drop-off notice from the partner's API", "Driver location still moving toward the address"] });
+        (h.notes = h.notes || []).push({ t: S.t, text: `Late: the ${h.window} window was missed; new estimate ${fmtT(h.deliverAt)}` });
+        return msg(h, "Text", "out", "Feed-A-Friend", `Sorry, your delivery is running late. ${chName(h.ch)} now says about ${hhmm(h.deliverAt)}. We're watching it for you.`);
+      }
+      if (st === "dfailed") {
+        if (h.outcome) return;
+        blog(h, chName(h.ch) + " API", "Delivery window", "delivery.failed", "Partner reports the order was not delivered: the driver could not reach the address", "alert");
+        (h.notes = h.notes || []).push({ t: S.t, text: `Not delivered: ${chName(h.ch)} could not reach the address; partner refund requested` });
+        secWarn({ sev: "critical", agent: "Delivery window", cause: "partner", fam: h.id, title: `Order was not delivered by ${chName(h.ch)}`, detail: `The window ${h.window} passed and the partner reported a failed drop-off. The partner refund goes back to the fund that paid; the family still needs groceries.` });
+        msg(h, "Text", "out", "Feed-A-Friend", "Your delivery didn't arrive. We're fixing it now and will text you the new time.");
+        return raise(h, "dfailed", past);
+      }
+      if (st === "ret_req") {
+        const pick = (h.cartFinal || []).find((i) => /Eggs|Milk|Diapers|Yogurt|Bread/.test(i.name)) || (h.cartFinal || [])[0]; if (!pick) return;
+        const why = /Eggs/.test(pick.name) ? "arrived broken" : /Milk|Yogurt/.test(pick.name) ? "arrived spoiled" : /Diapers/.test(pick.name) ? "wrong size" : "damaged in delivery";
+        const photo = hashR(h.id + "ph") < 0.85, reused = photo && hashR(h.id + "pr") < 0.18, prior = h.repeatOf ? B.list.find((x) => x.id === h.repeatOf && x.ret) : null;
+        const risk = reused || prior ? "high" : !photo && pick.price > 15 ? "medium" : "low";
+        h.ret = { item: pick.name, amt: pick.price, why, at: S.t, state: "Replacement requested", photo, reused, risk };
+        blog(h, "Returns watch", "Returns", "return.checked", `Claim checked: ${photo ? "photo attached" : "no photo"}${reused ? ", but the photo matches one used in another claim" : ""}${prior ? `, and this address already claimed a return this month (${h.repeatOf})` : ""}. Risk ${risk}. Any refund goes to Feed-A-Friend's payment method, never to the family.`, risk === "high" ? "alert" : "");
+        if (risk === "high") {
+          secWarn({ sev: "warning", agent: "Returns watch", cause: "returnfraud", fam: h.id, title: `Return claim needs a person: ${pick.name}`, detail: `${reused ? "The photo matches an image already used in another claim. " : ""}${prior ? "This address already had a return this month. " : ""}Food support is not affected; only the claim waits.`, evidence: [reused ? "Same image fingerprint as an earlier claim" : "Photo looks original", prior ? "Second claim at one address in 30 days" : "First claim at this address", `Item value ${money(pick.price)}; refunds go only to Feed-A-Friend's card or balance`], options: [["photo", "Ask for a new photo before replacing", "Kind wording; most families resend right away"], ["approve", "Approve the replacement", "Logged for the monthly returns audit"]] });
+          h.ret.state = "Held for review"; return;
+        }
+        msg(h, "Text", "in", "Family", `The ${pick.name.split(",")[0].toLowerCase()} ${why}. Can it be replaced?`);
+        blog(h, "Returns", chName(h.ch), "return.requested", `${pick.name} ${why}. Return accepted; replacement requested from ${chName(h.ch)}. If it is not replaced within 48 hours, ${money(pick.price)} goes back to ${fund(h.fundKey).name}.`);
+        msg(h, "Text", "out", "Feed-A-Friend", `Sorry about that. We asked ${chName(h.ch)} to replace it. You don't need to send anything back.`);
+        if (hashR(h.id + "rr") < 0.7) sched(S.t + 240 + Math.round(hashR(h.id + "rt") * 900), h, "ret_rep"); else sched(S.t + 2880, h, "ret_exp");
+        return;
+      }
+      if (st === "ret_rep") { h.ret.state = "Replaced"; h.ret.doneAt = S.t; blog(h, chName(h.ch), "Returns", "return.replaced", `Replacement ${h.ret.item} delivered`); return msg(h, "Text", "out", "Feed-A-Friend", "Your replacement was delivered."); }
+      if (st === "ret_exp") { const f = fund(h.fundKey); f.bal += h.ret.amt; f.drawn -= h.ret.amt; h.ret.state = "Refunded to fund"; h.ret.doneAt = S.t; blog(h, "Returns", "Fund", "return.refunded", `No replacement within 48 hours. ${money(h.ret.amt)} returned to ${f.name}; the family's limit for the month is unchanged.`); (h.notes = h.notes || []).push({ t: S.t, text: `Return: ${h.ret.item} not replaced; ${money(h.ret.amt)} back to ${f.name}` }); return; }
       if (st === "ship") { const s = trackerSteps2(h)[4]; if (h.ch === "amazon") msg(h, "Text", "out", "Feed-A-Friend", `Good news: ${s[2]}.`); return blog(h, chName(h.ch), "Order tracker", h.ch === "amazon" ? "order.shipped" : "order.picked", s[2]); }
       if (st === "out") { msg(h, "Text", "out", "Feed-A-Friend", "Your groceries are out for delivery today."); return blog(h, chName(h.ch), "Order tracker", "order.out_for_delivery", trackerSteps2(h)[5][2]); }
       if (st === "need") {
@@ -1963,11 +2016,17 @@ html[data-motion="off"] .flock { display: none; } html[data-motion="off"] .tree-
       } else if (st === "order") {
         h.stage = 5; h.orderAt = S.t;
         h.deliverAt = S.t + Math.round(h.eta * 60);
+        const wHalf = ["walmart", "amazon"].includes(h.ch) ? 120 : 60;
+        h.winStart = Math.max(S.t + 20, h.deliverAt - wHalf); h.winEnd = h.deliverAt + wHalf;
+        h.dfate = h.retry ? "ok" : hashR(h.id + "df") < 0.04 ? "failed" : hashR(h.id + "dl") < 0.12 ? "late" : "ok";
+        if (h.dfate === "late") h.deliverAt = h.winEnd + 50 + Math.round(hashR(h.id + "lm") * 130);
         blog(h, "Fulfillment", CH[h.ch] ? CH[h.ch].name : "Delivery service", "order.placed", `Order placed. Arrives about ${fmtT(h.deliverAt)}${h.level === 3 ? ". A person will check in within 24 h." : ""}`);
         blog(h, "Order tracker", chName(h.ch), "order.checked_out", `Cart of ${money(h.paid)} checked out${h.ch === "amazon" ? "; packages will ship separately" : ""}`);
         const tsps = trackerSteps2(h); sched(tsps[4][0], h, "ship", curTag); sched(tsps[5][0], h, "out", curTag);
         msg(h, "Text", "out", "Feed-A-Friend", `Your ${chName(h.ch)} order${["walmart", "amazon"].includes(h.ch) ? "" : " from " + h.store} is paid and placed. It should arrive about ${fmtT(h.deliverAt)}. We'll text when it's on the way.`);
-        sched(h.deliverAt, h, "delivered", curTag);
+        if (h.dfate === "failed") sched(h.winEnd + 30, h, "dfailed", curTag); else sched(h.deliverAt, h, "delivered", curTag);
+        if (h.dfate === "late") sched(h.winEnd + 1, h, "dlate", curTag);
+        sched(S.t + 2, h, "dwindow", curTag);
         if (hashR(h.id + "aidup") < 0.07) sched(S.t + 1, h, "sec_aidup");
       } else if (st === "delivered") {
         h.stage = 6; h.outcome = "delivered"; h.doneAt = S.t;
@@ -1976,6 +2035,7 @@ html[data-motion="off"] .flock { display: none; } html[data-motion="off"] .tree-
         blog(h, "Order tracker", "Privacy guard", "order.confirmed", "Delivery confirmed to the address on file");
         msg(h, "Text", "out", "Feed-A-Friend", "Delivered. Reply if anything is missing or damaged.");
         if (hashR(h.id + "ty") < 0.55) msg(h, "Text", "in", "Family", ["Got it, thank you so much.", "Thank you. The kids are happy.", "Received everything, thanks.", "Thank you, this helps a lot."][Math.floor(hashR(h.id + "tt") * 4)]);
+        if (hashR(h.id + "ret") < 0.12) sched(S.t + 60 + Math.round(hashR(h.id + "rw") * 540), h, "ret_req");
         if (!S.stopped && !B.paused["Donor care"]) blog(h, "Donor care", fund(h.fundKey).name, "donor.receipt", `Impact receipt: a family of ${h.adults + h.kids} in ${h.region.name}, ${h.region.st} received groceries.`);
       }
     }
@@ -1992,10 +2052,13 @@ html[data-motion="off"] .flock { display: none; } html[data-motion="off"] .tree-
       if (reason === "spend") return [
         { key: "ok", label: `Approve ${money(x.total)}`, note: "Groceries plus the full pet bonus", rec: true },
         { key: "cap", label: "Approve $500: trim the pet bonus", note: `Pet bonus becomes ${money(500 - LEVEL[h.level].amt)}` }];
-      if (reason === "nofund") { const alt = B.funds.filter((f) => !f.pet && f.bal >= x.amt && (!f.lock && !f.lockStore) && (!f.restrict || f.restrict(h))).sort((a, b) => b.bal - a.bal)[0]; return [
+      if (reason === "nofund") { const alt = B.funds.filter((f) => !f.pet && f.bal >= x.amt && (!f.lock && !f.lockStore && !f.vet) && (!f.restrict || f.restrict(h))).sort((a, b) => b.bal - a.bal)[0]; return [
         ...(alt ? [{ key: "alt", label: `Pay from ${alt.name}`, note: `${money(alt.bal)} left`, rec: true, fund: alt.key }] : []),
         { key: "partial", label: "Send $150 of groceries now from what is left", note: "The rest follows when a fund is topped up", rec: !alt },
         { key: "hold", label: "Hold until Friday's top-ups", note: "Only if a top-up request was approved" }]; }
+      if (reason === "dfailed") { const alt = CHANNELS.find((c) => c.key !== h.ch && c.covers(h.region) && !["walmart", "amazon"].includes(c.key)) || CH.walmart; return [
+        { key: "alt", label: `Reorder now with ${alt.name}`, note: "The first partner's refund goes back to the fund; the same money pays the new order", rec: true, ch: alt.key },
+        { key: "same", label: `Rebook with ${chName(h.ch)} for a new time`, note: "About 2 hours; text the family to confirm access to the address" }]; }
       if (reason === "repeat") return [
         { key: "limit", label: "Explain the monthly limit and refer to a local food bank", note: "Kind wording; they can ask again next month", rec: true },
         { key: "exception", label: "Approve an exception: a separate household or an emergency", note: "Logged with your reason for the monthly audit" }];
@@ -2006,7 +2069,7 @@ html[data-motion="off"] .flock { display: none; } html[data-motion="off"] .tree-
         { key: "phone", label: "Call the family and complete the survey by phone", note: "About 40 minutes; a person reads the questions", rec: true },
         { key: "later", label: "Send the food now; finish the survey within 7 days", note: "The case stays open until it is done" }];
       if (reason === "vet") return [
-        { key: "slot", label: "Book a donated vet clinic slot and send the pet bonus", note: `${B.vetSlots} donated slots left this week`, rec: true },
+        { key: "slot", label: "Use the pet medical bonus: book a vet visit and a pet ride for the owner and pet", note: `Up to $150 paid to the clinic, plus a pet-friendly ride both ways; ${B.vetSlots} clinic slots left this week`, rec: true },
         { key: "list", label: "Send the pet bonus and a list of low-cost clinics", note: "" }];
       return [];
     }
@@ -2036,9 +2099,11 @@ html[data-motion="off"] .flock { display: none; } html[data-motion="off"] .tree-
       if (e.reason === "spend") { h.spendOk = true; if (key === "cap") h.petCap = 500 - LEVEL[h.level].amt; go("fund"); }
       if (e.reason === "nofund") { if (key === "alt") h.fundFix = opt.fund; if (key === "partial") { h.amtOverride = 150; if (h.cartReq) auditCart(h); } if (key === "hold") { sched(Math.max(at + 1, 4 * 1440 + 9 * 60 + 5), h, "fund", e.tag); return; } go("fund"); }
       if (e.reason === "cart") { h.cartAmbig = key; go("audit"); }
+      if (e.reason === "dfailed") { h.retry = true; if (key === "alt") { h.ch = opt.ch; h.store = storeFor(h); const [lo, hi] = CH[h.ch].eta(h.region); h.eta = Math.round(lo + hashR(h.id + "re") * (hi - lo)); h.via = `delivery from ${h.store}`; go("order"); } else sched(at + 120, h, "order", e.tag); }
       if (e.reason === "repeat") { if (key === "limit") { h.outcome = "limit"; h.doneAt = at; msg(h, "Text", "out", "Feed-A-Friend", "We've already helped this address this month, so we can't send another order right now. Here is a food bank near you, and you're welcome to ask again next month."); } else { h.repeatOk = true; go("privacy"); } }
       if (e.reason === "survey") { if (key === "phone") { h.case.survey = "phone"; sched(at + 40, h, "survey_done", e.tag); } else { sched(at + 1, h, "route", e.tag); sched(at + 1440, h, "survey_done", e.tag); } }
-      if (e.reason === "vet") { h.vetOk = true; if (key === "slot" && B.vetSlots > 0) { B.vetSlots--; h.vetBooked = true; } go("pet"); }
+      if (e.reason === "vet") { h.vetOk = true; if (key === "slot" && B.vetSlots > 0) { B.vetSlots--; h.vetBooked = true; const pm = fund("petmed"), visit = 90 + Math.round(hashR(h.id + "vv") * 60), ride = 30 + Math.round(hashR(h.id + "rd") * 18); pm.bal -= visit + ride; pm.drawn += visit + ride; pm.uses++; h.petMed = { visit, ride }; blog(h, "Pet ride", "Family", "ride.booked", `Pet-friendly ride booked for the owner and their ${h.pets[0].type}, to the clinic and back (about ${money(ride)}, paid by Feed-A-Friend; Uber Pet where available)`); blog(h, "Pet care", "Vet clinic", "vet.paid", `Pet medical bonus: ${money(visit)} paid directly to the partner clinic from the Pet medical fund`); (h.notes = h.notes || []).push({ t: at, text: `Vet visit booked; pet ride both ways; ${money(visit)} paid to the clinic` }); msg(h, "Text", "out", "Feed-A-Friend", `We booked a vet visit for your ${h.pets[0].type} and a pet-friendly ride there and back. The visit is paid. We'll text the time.`); h.purchases = h.purchases || {}; h.purchases.petrx = (h.purchases.petrx || 0) + visit + ride; } }
+      if (e.reason === "vet") { go("pet"); }
     }
     function undo(h) {
       const e = h.esc; if (!canUndo(h)) return;
@@ -2055,7 +2120,7 @@ html[data-motion="off"] .flock { display: none; } html[data-motion="off"] .tree-
 
 
     // ---------- security, fraud and warnings: always on, even when other agents are stopped ----------
-    const CAUSE = { family: "Human error: family", staff: "Human error: staff", ai: "AI agent error", bot: "Bot attack", malware: "Malware", account: "Account attack", spoof: "Spoofed API message", policy: "Policy limit" };
+    const CAUSE = { partner: "Delivery partner issue", returnfraud: "Return abuse risk", family: "Human error: family", staff: "Human error: staff", ai: "AI agent error", bot: "Bot attack", malware: "Malware", account: "Account attack", spoof: "Spoofed API message", policy: "Policy limit" };
     const SEV = { info: 0, warning: 1, critical: 2 };
     const SECAGENTS = [
       ["Fraud detection", "Repeat and duplicate orders, address and device patterns; decides if a problem is a family's mistake, staff error, an AI agent's error, a bot, malware or fraud"],
@@ -2183,6 +2248,22 @@ html[data-motion="off"] .flock { display: none; } html[data-motion="off"] .tree-
     const onShift = (t) => { const d = Math.floor(t / 1440) % 7, hr = (t % 1440) / 60; return ROSTER.find((v) => v.days.includes(d) && hr >= v.from && hr < v.to) || ROSTER[ROSTER.length - 1]; };
     function hoursWorked(v, t) { let m = 0; for (let d = 0; d < 7; d++) if (v.days.includes(d)) { const a = d * 1440 + v.from * 60, b = d * 1440 + v.to * 60; m += Math.max(0, Math.min(b, t) - a); } return m / 60; }
     function nextShift(v, t) { for (let k = 0; k < 8 * 1440; k += 60) { const tt = Math.ceil(t / 60) * 60 + k; if (tt >= 7 * 1440) return null; if (onShift(tt) === v && !(onShift(t) === v)) return tt; } return null; }
+    function retPolicy() {
+      $("#retpolicy").innerHTML = `<ol class="policy">
+        <li><b>Buy only on Feed-A-Friend's own accounts</b>, paid with Feed-A-Friend's card, gift-card balance or delivery credit. Refunds follow the original payment: Instacart sends refunds to the original payment method or as account credit ${cite("icreturns")}. So every refund lands with Feed-A-Friend.</li>
+        <li><b>Families never handle refunds.</b> They report a problem by text with a photo; Feed-A-Friend files the claim. Families get no account access, no cash and no store returns, which closes the main path for return fraud: a refund sent somewhere else.</li>
+        <li><b>Replacement first, refund second.</b> Ask for a replacement right away; if it is not completed within 48 hours, the item's value goes back to the donor fund that paid. File inside the partner's window: Instacart allows 4 days for damaged or missing items ${cite("icreturns")} and a one-week satisfaction guarantee ${cite("icguarantee")}.</li>
+        <li><b>No sending groceries back.</b> Low-cost items are usually refunded without a return: Instacart does not require one ${cite("icreturns")}, and Amazon allows returnless refunds on many items under $75 ${cite("amzreturnless")}.</li>
+        <li><b>Watch for abuse more than fraud.</b> Of $706 billion returned in the U.S. in 2025, 14.2% was fraud or abuse, and most of that was abuse (12%) rather than outright fraud (2%) ${cite("appriss")}. So friction rises with risk: a photo on every claim; a person reviews reused photos, a second claim at one address in 30 days, and claims over $25. Food support is never cut over a claim.</li>
+        <li><b>Reconcile every week.</b> The Treasury agent matches each partner refund to its claim and the donor fund; refunds can take 5 to 10 business days to appear ${cite("icreturns")}, so anything unpaid after 10 business days is chased.</li>
+      </ol><p class="note-sim">Amazon's own refund-timeline page could not be opened for this research; confirm with Amazon Business how refunds return to an organization's payment method before launch.</p>`;
+    }
+    function returnsCard() {
+      if (!$("#retpolicy").innerHTML) retPolicy();
+      const rs = B.list.filter((h) => h.ret);
+      const back = rs.filter((h) => h.ret.state === "Refunded to fund").reduce((s2, h) => s2 + h.ret.amt, 0);
+      $("#returns").innerHTML = rs.length ? `<p class="sub" style="margin:0 0 6px">${rs.length} claim${rs.length > 1 ? "s" : ""} this week · ${rs.filter((h) => h.ret.state === "Replaced").length} replaced · ${money(back)} back to donor funds · ${rs.filter((h) => h.ret.risk === "high").length} held for a person.</p><table class="data"><thead><tr><th scope="col">Family</th><th scope="col">Item</th><th scope="col">Reported</th><th class="num" scope="col">Value</th><th scope="col">Photo</th><th scope="col">Risk</th><th scope="col">Status</th><th scope="col">Where money goes</th></tr></thead><tbody>${rs.slice().reverse().map((h) => `<tr><td class="mono">${h.id}</td><td>${esc(h.ret.item)}</td><td>${esc(h.ret.why)}</td><td class="num">${money(h.ret.amt)}</td><td>${h.ret.photo ? (h.ret.reused ? "Reused image" : "Yes") : "No"}</td><td><span class="pill ${h.ret.risk === "high" ? "p-wait" : h.ret.risk === "medium" ? "p-paused" : "p-done"}">${h.ret.risk}</span></td><td>${esc(h.ret.state)}</td><td>${h.ret.state === "Refunded to fund" ? esc(fund(h.fundKey).name) + " (original payment)" : "No refund needed"}</td></tr>`).join("")}</tbody></table>` : `<p class="empty">No returns yet. Claims arrive after deliveries.</p>`;
+    }
     function rosterCard() {
       const now = onShift(S.t);
       $("#roster").innerHTML = `<table class="data"><thead><tr><th scope="col">Volunteer</th><th scope="col">Shift (Arizona time)</th><th scope="col">Now</th><th class="num" scope="col">Hours this week</th><th class="num" scope="col">Carts reviewed</th></tr></thead><tbody>${ROSTER.map((v) => { const n = B.list.filter((h) => h.reviewer === v.name).length, nx = nextShift(v, S.t);
@@ -2775,6 +2856,7 @@ html[data-motion="off"] .flock { display: none; } html[data-motion="off"] .tree-
       gap: (h) => [`Checked every partner that serves ${h.region.name}`, `None arrives inside ${LEVEL[h.level].hrs} h; fastest is ${CH[h.gapBest.c.key].name}, about ${Math.round(h.gapBest.eta)} h`, "Choose how the food gets there", "The promise clock keeps running"],
       spend: (h) => ["Found the delivery and priced the full level with the pet bonus", `${money(h.esc.x.total)} is over the $500 line for one family`, "Approve the amount or trim it", "Nothing is charged until you decide"],
       nofund: (h) => ["Tried gift-card money for this retailer, micro-donor gifts, matching DAF grants and corporate cash", `None has ${money(h.esc.x.amt)} left that can buy from ${chName(h.ch)}`, "Pick another fund, send less, or hold", "Nothing is charged until you decide"],
+      dfailed: (h) => [`Watched the ${h.window} window and the partner's tracking`, `${chName(h.ch)} reports the driver could not reach the address`, "Choose how to get the groceries there", "The family has no food from this order; the refund is already requested"],
       repeat: (h) => [`Matched this address to ${h.repeatOf}, helped earlier this month`, "Whether this is a second household, an emergency or a repeat ask; the patterns look human, not a bot", "Decide if the limit applies", "Nothing is sent; the family waits for a reply"],
       cart: (h) => ["Removed anything on the banned list and checked the total", `"${h.esc.x.item.name}" is not banned, but ${h.esc.x.item.ambig.toLowerCase()}`, "Keep it or take it off", "The cart waits; nothing is paid"],
       survey: () => ["Sent the survey by text and one reminder", "Whether the family can read or reach the survey; nothing is wrong with them", "Choose how to finish it", "No support is sent until it is answered"],
@@ -2809,6 +2891,7 @@ html[data-motion="off"] .flock { display: none; } html[data-motion="off"] .tree-
         <ul class="why">${fs.slice().sort((a, b) => b[1] - a[1]).map(([n, p, d]) => `<li><span>${n}</span><b class="mono">+${p}</b><small>${esc(d)}</small><span class="bar" aria-hidden="true"><i style="width:${Math.min(100, p * 2.85)}%"></i></span></li>`).join("")}</ul>
         <div class="quals">${rs.map(([l, t]) => `<span class="pill l${l}">${esc(t)} → L${l}+</span>`).join("")}</div>
         ${corr}
+        ${h.notes && h.notes.length ? `<h2 style="margin-top:4px">Case notes <span>Delivery window and Returns agents</span></h2><ul class="notes">${h.notes.map((n) => `<li><span class="mono">${fmtT(n.t)}</span> ${esc(n.text)}</li>`).join("")}</ul>` : ""}
         ${tracker2(h)}
         ${auditHtml(h)}
         ${cartHtml(h)}
@@ -2888,6 +2971,11 @@ html[data-motion="off"] .flock { display: none; } html[data-motion="off"] .tree-
       petco: ["Philanthropy.org. (2025). <i>Petco Love: Form 990 report</i>.", "https://philanthropy.org/990/report/330845930/petco-love", "Philanthropy.org, 2025"],
       petsmart: ["PetSmart Charities. (2025, September 30). <i>Pet Hunger Awareness Day</i> [Press release].", "https://petsmartcharities.org/node/1747536", "PetSmart Charities, 2025"],
       shipt: ["Shipt. (n.d.). <i>Delivering to Feeding America</i>.", "https://shoppers.shipt.com/delivery-only-retailers/delivering-to-feeding-america", "Shipt, n.d."],
+      appriss: ["Chain Store Age. (2026, February 19). <i>Study: Returns shrink totaled nearly $800B in 2025</i>.", "https://chainstoreage.com/study-returns-shrink-totaled-nearly-800b-2025", "Chain Store Age, 2026"],
+      icreturns: ["Instacart. (n.d.). <i>Returns policy</i>.", "https://instacart.com/help/article/returns-policy", "Instacart, n.d.-b"],
+      icguarantee: ["Instacart. (n.d.). <i>Quality guarantee terms</i>.", "https://instacart.com/help/article/quality-guarantee-terms", "Instacart, n.d.-c"],
+      amzreturnless: ["Retail Dive. (2024, August 21). <i>Amazon lets sellers issue refunds without product returns</i>.", "https://www.retaildive.com/news/amazon-sellers-productless-return-refunds-returnless-resolutions/724857/", "Retail Dive, 2024"],
+      uberpet: ["The Rideshare Guy. (2023, October 16). <i>Uber Pet: How Uber Pet works</i>.", "https://therideshareguy.com/uber-pet/", "The Rideshare Guy, 2023"],
       uber: ["Uber. (2019, September 26). <i>Uber and Feeding America</i> [Newsroom post].", "https://www.uber.com/us/en/newsroom/feedingamerica", "Uber, 2019"],
       usda: ["U.S. Department of Agriculture, Food and Nutrition Service. (2026, February 17). <i>SNAP online purchasing</i>.", "https://www.fna.usda.gov/snap/online", "USDA FNS, 2026"]
     };
@@ -2941,7 +3029,7 @@ html[data-motion="off"] .flock { display: none; } html[data-motion="off"] .tree-
       if (!$("#view-donors").hidden) renderDonors();
       if (!$("#view-cases").hidden) { renderCases(); purchasesCard(); }
       if (!$("#view-desk").hidden) { renderOrders(); citySelect(); }
-      if (!$("#view-bridge").hidden) rosterCard();
+      if (!$("#view-bridge").hidden) { rosterCard(); returnsCard(); }
       if (!$("#view-finance").hidden) renderFinance();
       if (!$("#view-security").hidden) renderSecurity();
       ribbon();
@@ -2955,7 +3043,7 @@ html[data-motion="off"] .flock { display: none; } html[data-motion="off"] .tree-
       document.querySelectorAll("[data-bfilter]").forEach((b) => b.addEventListener("click", () => { B.filter = b.dataset.bfilter; document.querySelectorAll("[data-bfilter]").forEach((x) => x.setAttribute("aria-pressed", String(x === b))); paint(); }));
       $("#fin-enter").addEventListener("click", () => { $("#fin-mfa").hidden = false; $("#fin-code").focus(); });
       $("#fin-verify").addEventListener("click", () => { const v = $("#fin-code").value.trim(); if (!/^\d{6}$/.test(v)) { $("#fin-err").hidden = false; return; } $("#fin-err").hidden = true; B.exec = true; B.mfa = true; B.mfaAt = S.t; paint(); });
-      document.addEventListener("click", (e) => { if (e.target.closest("[data-gosec]")) document.getElementById("tab-security").click(); const wf = e.target.closest("[data-wfam]"); if (wf) { B.selected = wf.dataset.wfam; document.getElementById("tab-bridge").click(); } const wo = e.target.closest("[data-wid]"); if (wo) { const w = B.warn.find((x) => x.id === wo.dataset.wid); if (w) { w.state = "decided"; w.choice = wo.querySelector("b").textContent; paint(); } } });
+      document.addEventListener("click", (e) => { if (e.target.closest("[data-gosec]")) document.getElementById("tab-security").click(); const wf = e.target.closest("[data-wfam]"); if (wf) { B.selected = wf.dataset.wfam; document.getElementById("tab-bridge").click(); } const wo = e.target.closest("[data-wid]"); if (wo) { const w = B.warn.find((x) => x.id === wo.dataset.wid); if (w) { w.state = "decided"; w.choice = wo.querySelector("b").textContent; const h = w.cause === "returnfraud" && B.list.find((x) => x.id === w.fam); if (h && h.ret) { if (wo.dataset.wk === "approve") { h.ret.state = "Replacement requested"; B.q.push({ at: S.t + 300, h, step: "ret_rep" }); } else { h.ret.state = "New photo requested"; msg(h, "Text", "out", "Feed-A-Friend", "Could you send a new photo of the item? Then we'll get it replaced."); } } paint(); } } });
       document.querySelectorAll("[data-sfilter]").forEach((b) => b.addEventListener("click", () => { B.sfilter = b.dataset.sfilter; document.querySelectorAll("[data-sfilter]").forEach((x) => x.setAttribute("aria-pressed", String(x === b))); paint(); }));
       $("#fin-exit").addEventListener("click", () => { B.exec = false; paint(); });
       $("#fsel").addEventListener("change", () => paint());

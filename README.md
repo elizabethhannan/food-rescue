@@ -68,3 +68,9 @@ Feed-A-Friend covers the time families spend waiting on slow government and corp
 - **Fraud detection:** finds repeat and duplicate orders and names the likely cause: a family's mistake, staff error, an AI agent's error, a bot attack, malware, an account attack or a spoofed partner message. Honest duplicates are merged; a second order at one address goes to a person. No agent denies help on its own.
 - **Always-on security agents:** Bot defense, Malware scan, Account security (MFA and failed logins), API integrity (signed partner messages), Payment guard, Data access audit and the Warning agent. They keep running when every other agent is stopped.
 - **"Are we under attack?"** A ribbon on every tab and a Security tab answer it, with warnings by severity and cause, a traffic chart, and MFA coverage. Executive admin access asks for an MFA code (any 6 digits in this prototype; real MFA lives on the sign-in server).
+
+### Pet medical bonus, delivery windows and returns
+
+- **Pet medical bonus:** up to $150 for a sick or injured pet, paid directly to a partner vet clinic, plus a pet-friendly ride to the vet and back for the owner and pet (Pet ride agent; Uber Pet where available). Never cash.
+- **Delivery window agent:** after each cart is paid, records the partner's delivery window in the case notes and texts the family. Feed-A-Friend gets a warning when a delivery runs past its window and a critical alert when it is not made; a person chooses how to reorder.
+- **Returns:** families report a damaged, spoiled or wrong item by text with a photo; Feed-A-Friend files the claim on its own account and asks for a replacement. If none is completed within 48 hours, the item's value goes back to the donor fund that paid, never to the family. The Returns watch agent checks every claim (missing or reused photos, repeat claims at one address). The page includes a researched returns policy with sources.
