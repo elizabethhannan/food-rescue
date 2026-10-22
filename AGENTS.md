@@ -6,3 +6,5 @@
 - Keep the "Simulated week" and "Self-initiated concept" labels visible.
 - HXO appears only as its name and core sentence, word for word.
 - No mention of AI assistants used to build this repo, in files or commit messages.
+- Views added: Household bridge (`#bridge`), Donor network (`#donors`). The bridge runs its own seeded week on the same clock.
+- Company and agency names are proposed partners only; keep the "Proposed partners" notice and the cited sources.

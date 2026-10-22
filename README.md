@@ -26,3 +26,16 @@ Open `index.html` in a browser. One self-contained file, no build step.
 - **Security.** This prototype has no backend, no accounts and no tracking; it collects no data and changes no real systems. Report a security concern to ElizabethHannan@gmail.com.
 
 *Dictated by Elizabeth. I am not a bot.*
+## Feed-A-Friend additions (October 2026)
+
+Feed-A-Friend covers the time families spend waiting on slow government and corporate systems. It is a national, warehouse-free food bank: donors fund it, and other companies' delivery networks carry the food.
+
+- **Household bridge:** families waiting on SNAP ask by text. Agents set a level from stated qualifications (Level 1 $200 within 72 h, Level 2 $300 within 24 h, Level 3 $400 within 8 h with a person's check-in), add a pet bonus (+$100, +$50 per extra pet), pick a delivery partner, and pay from the right fund. Twelve areas across nine states.
+- **New agents:** Need, Privacy guard, Fulfillment, Fund, Pet care, Vet care, Benefits link, Order tracker, Donor care, Insight. Each escalation hands back control with what the agent did, what it is unsure of, what it needs and what happens if no one decides. Decisions can be undone until the next step runs; score corrections are logged for an eval set.
+- **Funding:** micro-philanthropy first, gift-card money locked to its retailer, delivery credit, donor-advised fund grants with restrictions, corporate cash, pet supplies and donated vet care.
+- **Donor care:** automatic receipts to micro-donors; top-up requests and impact reports to companies and fund sponsors wait for a person to approve them, and an approved top-up arrives Friday.
+- **Order tracker:** cart, checkout, shipped (Amazon packages) or picked, out for delivery, delivered and confirmed to the address on file.
+- **State benefits link:** with consent, checks each state's SNAP agency; when benefits are confirmed the order is flagged as the last purchase this month.
+- **Sustainability and carts:** tons of food kept from waste, and cart dollars by store (Amazon, Walmart, Target, Fry's, local grocery) split into organic and non-GMO, fresh, protein and dairy, processed, baby food and toiletries.
+- **Donor network:** proposed partners (Walmart, Amazon, Instacart, DoorDash, Uber, Target and Shipt, Kroger, Albertsons, Gopuff, Aldi, H-E-B, regional grocers, Chewy, Petco, PetSmart, donor-advised funds, micro-donors). "Already doing" lines cite public sources (APA 7 on the page). No partnership, endorsement, agency connection or data exchange exists.
+- **Agents to build next:** a roadmap in Agent contracts, with where a person stays in control for each.
