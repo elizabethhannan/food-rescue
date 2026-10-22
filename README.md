@@ -51,3 +51,13 @@ Feed-A-Friend covers the time families spend waiting on slow government and corp
 - **All orders map:** on the Dispatch desk, a live network map follows every order from cart request, audit and payment to the delivery partner's drop-off notice and address confirmation. Each family's case shows the same steps as an animated chain.
 - **Messages:** texts with families and emails with state agencies and grant sponsors are filed to each case and collected on the desk.
 - **Background:** a tree grows with the time the dashboard is open and in view each day (it starts again as a seedling each morning), and seagulls fly over once an hour. Both follow the Motion switch.
+
+### Delivery, national city view, reviewers and executive finance
+
+- **No Feed-A-Friend drivers.** Rescue pickups use delivery-service couriers (Uber Direct, DoorDash Drive). In the bridge, Instacart, DoorDash, Uber, Shipt and Gopuff are delivery only: their shoppers buy at grocers such as Costco, Albertsons, Safeway, Fry's, Kroger, Aldi, Sprouts, H-E-B, Jewel-Osco, Meijer and ShopRite. Gift-card money is tied to the grocer; delivery credit to the delivery service.
+- **What Feed-A-Friend covers:** groceries, household supplies, toiletries, cleaning and paper products, child items, feminine care, pet food, pet Rx and vet costs. No hot or prepared meals. Car repairs are on the roadmap as a possible branch.
+- **National city map:** choose a city from active orders, recently ordered or recently delivered, or search by city, case ID, store, delivery service or volunteer.
+- **Roster agent:** shows which volunteer is reviewing each cart, their shift (Arizona time) and hours this week.
+- **Executive admin access:** fund separation by donor and type, weekly admin against unrestricted cash, programs share against the 93% target, burn-down per gift, and renewal asks drafted two months before each gift runs out, matched to the donor's stated causes. The sign-in is a stand-in; real figures never go on a public page.
+- **Agents talking:** each message lights the line from sender to receiver, with a running list of who is talking to whom.
+- **Tree:** an Arizona eucalyptus that sways; the species follows the viewer's time zone (redwood on the Pacific coast, aspen in the Rockies, maple in the Northeast, oak elsewhere).

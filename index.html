@@ -468,6 +468,28 @@ html[data-motion="off"] .garden .sway { animation: none !important; }
 .draft p { margin: 0; font-size: .9375rem; color: var(--ink-2); }
 .draft .acts { display: flex; flex-wrap: wrap; gap: 8px; }
 .trace li.pend { opacity: .55; }
+#flow .glow { fill: none; stroke-width: 4; stroke-linecap: round; }
+#flow .node.talking circle { stroke-width: 4; filter: drop-shadow(0 0 6px rgba(47,107,58,.45)); }
+#flow .say { font: 700 11px var(--font-mono); paint-order: stroke; stroke: #f4f2e9; stroke-width: 3px; }
+.flowlog { list-style: none; margin: 6px 0 0; padding: 0; display: grid; gap: 3px; font-size: .8125rem; color: var(--ink-2); }
+.flowlog li { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } .flowlog b { font-family: var(--font-mono); font-size: .75rem; }
+
+.citybar { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; margin: 2px 0 4px; }
+.cityl { display: inline-flex; gap: 6px; align-items: center; font-size: .875rem; font-weight: 700; color: var(--ink-2); }
+.cityl select, .csearch input { font-size: .875rem; padding: 6px 10px; min-height: 36px; }
+.csearch { position: relative; flex: 1; min-width: 200px; } .csearch input { width: 100%; }
+.cresults { position: absolute; z-index: 30; left: 0; right: 0; top: 100%; margin: 4px 0 0; padding: 4px; list-style: none; background: #fbfaf5; border: 1px solid var(--nm-ctl-edge); border-radius: 12px; box-shadow: var(--nm-raise); max-height: 260px; overflow: auto; }
+.cresults li { padding: 6px 8px; border-radius: 8px; cursor: pointer; font-size: .875rem; } .cresults li:hover { background: var(--accent-soft); } .cresults small { color: var(--ink-3); margin-right: 6px; }
+#citymap .store rect { fill: #5a3d7a; } #citymap .store text { font-size: 10px; }
+#citymap .broute { stroke: #9bb0c9; stroke-width: 1.4; stroke-dasharray: 3 3; } #citymap .broute.done { stroke: #a9cfa9; }
+#citymap .bfam { fill: #fff; stroke: #3f8a4a; stroke-width: 2.4; cursor: pointer; } #citymap .bfam.l2 { stroke: #2a63c4; } #citymap .bfam.l3 { stroke: #5a3d7a; } #citymap .bfam.done { fill: #dcefdc; }
+#citymap .btruck { fill: #2a63c4; stroke: #fff; stroke-width: 2; }
+tr.onnow td { background: var(--good-soft); }
+#fburn svg { width: 100%; height: auto; display: block; } #fburn text { font-size: 10.5px; fill: var(--ink-3); font-family: var(--font-body); }
+#fburn .grid { stroke: var(--line); } #fburn .act { fill: none; stroke: #2f6b3a; stroke-width: 2.6; } #fburn .proj { fill: none; stroke: #2f6b3a; stroke-width: 2; stroke-dasharray: 5 4; } #fburn .plan { fill: none; stroke: #9aa7a0; stroke-width: 1.4; }
+#fburn .prompt { stroke: #5a3d7a; stroke-width: 2; } #fburn .plab2 { fill: #5a3d7a; font-weight: 700; } #fburn .now { stroke: #2a63c4; stroke-dasharray: 2 3; } #fburn .outdot { fill: var(--crit); }
+#treasury p { margin: 0 0 6px; color: var(--ink-2); }
+
 .orders { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); gap: 14px; margin-top: 14px; }
 #ordermap svg { width: 100%; height: auto; display: block; }
 #ordermap .aura, #ordermap .aura2 { fill: rgba(42,99,196,.05); }
@@ -499,12 +521,17 @@ html[data-motion="off"] .packet { display: none; }
 .removed s { color: var(--crit); } .removed small { color: var(--ink-3); }
 .tree-wrap { position: fixed; right: 0; bottom: 6px; height: min(80vh, 760px); width: min(62vh, 590px); z-index: -1; pointer-events: none; }
 .tree-wrap svg { width: 100%; height: 100%; display: block; }
-.tree-wrap line { transition: stroke-dashoffset 2.4s cubic-bezier(.2,.7,.2,1); }
-.tree-wrap circle { transition: transform 2s cubic-bezier(.34,1.4,.64,1), opacity 2s; }
+.tree-wrap path { transition: stroke-dashoffset 2.4s cubic-bezier(.2,.7,.2,1); }
+.tree-wrap .tsway { transform-box: view-box; transform-origin: 200px 515px; animation: tsway 9s ease-in-out infinite; }
+@keyframes tsway { 0%, 100% { transform: rotate(-0.9deg); } 50% { transform: rotate(1.1deg); } }
+.tree-wrap .lf { transform-box: fill-box; transform-origin: 50% 0%; transition: transform 2s cubic-bezier(.34,1.4,.64,1), opacity 1s; }
+.tree-wrap .lf > * { transform-box: fill-box; }
+.tree-wrap .lf { animation: flutter var(--ld, 4s) ease-in-out var(--lo, 0s) infinite; }
+@keyframes flutter { 0%, 100% { rotate: calc(var(--la, 3deg) * -1); } 50% { rotate: var(--la, 3deg); } }
 .sky { position: fixed; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; }
 .flock { position: absolute; left: -260px; width: 240px; height: 90px; animation: flyby 18s linear forwards; }
 @keyframes flyby { 0% { transform: translateX(0) translateY(0); } 50% { transform: translateX(55vw) translateY(-14px); } 100% { transform: translateX(calc(100vw + 300px)) translateY(6px); } }
-html[data-motion="off"] .flock { display: none; } html[data-motion="off"] .tree-wrap line, html[data-motion="off"] .tree-wrap circle { transition: none; }
+html[data-motion="off"] .flock { display: none; } html[data-motion="off"] .tree-wrap path, html[data-motion="off"] .tree-wrap .lf { transition: none; } html[data-motion="off"] .tree-wrap .tsway, html[data-motion="off"] .tree-wrap .lf { animation: none; }
 @media (max-width: 820px) { .tree-wrap { height: 38vh; width: 30vh; opacity: .6; } }
 @media (max-width: 1000px) { .orders { grid-template-columns: 1fr; } }
 
@@ -564,6 +591,7 @@ html[data-motion="off"] .flock { display: none; } html[data-motion="off"] .tree-
     <button class="tab" role="tab" id="tab-donors" aria-controls="view-donors" aria-selected="false" tabindex="-1">Donor network</button>
     <button class="tab" role="tab" id="tab-cases" aria-controls="view-cases" aria-selected="false" tabindex="-1">Client records</button>
     <button class="tab" role="tab" id="tab-reports" aria-controls="view-reports" aria-selected="false" tabindex="-1">State reports</button>
+    <button class="tab" role="tab" id="tab-finance" aria-controls="view-finance" aria-selected="false" tabindex="-1">Executive admin access</button>
     <button class="tab" role="tab" id="tab-rules" aria-controls="view-rules" aria-selected="false" tabindex="-1">Agent contracts</button>
   </nav>
 </div></div>
@@ -583,7 +611,7 @@ html[data-motion="off"] .flock { display: none; } html[data-motion="off"] .tree-
       <button class="btn" type="button" id="reset">Restart the week</button>
       <button class="btn stop" type="button" id="stopall"><svg viewBox="0 0 16 16" aria-hidden="true"><rect x="3.5" y="3.5" width="9" height="9" rx="1.5" fill="currentColor"/></svg><span>Stop all agents</span></button>
     </div>
-    <p class="banner" id="stopbanner" hidden>All agents are stopped. Nothing new is offered, matched or dispatched until you resume them. Drivers already on the road finish their runs.</p>
+    <p class="banner" id="stopbanner" hidden>All agents are stopped. Nothing new is offered, matched or dispatched until you resume them. Couriers already on the road finish their runs.</p>
     <div class="kpis" id="kpis"></div>
     <div class="desk">
       <div class="stack">
@@ -607,10 +635,13 @@ html[data-motion="off"] .flock { display: none; } html[data-motion="off"] .tree-
       <div class="panel right" id="detail" aria-live="polite"></div>
     </div>
     <div class="live">
-      <div class="card mapcard"><h2>Across the city <span class="livedot">Live</span></h2><p class="sub">Drivers carry food from donors to partners as the week runs. A red ring means a pickup is waiting for you; click it.</p><div id="citymap"></div>
-        <div class="mlegend" aria-hidden="true"><span><i style="background:#fff;border:2px solid #3f8a4a"></i>Donor</span><span><i class="sq" style="background:#5a3d7a"></i>Partner</span><span><i style="background:#3f8a4a"></i>Produce</span><span><i style="background:#d9742b"></i>Bakery</span><span><i style="background:#b42a22"></i>Prepared</span><span><i style="background:#2a63c4"></i>Dairy</span><span><i style="background:#5a3d7a"></i>Packaged</span></div></div>
+      <div class="card mapcard"><h2><span>Across <span id="cityname">Phoenix, AZ</span></span> <span class="livedot">Live</span></h2>
+        <div class="citybar"><label class="cityl">City <select id="citysel" aria-label="Choose a city"></select></label>
+          <div class="csearch"><input id="citysearch" type="search" placeholder="Search a city, case ID, store, delivery service or volunteer" aria-label="Search" autocomplete="off"><ul id="cityresults" class="cresults" role="listbox" hidden></ul></div></div>
+        <p class="sub" id="citysub">Phoenix is the food-rescue pilot: couriers carry surplus food from donors to partners, and Feed-A-Friend orders appear as stores and families. A red ring needs you; click it.</p><div id="citymap"></div>
+        <div class="mlegend" aria-hidden="true"><span><i style="background:#fff;border:2px solid #3f8a4a"></i>Donor</span><span><i class="sq" style="background:#5a3d7a"></i>Partner</span><span><i style="background:#3f8a4a"></i>Produce</span><span><i style="background:#d9742b"></i>Bakery</span><span><i style="background:#b42a22"></i>Refrigerated</span><span><i style="background:#2a63c4"></i>Dairy</span><span><i style="background:#5a3d7a"></i>Packaged</span><span><i style="background:#6b4a35"></i>Supplies</span><span><i style="background:#c0567f"></i>Child and feminine care</span><span><i style="background:#1f6b5c"></i>Pet food</span></div></div>
       <div class="card"><h2>Food rescued this week <span class="livedot">Live</span></h2><p class="bigc"><span id="lbsbig">0</span><small>lb delivered · <span id="lostsmall">0</span> lb lost</small></p><div id="lbschart"></div><div class="mlegend" aria-hidden="true"><span><i style="background:#2f6b3a"></i>Delivered, running total</span><span><i style="background:#c95f24"></i>Lost</span></div></div>
-      <div class="card"><h2>Agents talking <span class="livedot">Live</span></h2><p class="sub">Every message between agents as it happens; the numbers count messages received.</p><div id="flow"></div></div>
+      <div class="card"><h2>Agents talking <span class="livedot">Live</span></h2><p class="sub">Every message between agents as it happens. The line lights up from sender to receiver; the numbers count messages received. Paused, it replays the latest exchanges.</p><div id="flow"></div></div>
     </div>
     <div class="orders">
       <div class="card"><h2>All Feed-A-Friend orders <span class="livedot" style="color:var(--good)">Live</span></h2><p class="sub">Every family's order from cart request to the delivery partner's drop-off notice. Feed-A-Friend audits and pays at the center; delivery partners sit on the inner ring; families on the outer ring. Packets move along each order's current step; a red ring needs you. Click a family to open it.</p><div id="ordermap"></div><p class="sub" id="ocap" style="margin:0"></p>
@@ -623,12 +654,13 @@ html[data-motion="off"] .flock { display: none; } html[data-motion="off"] .tree-
   </section>
 
   <section class="view" id="view-bridge" role="tabpanel" aria-labelledby="tab-bridge" hidden>
+    <p class="lead"><b>What Feed-A-Friend covers:</b> groceries, household supplies, toiletries, cleaning and paper products, child items and feminine care, pet food, pet Rx and vet costs. No hot or prepared meals.</p>
     <p class="lead">Feed-A-Friend covers the time families spend waiting on slow government and corporate systems. A family waiting on SNAP asks by text; agents set their level of need, fund it with micro-philanthropy, gift-card money, corporate cash and donor-advised fund grants, and send it through delivery networks that already exist. No warehouse. A person steps in by exception. Same simulated week and clock as the desk.</p>
     <div class="levels" aria-label="Levels of support">
       <div class="lvl"><b>Level 1 · Bridge</b><span class="amt">$200</span><small>Groceries within 72 hours. Qualifies: a SNAP application or recertification is pending.</small></div>
       <div class="lvl"><b>Level 2 · Priority</b><span class="amt">$300</span><small>Groceries within 24 hours. Qualifies: need score 55+, waiting past the 30-day federal standard, a child under 5, or a senior or disabled member.</small></div>
       <div class="lvl"><b>Level 3 · Crisis</b><span class="amt">$400</span><small>Groceries within 8 hours and a person checks in. Qualifies: need score 75+, or no food at home with a child under 5.</small></div>
-      <div class="lvl pet"><b>Pet bonus</b><span class="amt">+$100</span><small>Pet food and supplies for the first pet, +$50 for each more (up to +$200). A sick pet is routed to donated vet care.</small></div>
+      <div class="lvl pet"><b>Pet bonus</b><span class="amt">+$100</span><small>Pet food, pet Rx and vet costs for the first pet, +$50 for each more (up to +$200). A sick pet is routed to donated vet care.</small></div>
     </div>
     <div class="controls" style="margin-top:12px">
       <div class="clock" aria-live="off"><span class="clock-mirror">Mon 18:00</span><small>simulated time, same week as the desk</small></div>
@@ -672,6 +704,7 @@ html[data-motion="off"] .flock { display: none; } html[data-motion="off"] .tree-
       <div class="card"><h2>Food kept out of the landfill <span class="livedot" style="color:var(--good)">Live</span></h2><p class="sub">Surplus food the rescue agents delivered instead of letting it go to waste, in tons (2,000 lb), next to what was lost when a safe window closed. From the dispatch desk's simulated week.</p><div id="waste"></div></div>
       <div class="card"><h2>What's in the carts, by store <span class="livedot" style="color:var(--good)">Live</span></h2><p class="sub">Dollars in every family's cart, grouped by where it was bought. Organic and non-GMO items are counted on their own, apart from processed food, baby food and toiletries.</p><div id="cartmix"></div><div class="mlegend" id="cartlegend" aria-hidden="true"></div></div>
     </div>
+    <div class="card" style="margin-top:16px"><h2>Cart reviewers <span class="livedot" style="color:var(--good)">Live</span></h2><p class="sub">The Roster agent assigns every cart to the volunteer on shift. The agent removes what the program does not buy; the volunteer checks its work and approves. <span id="roster-now"></span></p><div class="table-scroll" id="roster"></div></div>
     <div class="card" style="margin-top:16px"><h2>State benefits link <span class="livedot" style="color:var(--good)">Live</span></h2><p class="sub">With each family's consent, the Benefits link agent checks with the state agency that runs SNAP. When the state confirms benefits, the family's current Feed-A-Friend order is flagged as the last purchase this month, and the bridge closes. Proposed data-sharing agreements; no connection to any agency exists.</p><div class="table-scroll" id="benefits"></div></div>
     <div class="grid2">
       <div class="card"><h2>Corrections the agents learn from</h2><p class="sub">When you disagree with a need score it is logged with your reason. The Need agent's weights change only after a person reviews the week's corrections against the eval set.</p><div class="table-scroll" id="bcorrections"></div></div>
@@ -743,6 +776,26 @@ html[data-motion="off"] .flock { display: none; } html[data-motion="off"] .tree-
     </tbody></table></div></div>
   </section>
 
+  <section class="view" id="view-finance" role="tabpanel" aria-labelledby="tab-finance" hidden>
+    <div class="card" id="fin-gate"><h2>Executive admin access</h2><p>This view shows donor commitments, admin costs and renewal plans for Feed-A-Friend executives. In a live system it opens only after sign-in with an executive account.</p><p class="note-sim">Prototype: this button stands in for that sign-in. A public page cannot keep data private, so real figures never go on this page.</p><p><button class="btn primary" type="button" id="fin-enter">Continue with executive admin access (prototype)</button></p></div>
+    <div id="fin-body" hidden>
+      <p class="tag" style="display:inline-block;margin:0 0 8px">Executive admin access</p>
+      <p class="lead">Fiscal year July 1, 2026 to June 30, 2027. Every donor commitment is kept separate by type (gift cards, cash, delivery credit, donor-advised fund grants, in-kind supplies and micro-gifts), with weekly admin costs set against unrestricted cash only. The Stewardship agent watches each burn rate and opens the renewal conversation two months before a gift runs out, matched to the donor's own stated causes.</p>
+      <p class="disclaim"><b>Simulated national figures.</b> Commitment amounts are examples (Amazon: $2M in gift cards and $2M in cash over 12 months). Admin model from the Feed-A-Friend pitch deck: software license $500K base plus $1.50 per family, staff 15–20% of budget, 93% of budget to programs. <button class="btn" type="button" id="fin-exit" style="margin-left:8px">Leave executive admin access</button></p>
+      <div class="kpis bridge-kpis" id="fkpis"></div>
+      <div class="card" style="margin-top:14px"><div id="treasury"></div></div>
+      <div class="grid2">
+        <div class="card"><h2>Burn-down <select id="fsel" aria-label="Choose a commitment" style="font-size:.875rem;padding:4px 8px;margin-left:8px"></select></h2><p class="sub">Solid: money left. Dashed: projected at the last 4 weeks' pace. Gray: even pace over 12 months. Purple line: when to start the renewal conversation.</p><div id="fburn"></div><p class="sub" id="fburnnote"></p></div>
+        <div class="card"><h2>Spent by fund type</h2><p class="sub">Year to date, against what was committed.</p><div class="rlist" id="fkinds"></div></div>
+      </div>
+      <div class="card" style="margin-top:16px"><h2>Fund separation</h2><p class="sub">One row per gift. Restricted money is spent only on what the donor allowed; admin draws only from unrestricted cash.</p><div class="table-scroll" id="fseparation"></div></div>
+      <div class="grid2">
+        <div class="card"><h2>Admin against funds, weekly</h2><p class="sub">The last 8 weeks.</p><div class="table-scroll" id="fweeks"></div></div>
+        <div class="card"><h2>Renewals <span>Stewardship agent</span></h2><p class="sub">Two months before each gift runs out, the agent drafts an ask matched to the donor's stated causes. A person approves every one.</p><div class="drafts" id="renewals"></div></div>
+      </div>
+    </div>
+  </section>
+
   <section class="view" id="view-results" role="tabpanel" aria-labelledby="tab-results" hidden>
     <p class="lead">How the week is going: how much the agents handled on their own, where they needed a person, and what each decision cost in time. Everything here comes from the same simulation as the desk, including your decisions.</p>
     <div class="grid2">
@@ -774,10 +827,10 @@ html[data-motion="off"] .flock { display: none; } html[data-motion="off"] .tree-
         <thead><tr><th scope="col">Agent</th><th scope="col">Does on its own</th><th scope="col">Hands to a person when</th><th scope="col">Messages it sends</th></tr></thead>
         <tbody>
           <tr><td><b>Intake</b></td><td>Turns a donor's message into an offer: food, weight, ready time</td><td>Never directly; unclear offers go back to the donor</td><td class="mono">offer.created</td></tr>
-          <tr><td><b>Safety</b></td><td>Sets the safe window from food type and hold time</td><td>A temperature log is missing for prepared food</td><td class="mono">safety.cleared, safety.flagged</td></tr>
+          <tr><td><b>Safety</b></td><td>Sets the safe window from food type and hold time</td><td>A temperature log is missing for refrigerated groceries</td><td class="mono">safety.cleared, safety.flagged</td></tr>
           <tr><td><b>Matching</b></td><td>Offers food to partners by need, capacity, hours and distance</td><td>Two partners decline, a partner keeps countering, or a donation is over 200 lb</td><td class="mono">match.proposed, match.escalated</td></tr>
           <tr><td><b>Partner agents</b> (one per partner)</td><td>Accept, decline or counter within that partner's own rules</td><td>Never; they answer the matching agent</td><td class="mono">partner.accepted, partner.declined, partner.countered</td></tr>
-          <tr><td><b>Dispatch</b></td><td>Assigns a volunteer driver whose arrival fits the safe window</td><td>No driver can deliver inside the safe window</td><td class="mono">driver.assigned, driver.unavailable</td></tr>
+          <tr><td><b>Dispatch</b></td><td>Books a delivery-service courier (such as Uber Direct or DoorDash Drive) whose arrival fits the safe window</td><td>No courier can deliver inside the safe window</td><td class="mono">driver.assigned, driver.unavailable</td></tr>
         </tbody>
       </table></div>
     </div>
@@ -788,7 +841,7 @@ html[data-motion="off"] .flock { display: none; } html[data-motion="off"] .tree-
         <tbody>
           <tr><td>No partner</td><td>2 declines</td><td>Widening the search, splitting or turning food away are judgment calls about relationships</td></tr>
           <tr><td>Agents going in circles</td><td>2 counters on the same offer</td><td>Two agents trading counteroffers will not settle on their own; a person breaks the tie</td></tr>
-          <tr><td>Food safety</td><td>Any missing temperature log on prepared food</td><td>A safety call is never delegated</td></tr>
+          <tr><td>Food safety</td><td>Any missing temperature log on refrigerated groceries</td><td>A safety call is never delegated</td></tr>
           <tr><td>Large donation</td><td>Over 200 lb</td><td>Large loads need extra drivers and partner sign-off</td></tr>
           <tr><td>Safe window</td><td>Drop-off would land after the window</td><td>Paid couriers and partner pickups cost money or goodwill</td></tr>
         </tbody>
@@ -808,6 +861,9 @@ html[data-motion="off"] .flock { display: none; } html[data-motion="off"] .tree-
           <tr><td><b>Vet care</b></td><td>Holds donated vet supplies and partner clinic slots</td><td>Always: a person books the clinic and talks with the family</td><td class="mono">vet.requested</td></tr>
           <tr><td><b>Donor care</b></td><td>Sends micro-donor receipts, tracks fund balances and restrictions, drafts impact reports and top-up requests</td><td>Anything to a company or fund sponsor: a person approves, edits or holds every draft</td><td class="mono">donor.receipt, donor.draft</td></tr>
           <tr><td><b>Cart audit</b></td><td>Reviews every cart before payment: deletes alcohol, tobacco, vapes, nicotine, lottery tickets, gift cards and CBD, trims to the level's amount (snacks first), and logs purchases by topic to the case</td><td>An item is not banned but questionable, such as non-alcoholic beer or kombucha</td><td class="mono">cart.audited, cart.flagged, cms.purchases</td></tr>
+          <tr><td><b>Roster</b></td><td>Assigns each cart to the volunteer reviewer on shift and tracks their hours; shows who is reviewing now and the next shift</td><td>No one is on shift for a Level 3 cart; the on-call reviewer is paged</td><td class="mono">roster.assigned</td></tr>
+          <tr><td><b>Treasury</b></td><td>Keeps every gift separate by type and restriction, pays admin only from unrestricted cash, reports programs share weekly</td><td>Programs fall under the 93% target or a restriction would be broken</td><td class="mono">treasury.weekly</td></tr>
+          <tr><td><b>Stewardship</b></td><td>Projects when each gift runs out and drafts a renewal ask two months ahead, matched to the donor's stated causes</td><td>Always: an executive approves every ask</td><td class="mono">renewal.drafted</td></tr>
           <tr><td><b>Messages</b></td><td>Files every text with the family and every email with state agencies and grant sponsors to the right case</td><td>A message asks for something only a person can decide</td><td class="mono">msg.in, msg.out</td></tr>
           <tr><td><b>Survey</b></td><td>Texts the experience survey, sends one reminder, checks every required answer and the signed honesty statement</td><td>No answers after 24 hours: a person calls or sends food first</td><td class="mono">survey.sent, survey.completed, survey.stalled</td></tr>
           <tr><td><b>Document reader</b></td><td>Reads uploaded agency letters, redacts personal details, matches dates and programs to the survey</td><td>A letter disagrees with the survey; it never withholds support</td><td class="mono">docs.read, docs.mismatch</td></tr>
@@ -826,7 +882,7 @@ html[data-motion="off"] .flock { display: none; } html[data-motion="off"] .tree-
         <tbody>
           <tr><td>Close call on level</td><td>Score within 3 points of 55 or 75</td><td>Speed and money for one family against another is a judgment about people</td></tr>
           <tr><td>Medical or prescription need</td><td>Any mention</td><td>Health is never delegated and never stored</td></tr>
-          <tr><td>Delivery gap</td><td>No partner inside the promise (8, 24 or 72 hours)</td><td>Volunteer drivers and store pickups ask something of people</td></tr>
+          <tr><td>Delivery gap</td><td>No partner inside the promise (8, 24 or 72 hours)</td><td>Store pickups and late deliveries ask something of families</td></tr>
           <tr><td>Large spend</td><td>Over $500 for one family</td><td>Donor money above the line needs a person's sign-off</td></tr>
           <tr><td>No fund can pay</td><td>Every fund that fits is under the amount</td><td>Holding, splitting or asking a donor are relationship calls</td></tr>
           <tr><td>Sick pet</td><td>Any report</td><td>Vet care is a medical call</td></tr>
@@ -846,6 +902,9 @@ html[data-motion="off"] .flock { display: none; } html[data-motion="off"] .tree-
           <tr><td><b>Client records and state reports</b></td><td><span class="status built">In this prototype</span></td><td>Case file per family, experience survey, letter verification, clean-data rules, monthly state reports with CSV export</td><td>A person reviews disagreements and approves every report</td></tr>
           <tr><td><b>Cart audit</b></td><td><span class="status built">In this prototype</span></td><td>Removes items the program does not buy and logs purchases by topic</td><td>A person decides questionable items</td></tr>
           <tr><td><b>Order network map</b></td><td><span class="status built">In this prototype</span></td><td>Every order from cart request to drop-off notice, with texts and emails filed to each case</td><td>A person opens any family from the map</td></tr>
+          <tr><td><b>Roster, Treasury and Stewardship</b></td><td><span class="status built">In this prototype</span></td><td>Volunteer reviewers and hours; fund separation, admin against funds, burn-down and renewal timing</td><td>Executives approve every renewal ask</td></tr>
+          <tr><td><b>Executive sign-in</b></td><td><span class="status next">Next</span></td><td>Real executive accounts and server-side access control for the finance view</td><td>An administrator grants each executive access</td></tr>
+          <tr><td><b>Car repair bridge</b></td><td><span class="status later">Later</span></td><td>A possible branch: pays licensed repair shops directly so a family keeps the car they need for work, school and appointments while benefits are pending</td><td>A person approves every repair estimate; no cash goes to families</td></tr>
           <tr><td><b>Policy brief</b></td><td><span class="status next">Next</span></td><td>Turns a quarter of state reports into a plain-language brief for legislators and agency leaders</td><td>A person edits and signs it</td></tr>
           <tr><td><b>Donor retention</b></td><td><span class="status next">Next</span></td><td>Spots micro-donors and companies likely to lapse from giving gaps and opened reports; suggests the right next touch</td><td>Chooses who to contact and how</td></tr>
           <tr><td><b>DAF grant</b></td><td><span class="status next">Next</span></td><td>Prepares grant requests to donor-advised fund sponsors and the reports their restrictions require</td><td>Signs and submits</td></tr>
@@ -894,13 +953,16 @@ html[data-motion="off"] .flock { display: none; } html[data-motion="off"] .tree-
     { name: "Southside Pantry", x: 3, y: 2 }, { name: "Mesa Family Kitchen", x: 10, y: 3 },
     { name: "Glendale Shelter", x: -2, y: 7 }, { name: "Tempe Youth Center", x: 7, y: 4 }
   ];
-  const DRIVERS = ["Ana", "Marcus", "Priya", "Tom", "Lucía", "Dee"];
+  const DRIVERS = ["Uber Direct", "DoorDash Drive", "Uber Direct", "DoorDash Drive", "Uber Direct", "DoorDash Drive"];  // delivery-service couriers; Feed-A-Friend runs no drivers of its own
   const FOODS = {
     bakery: { label: "Bread and pastries", lbs: [20, 90], win: 720 },
     produce: { label: "Produce", lbs: [30, 160], win: 1440 },
-    prepared: { label: "Prepared meals", lbs: [15, 70], win: 150 },
-    dairy: { label: "Dairy", lbs: [20, 80], win: 300 },
-    packaged: { label: "Packaged goods", lbs: [40, 240], win: 2880 }
+    prepared: { label: "Refrigerated groceries", lbs: [15, 70], win: 240 },  // key kept; never hot meals
+    dairy: { label: "Dairy and eggs", lbs: [20, 80], win: 300 },
+    packaged: { label: "Packaged groceries", lbs: [40, 240], win: 2880 },
+    supplies: { label: "Toiletries, cleaning and paper", lbs: [20, 120], win: 10080 },
+    childcare: { label: "Diapers, child and feminine care", lbs: [15, 90], win: 10080 },
+    petfood: { label: "Pet food", lbs: [30, 160], win: 10080 }
   };
   const REASON = {
     safety: "Food safety check", large: "Large donation", loop: "Agents going in circles", nopartner: "No partner accepted", window: "Can't make the safe window"
@@ -927,7 +989,7 @@ html[data-motion="off"] .flock { display: none; } html[data-motion="off"] .tree-
     return out;
   }
   function makeOffer(n, offerAt, rand) {
-    const fk = pick(rand, [["bakery", 0.25], ["produce", 0.25], ["prepared", 0.2], ["dairy", 0.15], ["packaged", 0.15]]);
+    const fk = pick(rand, [["bakery", 0.16], ["produce", 0.2], ["prepared", 0.14], ["dairy", 0.1], ["packaged", 0.14], ["supplies", 0.1], ["childcare", 0.08], ["petfood", 0.08]]);
     const f = FOODS[fk];
     const lbs = Math.round(f.lbs[0] + rand() * (f.lbs[1] - f.lbs[0]));
     const readyAt = offerAt + 30 + Math.floor(rand() * 60);
@@ -998,7 +1060,7 @@ html[data-motion="off"] .flock { display: none; } html[data-motion="off"] .tree-
       schedule(S.t + 3, task, "safety");
     } else if (step === "safety") {
       if (task.fate === "safety" && !task.safetyOk) {
-        log(task, "Safety", "You", "safety.flagged", "No temperature log for prepared food held since lunch service", "alert");
+        log(task, "Safety", "You", "safety.flagged", "No temperature log for refrigerated groceries held since the morning delivery", "alert");
         return escalate(task, "safety", past);
       }
       task.stage = 2;
@@ -1043,7 +1105,7 @@ html[data-motion="off"] .flock { display: none; } html[data-motion="off"] .tree-
       }
       if (task.courier) arrive = Math.max(S.t + 20, task.readyAt);
       if (task.partnerPickup) arrive = Math.max(S.t + travel(task.partner, task.donor), task.readyAt);
-      const who = task.courier ? "Backup courier" : task.partnerPickup ? `${task.partner.name} van` : `Driver ${task.driver}`;
+      const who = task.courier ? "Backup courier" : task.partnerPickup ? `${task.partner.name} van` : `${task.driver} courier`;
       task.stage = 4; task.who = who; task.assignedAt = S.t; task.pickAt = arrive; task.dropAt = arrive + toPartner;
       log(task, "Dispatch", who, "driver.assigned", `Pickup ${hhmm(arrive)}, drop-off about ${hhmm(arrive + toPartner)}`);
       schedule(arrive, task, "pickup");
@@ -1076,7 +1138,7 @@ html[data-motion="off"] .flock { display: none; } html[data-motion="off"] .tree-
   function optionsFor(task, reason) {
     const next = task.ranked[2] || task.ranked[task.ranked.length - 1];
     if (reason === "safety") return [
-      { key: "check", label: "Accept with a temperature check at pickup", note: "The driver probes the food; hot food under 135°F or cold food over 41°F is declined at the door", rec: true },
+      { key: "check", label: "Accept with a temperature check at pickup", note: "The courier checks the cold items; anything over 41°F is declined at the door", rec: true },
       { key: "decline", label: "Decline and thank the donor", note: "Ask them to keep a temperature log next time" }
     ];
     if (reason === "large") return [
@@ -1364,7 +1426,7 @@ html[data-motion="off"] .flock { display: none; } html[data-motion="off"] .tree-
   // ---------- Live views: city map, pounds rescued, agents talking ----------
   const Live = (() => {
     if (!window.d3 || !document.getElementById("citymap")) return { update() {}, tick() {}, reset() {} };
-    const FOODC = { produce: "#3f8a4a", bakery: "#d9742b", prepared: "#b42a22", dairy: "#2a63c4", packaged: "#5a3d7a" };
+    const FOODC = { produce: "#3f8a4a", bakery: "#d9742b", prepared: "#b42a22", dairy: "#2a63c4", packaged: "#5a3d7a", supplies: "#6b4a35", childcare: "#c0567f", petfood: "#1f6b5c" };
     // City map
     const MW = 560, MH = 300;
     const mx = d3.scaleLinear([-4.5, 11.5], [18, MW - 18]), my = d3.scaleLinear([-1.2, 11.2], [MH - 14, 14]);
@@ -1378,7 +1440,7 @@ html[data-motion="off"] .flock { display: none; } html[data-motion="off"] .tree-
     const routesG = map.append("g"), sitesG = map.append("g"), alarmsG = map.append("g"), trucksG = map.append("g"), fxG = map.append("g");
     const HUB = { x: 4, y: 4 };
     sitesG.append("rect").attr("class", "hub").attr("x", mx(HUB.x) - 6).attr("y", my(HUB.y) - 6).attr("width", 12).attr("height", 12).attr("rx", 2).attr("transform", `rotate(45 ${mx(HUB.x)} ${my(HUB.y)})`);
-    sitesG.append("text").attr("x", mx(HUB.x) + 10).attr("y", my(HUB.y) + 4).text("Drivers' hub");
+    sitesG.append("text").attr("x", mx(HUB.x) + 10).attr("y", my(HUB.y) + 4).text("Courier zone");
     const short = (n) => n.split(",")[0].replace(/^(Corner|Hotel|Market|Produce) /, (m) => m);
     DONORS.forEach((d) => { sitesG.append("circle").attr("class", "donor").attr("cx", mx(d.x)).attr("cy", my(d.y)).attr("r", 5.5).append("title").text(d.name); });
     PARTNERS.forEach((p) => { sitesG.append("rect").attr("class", "partner").attr("x", mx(p.x) - 6).attr("y", my(p.y) - 6).attr("width", 12).attr("height", 12).attr("rx", 3).append("title").text(p.name); sitesG.append("text").attr("x", mx(p.x) + 9).attr("y", my(p.y) - 7).text(p.name.split(" ")[0]); });
@@ -1408,11 +1470,13 @@ html[data-motion="off"] .flock { display: none; } html[data-motion="off"] .tree-
     let revealed = false, lastBig = 0, lastTop = 0;
     // Agents talking
     const FW = 360, FH = 210;
-    const NODES = { Donors: [40, 172, "ext"], Intake: [44, 84], Safety: [118, 36], Matching: [196, 84], Partners: [280, 40, "ext"], Dispatch: [318, 122], Drivers: [252, 176, "ext"], You: [148, 172, "you"] };
+    const NODES = { Donors: [40, 172, "ext"], Intake: [44, 84], Safety: [118, 36], Matching: [196, 84], Partners: [280, 40, "ext"], Dispatch: [318, 122], Couriers: [252, 176, "ext"], You: [148, 172, "you"] };
     const fsvg = d3.select("#flow").append("svg").attr("viewBox", `0 0 ${FW} ${FH}`).attr("role", "img").attr("aria-label", "Messages flowing between the agents");
-    const EDGES = [["Donors", "Intake"], ["Intake", "Safety"], ["Safety", "Matching"], ["Matching", "Partners"], ["Matching", "Dispatch"], ["Dispatch", "Drivers"], ["Safety", "You"], ["Matching", "You"], ["Dispatch", "You"]];
+    const EDGES = [["Donors", "Intake"], ["Intake", "Safety"], ["Safety", "Matching"], ["Matching", "Partners"], ["Matching", "Dispatch"], ["Dispatch", "Couriers"], ["Safety", "You"], ["Matching", "You"], ["Dispatch", "You"]];
     const ctrl = (a, b) => { const [x1, y1] = NODES[a], [x2, y2] = NODES[b]; return [(x1 + x2) / 2 + (y2 - y1) * 0.18, (y1 + y2) / 2 - (x2 - x1) * 0.18]; };
     EDGES.forEach(([a, b]) => { const [x1, y1] = NODES[a], [x2, y2] = NODES[b], [cx, cy] = ctrl(a, b); fsvg.append("path").attr("class", "edge").attr("d", `M${x1},${y1} Q${cx},${cy} ${x2},${y2}`); });
+    fsvg.append("defs").append("marker").attr("id", "flowarrow").attr("viewBox", "0 0 10 10").attr("refX", 9).attr("refY", 5).attr("markerWidth", 7).attr("markerHeight", 7).attr("orient", "auto-start-reverse").append("path").attr("d", "M0,0 L10,5 L0,10 Z").attr("fill", "context-stroke");
+    const glowG = fsvg.append("g");
     const pulseG = fsvg.append("g");
     const nodeG = fsvg.append("g");
     const counts = {};
@@ -1424,7 +1488,27 @@ html[data-motion="off"] .flock { display: none; } html[data-motion="off"] .tree-
       counts[name] = 0;
     });
     const partnerNames = new Set(PARTNERS.map((p) => p.name));
-    const nodeOf = (n) => n in NODES ? n : n === "Dispatcher" ? "You" : n === "Agents" ? "Matching" : n === "Donor" ? "Donors" : n === "Partner agents" || partnerNames.has(n) ? "Partners" : /^Driver|courier| van$/.test(n) ? "Drivers" : null;
+    const nodeOf = (n) => n in NODES ? n : n === "Dispatcher" ? "You" : n === "Agents" ? "Matching" : n === "Donor" ? "Donors" : n === "Partner agents" || partnerNames.has(n) ? "Partners" : /^Driver|courier| van$/.test(n) ? "Couriers" : null;
+    const say = fsvg.append("text").attr("class", "say").attr("x", FW / 2).attr("y", FH - 4).attr("text-anchor", "middle");
+    const logEl = d3.select("#flow").append("ol").attr("class", "flowlog").attr("aria-live", "off");
+    const recent = []; let lastNew = 0, lastReplay = 0, ri = 0;
+    function talk(a, b, color, v) {
+      const [x1, y1] = NODES[a], [x2, y2] = NODES[b];
+      const fwd = EDGES.some(([p, q]) => p === a && q === b), has = fwd || EDGES.some(([p, q]) => p === b && q === a);
+      const [cx, cy] = has ? (fwd ? ctrl(a, b) : ctrl(b, a)) : [(x1 + x2) / 2, (y1 + y2) / 2];
+      const r = 17, ang1 = Math.atan2(cy - y1, cx - x1), ang2 = Math.atan2(y2 - cy, x2 - cx);
+      glowG.append("path").attr("class", "glow").attr("d", `M${x1 + Math.cos(ang1) * r},${y1 + Math.sin(ang1) * r} Q${cx},${cy} ${x2 - Math.cos(ang2) * r},${y2 - Math.sin(ang2) * r}`).attr("stroke", color).attr("marker-end", "url(#flowarrow)")
+        .attr("opacity", 0.95).transition().delay(500).duration(1100).attr("opacity", 0).remove();
+      nodeG.selectAll(".node").filter(function () { return this.dataset.n === a || this.dataset.n === b; }).classed("talking", true).transition().delay(900).on("end", function () { d3.select(this).classed("talking", false); });
+      say.text(`${a} → ${b} · ${v.type}`).attr("fill", color).interrupt().attr("opacity", 1).transition().delay(1200).duration(500).attr("opacity", 0.35);
+      pulse(a, b, color);
+    }
+    function logMsg(a, b, color, v) {
+      recent.push({ a, b, color, v }); if (recent.length > 24) recent.shift();
+      const items = recent.slice(-5).reverse();
+      logEl.selectAll("li").data(items, (d) => d.v.t + d.a + d.b + d.v.type + d.v.msg).join((e) => e.append("li").call((li) => { li.append("b"); li.append("span"); }))
+        .call((li) => li.select("b").text((d) => `${d.a} → ${d.b}`).style("color", (d) => d.color)).call((li) => li.select("span").text((d) => ` ${d.v.type}: ${d.v.msg}`));
+    }
     function pulse(a, b, color) {
       const [x1, y1] = NODES[a], [x2, y2] = NODES[b]; const has = EDGES.some(([p, q]) => (p === a && q === b) || (p === b && q === a));
       const [cx, cy] = has ? (EDGES.some(([p, q]) => p === a && q === b) ? ctrl(a, b) : ctrl(b, a)) : [(x1 + x2) / 2, (y1 + y2) / 2];
@@ -1434,8 +1518,25 @@ html[data-motion="off"] .flock { display: none; } html[data-motion="off"] .tree-
     }
     let seen = new Map(), delivered = new Set(), firstRun = true, lastSig = "";
     function reset() { seen = new Map(); delivered = new Set(); firstRun = true; lastSig = ""; Object.keys(counts).forEach((k) => (counts[k] = 0)); pulseG.selectAll("*").remove(); }
+    const bridgeG = map.append("g").attr("class", "bridgelayer");
+    function cityLayer() {
+      const F = window.FAF; if (!F) return;
+      const c = F.cityData(), pilot = F.city() === "phx";
+      [routesG, sitesG, alarmsG, trucksG, fxG].forEach((g) => g.style("display", pilot ? null : "none"));
+      if (!c) return;
+      const st = bridgeG.selectAll("g.store").data(c.stores, (d) => c.reg.key + d.name).join((e) => { const g = e.append("g").attr("class", "store"); g.append("rect").attr("x", -6).attr("y", -6).attr("width", 12).attr("height", 12).attr("rx", 2); g.append("text").attr("x", 9).attr("y", 4); return g; });
+      st.attr("transform", (d) => `translate(${mx(d.x)},${my(d.y)})`).select("text").text((d) => d.name);
+      const lerp2 = (o) => o.k >= 6 ? [mx(o.fx), my(o.fy)] : o.k >= 4 ? [mx(o.sx + (o.fx - o.sx) * o.prog), my(o.sy + (o.fy - o.sy) * o.prog)] : [mx(o.sx), my(o.sy)];
+      bridgeG.selectAll("line.broute").data(c.orders.filter((o) => o.k >= 0), (o) => o.id).join("line").attr("class", (o) => "broute" + (o.k >= 6 ? " done" : "")).attr("x1", (o) => mx(o.sx)).attr("y1", (o) => my(o.sy)).attr("x2", (o) => mx(o.fx)).attr("y2", (o) => my(o.fy));
+      bridgeG.selectAll("circle.bfam").data(c.orders, (o) => o.id).join((e) => e.append("circle").attr("class", "bfam").attr("r", 6).on("click", (ev, o) => window.FAF.open(o.id)).call((x) => x.append("title")))
+        .attr("cx", (o) => mx(o.fx)).attr("cy", (o) => my(o.fy)).attr("class", (o) => "bfam l" + o.level + (o.k >= 6 ? " done" : "")).select("title").text((o) => `${o.id}: ${o.ch} from ${o.store}, ${o.k >= 0 ? OSTAGES_LIVE[o.k] : "survey and letters first"}`);
+      bridgeG.selectAll("circle.btruck").data(c.orders.filter((o) => o.k >= 3 && o.k < 6), (o) => o.id).join("circle").attr("class", "btruck").attr("r", 5.5).attr("cx", (o) => lerp2(o)[0]).attr("cy", (o) => lerp2(o)[1]);
+      bridgeG.selectAll("circle.bring").data(c.orders.filter((o) => o.open), (o) => o.id).join("circle").attr("class", "alarm bring").attr("r", 10).attr("cx", (o) => mx(o.fx)).attr("cy", (o) => my(o.fy)).on("click", (ev, o) => window.FAF.open(o.id));
+    }
+    const OSTAGES_LIVE = ["cart requested", "cart audited", "paid by Feed-A-Friend", "ordered", "shipped or picked", "out for delivery", "drop-off notice", "confirmed"];
     function tick() {
       if (!S) return;
+      try { cityLayer(); } catch (e) {}
       // trucks on the road, moving with simulated time
       const road = S.tasks.filter((t) => t.pickAt != null && !t.outcome && t.stage >= 4 && t.partner);
       routesG.selectAll("path").data(road, (t) => t.id + (t.stage >= 5 ? "b" : "a")).join((e) => e.append("path").attr("class", "route")
@@ -1457,12 +1558,14 @@ html[data-motion="off"] .flock { display: none; } html[data-motion="off"] .tree-
         for (let i = k; i < t.events.length; i++) {
           const v = t.events[i], a = nodeOf(v.from), b = nodeOf(v.to);
           if (b) counts[b]++;
-          if (!firstRun && a && b && a !== b && motionOn() && spawned < 6 && pulseG.selectAll("circle:not(.ping)").size() < 30) { pulse(a, b, v.kind === "alert" ? "#b42a22" : v.kind === "person" ? "#5a3d7a" : "#3f8a4a"); spawned++; }
+          if (a && b && a !== b) { const col = v.kind === "alert" ? "#b42a22" : v.kind === "person" ? "#5a3d7a" : "#2f6b3a"; logMsg(a, b, col, v); if (firstRun) continue; lastNew = performance.now(); if (motionOn() && spawned < 6 && pulseG.selectAll("circle:not(.ping)").size() < 30) { talk(a, b, col, v); spawned++; } }
         }
         seen.set(t.id, t.events.length);
       }
       const sig = Object.values(counts).join(",");
       if (sig !== lastSig) { lastSig = sig; nodeG.selectAll(".node").each(function () { const n = this.dataset.n; d3.select(this).select(".cnt").text(counts[n]); }); }
+      const nowp = performance.now();
+      if (!firstRun && motionOn() && recent.length && nowp - lastNew > 2500 && nowp - lastReplay > 1500) { lastReplay = nowp; const r = recent[recent.length - 1 - (ri++ % Math.min(8, recent.length))]; talk(r.a, r.b, r.color, r.v); }
       firstRun = false;
     }
     function update() {
@@ -1561,10 +1664,10 @@ html[data-motion="off"] .flock { display: none; } html[data-motion="off"] .tree-
     ];
     const CH = Object.fromEntries(CHANNELS.map((c) => [c.key, c]));
     const FUND_DEF = [
-      { key: "walmart", name: "Walmart", type: "Gift-card money", lock: "walmart", bal: 2400 },
-      { key: "kroger", name: "Kroger", type: "Gift-card money", lock: "instacart", bal: 1600 },
-      { key: "albertsons", name: "Albertsons", type: "Gift-card money", lock: "instacart", bal: 1200 },
-      { key: "target", name: "Target", type: "Gift-card money", lock: "shipt", bal: 900 },
+      { key: "walmart", name: "Walmart", type: "Gift-card money", lockStore: ["Walmart"], bal: 2400 },
+      { key: "kroger", name: "Kroger", type: "Gift-card money", lockStore: ["Fry's", "Kroger"], bal: 1600 },
+      { key: "albertsons", name: "Albertsons", type: "Gift-card money", lockStore: ["Albertsons", "Safeway", "Jewel-Osco"], bal: 1200 },
+      { key: "target", name: "Target", type: "Gift-card money", lockStore: ["Target"], bal: 900 },
       { key: "amazon", name: "Amazon", type: "Delivery credit", lock: "amazon", bal: 1200 },
       { key: "instacart", name: "Instacart", type: "Delivery credit", lock: "instacart", bal: 800 },
       { key: "doordash", name: "DoorDash", type: "Delivery credit", lock: "doordash", bal: 1200 },
@@ -1580,9 +1683,9 @@ html[data-motion="off"] .flock { display: none; } html[data-motion="off"] .tree-
     ];
     const LEVEL = { 1: { name: "Level 1 · Bridge", amt: 200, hrs: 72 }, 2: { name: "Level 2 · Priority", amt: 300, hrs: 24 }, 3: { name: "Level 3 · Crisis", amt: 400, hrs: 8 } };
     const BREASON = { borderline: "Close call on level", medical: "Medical need mentioned", gap: "No delivery inside the promise", spend: "Over $500 for one family", nofund: "No fund can pay", vet: "Sick pet", survey: "Survey not answered", cart: "Cart item needs a decision" };
-    const BAGENTS = ["Need", "Privacy guard", "Survey", "Document reader", "Fulfillment", "Cart audit", "Fund", "Pet care", "Benefits link", "Donor care"];
+    const BAGENTS = ["Need", "Privacy guard", "Survey", "Document reader", "Fulfillment", "Cart audit", "Roster", "Fund", "Pet care", "Benefits link", "Donor care"];
     const stepAgent = { audit: "Cart audit", survey: "Survey", survey_stall: "Survey", survey_done: "Survey", docs: "Document reader", need: "Need", privacy: "Privacy guard", route: "Fulfillment", fund: "Fund", pet: "Pet care", order: "Fulfillment" };
-    const chName = (k) => (CH[k] ? CH[k].name : "Volunteer driver");
+    const chName = (k) => (CH[k] ? CH[k].name : "Delivery service");
     const money = (n) => "$" + Math.round(n).toLocaleString();
     const hashR = (s) => { let h = 2166136261; for (const c of s) h = Math.imul(h ^ c.charCodeAt(0), 16777619); return ((h >>> 0) % 10000) / 10000; };
 
@@ -1646,7 +1749,7 @@ html[data-motion="off"] .flock { display: none; } html[data-motion="off"] .tree-
         const m = t % 1440; if (m < 7 * 60 || m > 23 * 60) continue;
         gifts.push({ at: t, amt: pick(rand, [[5, 0.22], [10, 0.22], [15, 0.15], [20, 0.12], [25, 0.12], [50, 0.11], [100, 0.06]]), kind: pick(rand, [["One-time gift", 0.45], ["Round-up at checkout", 0.25], ["Monthly gift", 0.18], ["Employee giving", 0.12]]) });
       }
-      B = { t: 6 * 60, fams, fi: 0, q: [], list: [], decisions: [], corrections: [], filter: "active", selected: null, paused: {}, gifts, gi: 0, given: [], receipts: 0, impactNotes: 0, drafts: [], toppedUp: false, reportsDrafted: false, vetSlots: 6, cfilter: "all", cselected: null, rstate: {},
+      B = { t: 6 * 60, fams, fi: 0, q: [], list: [], decisions: [], corrections: [], filter: "active", selected: null, paused: {}, gifts, gi: 0, given: [], receipts: 0, impactNotes: 0, drafts: [], toppedUp: false, reportsDrafted: false, vetSlots: 6, exec: false, renew: {}, city: "phx", cfilter: "all", cselected: null, rstate: {},
         funds: FUND_DEF.map((f) => ({ ...f, start: f.bal, drawn: 0, uses: 0, drafted: false })) };
       BAGENTS.forEach((a) => (B.paused[a] = false));
     }
@@ -1733,7 +1836,7 @@ html[data-motion="off"] .flock { display: none; } html[data-motion="off"] .tree-
         sched(S.t + (h.callFirst ? 45 : 2), h, "survey", curTag);
       } else if (st === "route") {
         const limit = LEVEL[h.level].hrs;
-        if (h.routeFix) { h.ch = h.routeFix.ch; h.eta = h.routeFix.eta; h.via = h.routeFix.via; }
+        if (h.routeFix) { h.ch = h.routeFix.ch; h.eta = h.routeFix.eta; h.via = h.routeFix.via; h.store = h.ch === "amazon" ? "Amazon Fresh" : "Walmart"; }
         else {
           const load = (k) => B.list.filter((x) => x.ch === k).length;
           const cands = CHANNELS.filter((c) => c.covers(h.region)).map((c) => { const [lo, hi] = c.eta(h.region); return { c, eta: Math.round((lo + hashR(h.id + c.key) * (hi - lo)) * 10) / 10 }; });
@@ -1745,22 +1848,24 @@ html[data-motion="off"] .flock { display: none; } html[data-motion="off"] .tree-
             return raise(h, "gap", past);
           }
           const pickd = ok[0], alt = ok[1];
-          h.ch = pickd.c.key; h.eta = pickd.eta; h.via = pickd.c.via;
-          blog(h, "Fulfillment", "Fund", "route.chosen", `${pickd.c.name} via ${pickd.c.via}, about ${pickd.eta} h${alt ? `. Also fits: ${alt.c.name} ${alt.eta} h, carrying ${load(alt.c.key)} orders this week` : ""}`);
+          h.ch = pickd.c.key; h.eta = pickd.eta; h.store = storeFor(h); h.via = ["walmart", "amazon"].includes(h.ch) ? pickd.c.via : `delivery from ${h.store}`;
+          blog(h, "Fulfillment", "Fund", "route.chosen", `${pickd.c.name}${["walmart", "amazon"].includes(h.ch) ? "" : " delivers"} from ${h.store}, about ${pickd.eta} h${alt ? `. Also fits: ${alt.c.name} ${alt.eta} h, carrying ${load(alt.c.key)} orders this week` : ""}`);
         }
         h.stage = 3;
         sched(S.t + (h.level === 3 ? 4 : 10 + Math.round(hashR(h.id + "cl") * 40)), h, "cart", curTag);
       } else if (st === "cart") {
         h.cartReq = cartRequest(h); h.cartAt = S.t;
         blog(h, "Family", "Cart audit", "cart.requested", `Cart request by text: ${h.cartReq.length} items for ${chName(h.ch)}, about ${money(h.cartReq.reduce((x, i) => x + lineTotal(i), 0))}`);
-        msg(h, "Text", "in", "Family", `Here's my list for ${chName(h.ch)}: ${h.cartReq.slice(0, 4).map((i) => i.name.split(",")[0].toLowerCase()).join(", ")} and ${Math.max(0, h.cartReq.length - 4)} more.`);
+        msg(h, "Text", "in", "Family", `Here's my list for ${chName(h.ch)}${["walmart", "amazon"].includes(h.ch) ? "" : " from " + h.store}: ${h.cartReq.slice(0, 4).map((i) => i.name.split(",")[0].toLowerCase()).join(", ")} and ${Math.max(0, h.cartReq.length - 4)} more.`);
         sched(S.t + 3, h, "audit", curTag);
       } else if (st === "audit") {
         const amb = h.cartReq.find((i) => i.ambig);
         if (amb && !h.cartAmbig) { blog(h, "Cart audit", "You", "cart.flagged", `"${amb.name}" is not on the banned list but needs a person: ${amb.ambig}`, "alert"); return raise(h, "cart", past, { item: amb }); }
-        auditCart(h); h.auditAt = S.t;
+        auditCart(h); h.auditAt = S.t; const rv = onShift(S.t); h.reviewer = rv.name;
+        blog(h, "Roster", "Cart audit", "roster.assigned", `${rv.name}, volunteer cart reviewer on shift ${shiftText(rv)} (Arizona time), is reviewing this cart`);
         const rm = h.cartRemoved, bad = rm.filter((i) => !i.why.startsWith("Over") && !i.why.startsWith("Removed after"));
         blog(h, "Cart audit", "Fund", "cart.audited", rm.length ? `Removed ${rm.map((i) => `${i.name} (${i.why.toLowerCase()})`).join("; ")}. Final cart ${money(h.cartTotal)} of ${money(LEVEL[h.level].amt)}.` : `All ${h.cartFinal.length} items approved. Final cart ${money(h.cartTotal)}.`);
+        blog(h, rv.name, "Fund", "review.approved", `Volunteer review: ${rv.name} checked the agent's removals and approved the cart`, "person");
         blog(h, "Cart audit", "Case manager", "cms.purchases", `Logged by topic: ${Object.entries(h.purchases).sort((a, b) => b[1] - a[1]).map(([k, v]) => `${TOPIC[k].toLowerCase()} ${money(v)}`).join(", ")}`);
         if (bad.length) msg(h, "Text", "out", "Feed-A-Friend", `We took ${bad.map((i) => i.name.split(",")[0].toLowerCase()).join(" and ")} off your list. Feed-A-Friend can't buy alcohol, tobacco, vapes, lottery tickets, gift cards or CBD. Everything else is going ahead.`);
         else if (rm.length) msg(h, "Text", "out", "Feed-A-Friend", `Your list came to a little over ${money(LEVEL[h.level].amt)}, so we left off ${rm.length} item${rm.length > 1 ? "s" : ""}, snacks first. Reply if you want to swap something.`);
@@ -1771,7 +1876,7 @@ html[data-motion="off"] .flock { display: none; } html[data-motion="off"] .tree-
         const amt = h.cartTotal != null ? (h.amtOverride ? Math.min(h.amtOverride, h.cartTotal) : h.cartTotal) : (h.amtOverride || LEVEL[h.level].amt);
         let f = h.fundFix ? fund(h.fundFix) : null;
         if (!f) {
-          const order = [...B.funds.filter((x) => x.lock === h.ch), fund("micro"), ...B.funds.filter((x) => x.restrict && x.restrict(h)), fund("cash")];
+          const order = [...B.funds.filter((x) => x.lockStore && x.lockStore.includes(h.store)), ...B.funds.filter((x) => x.lock === h.ch), fund("micro"), ...B.funds.filter((x) => x.restrict && x.restrict(h)), fund("cash")];
           f = order.find((x) => x && x.bal >= amt);
         }
         if (!f || f.bal < amt) { blog(h, "Fund", "You", "fund.escalated", `No fund that can buy from ${chName(h.ch)} has ${money(amt)} left`, "alert"); return raise(h, "nofund", past, { amt }); }
@@ -1785,19 +1890,22 @@ html[data-motion="off"] .flock { display: none; } html[data-motion="off"] .tree-
         if (h.sickPet && !h.vetOk) { blog(h, "Pet care", "You", "pet.vet_needed", `The family says their ${h.pets[0].type} is sick. A vet call is never made by an agent.`, "alert"); return raise(h, "vet", past); }
         const bonus = h.petCap != null ? h.petCap : petBonus(h), pf = B.funds.filter((x) => x.pet).sort((a, b) => b.bal - a.bal)[0];
         pf.bal -= bonus; pf.drawn += bonus; pf.uses++; h.petFund = pf.key; h.petPaid = bonus;
+        const rx = hashR(h.id + "rx") < 0.22 || h.vetBooked ? Math.min(bonus - 20, 35 + Math.round(hashR(h.id + "rxa") * 30)) : 0;
+        h.purchases = h.purchases || {}; h.purchases.petfood = (h.purchases.petfood || 0) + bonus - rx; if (rx) h.purchases.petrx = (h.purchases.petrx || 0) + rx;
+        if (rx) blog(h, "Pet care", "Case manager", "pet.rx", `${money(rx)} of the pet bonus covers ${h.vetBooked ? "the vet visit's prescription" : "a pet prescription (flea, heartworm or other)"}; the rest is pet food`);
         blog(h, "Pet care", "Fulfillment", "pet.added", `Pet bonus ${money(bonus)} for ${petsText(h)}, from ${pf.name}${h.vetBooked ? ". Donated vet clinic slot booked by a person." : ""}`);
         sched(S.t + 1, h, "order", curTag);
       } else if (st === "order") {
         h.stage = 5; h.orderAt = S.t;
         h.deliverAt = S.t + Math.round(h.eta * 60);
-        blog(h, "Fulfillment", CH[h.ch] ? CH[h.ch].name : "Volunteer driver", "order.placed", `Order placed. Arrives about ${fmtT(h.deliverAt)}${h.level === 3 ? ". A person will check in within 24 h." : ""}`);
+        blog(h, "Fulfillment", CH[h.ch] ? CH[h.ch].name : "Delivery service", "order.placed", `Order placed. Arrives about ${fmtT(h.deliverAt)}${h.level === 3 ? ". A person will check in within 24 h." : ""}`);
         blog(h, "Order tracker", chName(h.ch), "order.checked_out", `Cart of ${money(h.paid)} checked out${h.ch === "amazon" ? "; packages will ship separately" : ""}`);
         const tsps = trackerSteps2(h); sched(tsps[4][0], h, "ship", curTag); sched(tsps[5][0], h, "out", curTag);
-        msg(h, "Text", "out", "Feed-A-Friend", `Your ${chName(h.ch)} order is paid and placed. It should arrive about ${fmtT(h.deliverAt)}. We'll text when it's on the way.`);
+        msg(h, "Text", "out", "Feed-A-Friend", `Your ${chName(h.ch)} order${["walmart", "amazon"].includes(h.ch) ? "" : " from " + h.store} is paid and placed. It should arrive about ${fmtT(h.deliverAt)}. We'll text when it's on the way.`);
         sched(h.deliverAt, h, "delivered", curTag);
       } else if (st === "delivered") {
         h.stage = 6; h.outcome = "delivered"; h.doneAt = S.t;
-        blog(h, CH[h.ch] ? CH[h.ch].name : "Volunteer driver", "Family", "delivery.done", `Groceries delivered${h.pets.length ? " with the pet bonus" : ""}. ${S.t <= h.promise ? "Inside the promise." : "Later than promised."}`);
+        blog(h, CH[h.ch] ? CH[h.ch].name : "Delivery service", "Family", "delivery.done", `Groceries delivered${h.pets.length ? " with the pet bonus" : ""}. ${S.t <= h.promise ? "Inside the promise." : "Later than promised."}`);
         blog(h, chName(h.ch) + " API", "Order tracker", "api.dropoff", "Drop-off notice received from the partner's delivery API (proposed integration)");
         blog(h, "Order tracker", "Privacy guard", "order.confirmed", "Delivery confirmed to the address on file");
         msg(h, "Text", "out", "Feed-A-Friend", "Delivered. Reply if anything is missing or damaged.");
@@ -1813,13 +1921,12 @@ html[data-motion="off"] .flock { display: none; } html[data-motion="off"] .tree-
         { key: "send", label: "Send the groceries now and have a person call about the prescription", note: "Food moves; the health question goes to a person and pharmacy assistance", rec: true },
         { key: "call", label: "Call the family first, then send", note: "Adds about 45 minutes" }];
       if (reason === "gap") { const b = h.gapBest; return [
-        { key: "vol", label: "Send a Feed-A-Friend volunteer driver with a Walmart pickup order", note: "About 6 h; uses a volunteer's time", rec: true },
-        { key: "card", label: "Text a Walmart gift card for in-store pickup", note: "Only if the family has a ride; ask first" },
+        { key: "card", label: "Text a Walmart gift card for in-store pickup", note: "Only if the family has a ride; ask first", rec: true },
         { key: "late", label: `Promise later: ${CH[b.c.key].name} in about ${Math.round(b.eta)} h`, note: "Breaks the promise; tell the family" }]; }
       if (reason === "spend") return [
         { key: "ok", label: `Approve ${money(x.total)}`, note: "Groceries plus the full pet bonus", rec: true },
         { key: "cap", label: "Approve $500: trim the pet bonus", note: `Pet bonus becomes ${money(500 - LEVEL[h.level].amt)}` }];
-      if (reason === "nofund") { const alt = B.funds.filter((f) => !f.pet && f.bal >= x.amt && (!f.lock) && (!f.restrict || f.restrict(h))).sort((a, b) => b.bal - a.bal)[0]; return [
+      if (reason === "nofund") { const alt = B.funds.filter((f) => !f.pet && f.bal >= x.amt && (!f.lock && !f.lockStore) && (!f.restrict || f.restrict(h))).sort((a, b) => b.bal - a.bal)[0]; return [
         ...(alt ? [{ key: "alt", label: `Pay from ${alt.name}`, note: `${money(alt.bal)} left`, rec: true, fund: alt.key }] : []),
         { key: "partial", label: "Send Level 1 groceries now from what is left", note: "$200 instead of the full level", rec: !alt },
         { key: "hold", label: "Hold until Friday's top-ups", note: "Only if a top-up request was approved" }]; }
@@ -1856,7 +1963,7 @@ html[data-motion="off"] .flock { display: none; } html[data-motion="off"] .tree-
       const at = past ? e.decidedAt : S.t, go = (s) => sched(at + 1, h, s, e.tag);
       if (e.reason === "borderline") { h.level = key === "hi" ? (e.x.near === 75 ? 3 : 2) : (e.x.near === 75 ? 2 : 1); h.levelSet = true; go("need"); }
       if (e.reason === "medical") { h.medOk = true; h.callFirst = key === "call"; go("privacy"); }
-      if (e.reason === "gap") { const b = h.gapBest; h.routeFix = key === "vol" ? { ch: "volunteer", eta: 6, via: "Feed-A-Friend volunteer driver" } : key === "card" ? { ch: "walmart", eta: 3, via: "gift card by text, in-store pickup" } : { ch: b.c.key, eta: b.eta, via: b.c.via }; go("route"); }
+      if (e.reason === "gap") { const b = h.gapBest; h.routeFix = key === "vol" ? { ch: "walmart", eta: 3, via: "gift card by text, in-store pickup" } : key === "card" ? { ch: "walmart", eta: 3, via: "gift card by text, in-store pickup" } : { ch: b.c.key, eta: b.eta, via: b.c.via }; go("route"); }
       if (e.reason === "spend") { h.spendOk = true; if (key === "cap") h.petCap = 500 - LEVEL[h.level].amt; go("fund"); }
       if (e.reason === "nofund") { if (key === "alt") h.fundFix = opt.fund; if (key === "partial") { h.amtOverride = 200; h.level = 1; if (h.cartReq) auditCart(h); } if (key === "hold") { sched(Math.max(at + 1, 4 * 1440 + 9 * 60 + 5), h, "fund", e.tag); return; } go("fund"); }
       if (e.reason === "cart") { h.cartAmbig = key; go("audit"); }
@@ -1875,6 +1982,175 @@ html[data-motion="off"] .flock { display: none; } html[data-motion="off"] .tree-
 
 
 
+
+    // ---------- grocers the delivery services shop at ----------
+    const STATE_STORES = {
+      AZ: ["Fry's", "Safeway", "Albertsons", "Costco", "Aldi", "Sprouts", "Target", "Walmart"], CA: ["Safeway", "Albertsons", "Costco", "Aldi", "Sprouts", "Target", "Walmart"],
+      TX: ["H-E-B", "Kroger", "Costco", "Aldi", "Sprouts", "Target", "Walmart"], TN: ["Kroger", "Costco", "Aldi", "Target", "Walmart"], MS: ["Kroger", "Walmart"],
+      GA: ["Kroger", "Costco", "Aldi", "Sprouts", "Target", "Walmart"], IL: ["Jewel-Osco", "Costco", "Aldi", "Target", "Walmart"], MI: ["Kroger", "Meijer", "Costco", "Aldi", "Target", "Walmart"], NY: ["ShopRite", "Costco", "Aldi", "Target"]
+    };
+    const DELIVERS = {
+      instacart: ["Fry's", "Kroger", "Safeway", "Albertsons", "Jewel-Osco", "Costco", "Aldi", "Sprouts", "H-E-B", "Meijer", "ShopRite"],
+      doordash: ["Fry's", "Kroger", "Safeway", "Albertsons", "Jewel-Osco", "Aldi", "Sprouts", "Meijer", "ShopRite", "Costco"],
+      uber: ["Safeway", "Albertsons", "Jewel-Osco", "Costco", "Aldi", "Sprouts", "Kroger", "Fry's", "ShopRite"],
+      gopuff: ["Aldi", "Sprouts", "Safeway", "Kroger", "Fry's", "Jewel-Osco", "ShopRite"],
+      shipt: ["Target", "Costco", "Meijer", "H-E-B"], walmart: ["Walmart"], amazon: ["Amazon Fresh"]
+    };
+    const ORG_BY_STORE = { Sprouts: 0.3, Costco: 0.22, "Amazon Fresh": 0.22, Target: 0.18, Safeway: 0.16, "Fry's": 0.16, Kroger: 0.15, Albertsons: 0.15, "H-E-B": 0.15, Meijer: 0.14, "Jewel-Osco": 0.14, ShopRite: 0.13, Walmart: 0.13, Aldi: 0.12 };
+    const orgOf = (st) => ORG_BY_STORE[st] || 0.12;
+    function storeFor(h) {
+      const list = (h.region.rural ? ["Walmart"] : STATE_STORES[h.region.st] || ["Walmart"]).concat(h.ch === "amazon" ? ["Amazon Fresh"] : []);
+      const ok = list.filter((s) => (DELIVERS[h.ch] || []).includes(s));
+      if (!ok.length) return h.ch === "amazon" ? "Amazon Fresh" : "Walmart";
+      const amt = LEVEL[h.level].amt, gift = ok.find((s) => B.funds.some((f) => f.lockStore && f.lockStore.includes(s) && f.bal >= amt));
+      return gift && hashR(h.id + "gs") < 0.7 ? gift : ok[Math.floor(hashR(h.id + "st") * ok.length)];
+    }
+    // ---------- volunteer cart reviewers (Roster agent); times are Arizona time ----------
+    const ROSTER = [
+      { name: "Maya R.", days: [0, 1, 2, 3, 4], from: 6, to: 12 }, { name: "Daniel K.", days: [0, 1, 2, 3, 4], from: 12, to: 18 },
+      { name: "Priya S.", days: [0, 1, 2, 3], from: 18, to: 24 }, { name: "Luis M.", days: [4, 5, 6], from: 18, to: 24 },
+      { name: "Grace T.", days: [5, 6], from: 6, to: 12 }, { name: "Omar B.", days: [5, 6], from: 12, to: 18 },
+      { name: "Jordan P.", days: [0, 1, 2, 3, 4, 5, 6], from: 0, to: 6, oncall: true }
+    ];
+    const DNAMES = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+    const shiftText = (v) => `${v.days.length === 7 ? "Every day" : DNAMES[v.days[0]] + "–" + DNAMES[v.days[v.days.length - 1]]} ${String(v.from).padStart(2, "0")}:00–${v.to === 24 ? "24:00" : String(v.to).padStart(2, "0") + ":00"}${v.oncall ? " (on call)" : ""}`;
+    const onShift = (t) => { const d = Math.floor(t / 1440) % 7, hr = (t % 1440) / 60; return ROSTER.find((v) => v.days.includes(d) && hr >= v.from && hr < v.to) || ROSTER[ROSTER.length - 1]; };
+    function hoursWorked(v, t) { let m = 0; for (let d = 0; d < 7; d++) if (v.days.includes(d)) { const a = d * 1440 + v.from * 60, b = d * 1440 + v.to * 60; m += Math.max(0, Math.min(b, t) - a); } return m / 60; }
+    function nextShift(v, t) { for (let k = 0; k < 8 * 1440; k += 60) { const tt = Math.ceil(t / 60) * 60 + k; if (tt >= 7 * 1440) return null; if (onShift(tt) === v && !(onShift(t) === v)) return tt; } return null; }
+    function rosterCard() {
+      const now = onShift(S.t);
+      $("#roster").innerHTML = `<table class="data"><thead><tr><th scope="col">Volunteer</th><th scope="col">Shift (Arizona time)</th><th scope="col">Now</th><th class="num" scope="col">Hours this week</th><th class="num" scope="col">Carts reviewed</th></tr></thead><tbody>${ROSTER.map((v) => { const n = B.list.filter((h) => h.reviewer === v.name).length, nx = nextShift(v, S.t);
+        return `<tr${v === now ? ' class="onnow"' : ""}><td><b>${v.name}</b>${v.oncall ? " <small>overnight on call</small>" : ""}</td><td>${shiftText(v)}</td><td>${v === now ? '<span class="pill p-done">On shift, reviewing carts</span>' : nx != null ? `<span class="pill p-decl">Next: ${fmtT(nx)}</span>` : '<span class="pill p-decl">Done this week</span>'}</td><td class="num">${hoursWorked(v, S.t).toFixed(1)}</td><td class="num">${n}</td></tr>`; }).join("")}</tbody></table>`;
+      $("#roster-now").innerHTML = `<b>${now.name}</b> is reviewing carts now · ${shiftText(now)}`;
+    }
+    // ---------- city data for the national city map ----------
+    function cityPos(seedKey, i) { const r = hashR(seedKey + i), q = hashR(seedKey + "y" + i); return { x: -3.6 + r * 14.4, y: -0.4 + q * 10.8 }; }
+    function cityData(key) {
+      const reg = REGIONS.find((r) => r.key === key); if (!reg) return null;
+      const stores = (reg.rural ? ["Walmart"] : STATE_STORES[reg.st] || []).concat(reg.rural ? [] : ["Amazon Fresh"]).map((n, i) => ({ name: n, ...cityPos(key + "store", i) }));
+      const orders = B.list.filter((h) => h.region === reg && h.store && (!h.outcome || S.t - h.doneAt < 1440)).map((h, i) => {
+        const fam = cityPos(h.id, 0), st = stores.find((s) => s.name === h.store) || stores[0], k = ostage(h), steps = trackerSteps2(h);
+        let prog = 0; if (k >= 4 && steps[4] && steps[6]) prog = Math.max(0, Math.min(1, (S.t - steps[4][0]) / Math.max(1, steps[6][0] - steps[4][0])));
+        return { id: h.id, fx: fam.x, fy: fam.y, sx: st.x, sy: st.y, k, prog, open: !!(h.esc && !h.esc.resolved && !h.outcome), level: h.level, ch: chName(h.ch), store: h.store };
+      });
+      return { reg, stores, orders };
+    }
+    function cityGroups() {
+      const by = (f) => REGIONS.filter((r) => B.list.some((h) => h.region === r && f(h)));
+      return { active: by((h) => !h.outcome && h.case), ordered: by((h) => h.cartAt != null && S.t - h.cartAt < 1440), delivered: by((h) => h.outcome === "delivered" && S.t - h.doneAt < 1440) };
+    }
+    function searchAll(q) {
+      q = q.trim().toLowerCase(); if (!q) return [];
+      const out = [];
+      REGIONS.forEach((r) => { if ((r.name + " " + r.st).toLowerCase().includes(q)) out.push({ kind: "City", label: `${r.name}, ${r.st}`, city: r.key }); });
+      B.list.forEach((h) => { if (h.id.toLowerCase().includes(q)) out.push({ kind: "Case", label: `${h.id} · ${h.region.name}, ${h.region.st}`, city: h.region.key, id: h.id }); });
+      const stores = [...new Set(B.list.filter((h) => h.store && h.store.toLowerCase().includes(q)).map((h) => h.store + "|" + h.region.key))];
+      stores.slice(0, 6).forEach((s) => { const [n, k] = s.split("|"), r = REGIONS.find((x) => x.key === k); out.push({ kind: "Store", label: `${n} · ${r.name}, ${r.st}`, city: k }); });
+      CHANNELS.forEach((c) => { if (c.name.toLowerCase().includes(q)) { const h = B.list.slice().reverse().find((x) => x.ch === c.key); if (h) out.push({ kind: "Delivery service", label: `${c.name} · latest order in ${h.region.name}`, city: h.region.key, id: h.id }); } });
+      ROSTER.forEach((v) => { if (v.name.toLowerCase().includes(q)) out.push({ kind: "Volunteer", label: `${v.name} · ${shiftText(v)}`, city: null }); });
+      return out.slice(0, 12);
+    }
+    // ---------- executive finance (Treasury and Stewardship agents) ----------
+    const FY0 = new Date(2026, 6, 1);   // fiscal year starts July 1, 2026
+    const COMMIT = [
+      { d: "Amazon", kind: "Gift cards", amt: 2000000, w: 2.2, cause: "home delivery for food banks (60 million+ free meals; free delivery for partners through 2028)", ref: "amazon" },
+      { d: "Amazon", kind: "Cash", amt: 2000000, w: 0.7, unr: true, cause: "home delivery for food banks", ref: "amazon" },
+      { d: "Walmart", kind: "Gift cards", amt: 1500000, w: 0.9, cause: "hunger relief, cold storage and food bank technology", ref: "axios26" },
+      { d: "Walmart", kind: "Cash", amt: 1000000, w: 0.45, unr: true, cause: "hunger relief and food bank capacity", ref: "axios26" },
+      { d: "Kroger", kind: "Gift cards", amt: 1000000, w: 0.7, cause: "Zero Hunger | Zero Waste", ref: "kroger" },
+      { d: "Albertsons", kind: "Gift cards", amt: 800000, w: 0.5, cause: "Nourishing Neighbors gift cards for food banks", ref: "axios25" },
+      { d: "Target", kind: "Gift cards", amt: 600000, w: 0.55, cause: "food donations to food banks, delivered by Shipt", ref: "shipt" },
+      { d: "Instacart", kind: "Delivery credit", amt: 500000, w: 0.3, cause: "SNAP online access and Community Carts", ref: "instacart" },
+      { d: "DoorDash", kind: "Delivery credit", amt: 500000, w: 0.32, cause: "Project DASH home delivery", ref: "doordash" },
+      { d: "Uber", kind: "Delivery credit", amt: 400000, w: 0.22, cause: "food rescue with Uber Direct and rides to pantries", ref: "grocerydive" },
+      { d: "Gopuff", kind: "Delivery credit", amt: 250000, w: 0.16, cause: "free groceries for SNAP recipients", ref: "axios25" },
+      { d: "DAF sponsors", kind: "DAF grant", amt: 1200000, w: 0.6, restr: "Families with children", cause: "the donor's stated restriction: families with children", ref: "npt" },
+      { d: "DAF sponsors", kind: "DAF grant", amt: 600000, w: 0.3, restr: "Arizona families", cause: "the donor's stated restriction: Arizona families", ref: "npt" },
+      { d: "Chewy", kind: "In-kind pet supplies", amt: 300000, w: 0.18, cause: "shelter and rescue pets", ref: "chewy" },
+      { d: "Petco Love", kind: "In-kind pet supplies", amt: 300000, w: 0.15, cause: "animal welfare grants", ref: "petco" },
+      { d: "PetSmart Charities", kind: "In-kind pet supplies", amt: 300000, w: 0.15, cause: "pet food through food banks", ref: "petsmart" },
+      { d: "Corporate cash grants", kind: "Cash", amt: 800000, w: 0.35, unr: true, cause: "general operating support", ref: null },
+      { d: "Micro-donors", kind: "Individual gifts", amt: 0, w: 0, unr: true, micro: true, cause: "transparent micro-philanthropy", ref: null }
+    ];
+    const WEEK = 7 * 864e5;
+    const weekNow = () => Math.max(1, Math.min(52, Math.floor((Date.now() - FY0.getTime()) / WEEK) + 1));
+    const weekDate = (w) => new Date(FY0.getTime() + (w - 1) * WEEK);
+    const dfmt = (d) => d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+    let FIN = null;
+    function finModel() {
+      if (FIN && FIN.wk === weekNow()) return FIN;
+      const wk = weekNow(), rnd = mulberry32(2027), weeks = [];
+      const wsum = COMMIT.reduce((s, c) => s + c.w, 0);
+      const rows = COMMIT.map((c) => ({ ...c, spent: 0, hist: [], admin: 0 }));
+      for (let w = 1; w <= wk; w++) {
+        const fams = Math.round(820 + 22 * w + (rnd() - 0.5) * 140), program = fams * (300 + rnd() * 30);
+        const micro = Math.round(9000 + 260 * w + (rnd() - 0.5) * 2500);
+        const staff = 38500, software = 500000 / 52 + 1.5 * fams, ops = 5600 + rnd() * 1600, admin = staff + software + ops;
+        let fromCommit = program - micro * 0.85;
+        rows.forEach((r) => { if (r.micro) { r.spent += micro; r.hist.push(r.spent); return; } const d = (fromCommit * r.w) / wsum * (0.92 + rnd() * 0.16); r.spent += d; r.hist.push(r.spent); });
+        const unr = rows.filter((r) => r.unr && !r.micro), ush = unr.reduce((s, r) => s + r.amt, 0);
+        unr.forEach((r) => { const a = admin * (r.amt / ush); r.spent += a; r.admin += a; r.hist[r.hist.length - 1] = r.spent; });
+        weeks.push({ w, fams, program, staff, software, ops, admin, micro, pct: program / (program + admin) });
+      }
+      rows.forEach((r) => {
+        if (r.micro) { r.amt = r.spent; r.left = 0; r.burn = weeks.slice(-4).reduce((s, x) => s + x.micro, 0) / Math.min(4, weeks.length); r.out = null; r.prompt = null; return; }
+        const h = r.hist, burn = (h[h.length - 1] - (h[h.length - 5] || 0)) / Math.min(4, h.length);
+        r.left = Math.max(0, r.amt - r.spent); r.burn = burn;
+        const outW = burn > 0 ? wk + r.left / burn : 99; r.outW = outW; r.endW = Math.min(52, outW);
+        r.promptW = r.endW - 8.7; r.out = outW <= 52 ? weekDate(Math.ceil(outW)) : null;
+        r.status = r.left <= 0 ? "Spent" : wk >= r.endW - 4 ? "Urgent" : wk >= r.promptW ? "Start renewal now" : "On track";
+      });
+      FIN = { wk, weeks, rows };
+      return FIN;
+    }
+    function renderFinance() {
+      const gate = $("#fin-gate"), body = $("#fin-body");
+      gate.style.display = B.exec ? "none" : ""; body.hidden = !B.exec; body.style.display = B.exec ? "" : "none"; if (!B.exec) return;
+      const F = finModel(), last = F.weeks[F.weeks.length - 1], rows = F.rows;
+      const committed = rows.filter((r) => !r.micro).reduce((s, r) => s + r.amt, 0), spent = rows.reduce((s, r) => s + r.spent, 0);
+      const adminYTD = F.weeks.reduce((s, w) => s + w.admin, 0), progYTD = F.weeks.reduce((s, w) => s + w.program, 0);
+      const due = rows.filter((r) => !r.micro && (r.status === "Start renewal now" || r.status === "Urgent"));
+      $("#fkpis").innerHTML = [["Committed this fiscal year", money(committed), "all donors, all fund types"], ["Spent to date", money(spent), `week ${F.wk} of 52`],
+        ["Programs share, this week", Math.round(last.pct * 100) + "%", "target 93% (pitch deck)"], ["Admin this week", money(last.admin), "staff, software license, operations"],
+        ["Renewals to start", due.length, "inside 2 months of a gift running out"], ["Families this week", last.fams.toLocaleString(), "national, simulated"]].map(([l, v, s]) => `<div class="kpi"><span class="lab">${l}</span><span class="val">${v}</span><span class="sub">${s}</span></div>`).join("");
+      const avgP = last.program / last.fams, needFams = Math.ceil((0.93 * (last.staff + 500000 / 52 + last.ops)) / (0.07 * avgP - 0.93 * 1.5));
+      $("#treasury").innerHTML = `<p><b>Treasury agent:</b> Programs were ${Math.round(last.pct * 100)}% of spending this week, against the 93% target. Admin ran ${money(last.admin)}: staff ${money(last.staff)}, software license ${money(last.software)} ($500K base plus $1.50 per family) and operations ${money(last.ops)}. At this admin level, the target is reached at about ${needFams.toLocaleString()} families a week, or by holding admin near ${money(0.07 / 0.93 * last.program)} at today's volume.</p><p>Admin is paid only from unrestricted cash (${rows.filter((r) => r.unr && !r.micro).map((r) => r.d + " cash").join(", ")}). Gift cards, delivery credit, DAF grants and in-kind supplies go to families only.</p>`;
+      const order = ["Gift cards", "Cash", "Delivery credit", "DAF grant", "In-kind pet supplies", "Individual gifts"];
+      $("#fseparation").innerHTML = `<table class="data"><thead><tr><th scope="col">Donor</th><th scope="col">Fund type</th><th scope="col">Use</th><th class="num" scope="col">Committed</th><th class="num" scope="col">Spent</th><th class="num" scope="col">Of which admin</th><th class="num" scope="col">Left</th><th class="num" scope="col">Weekly burn</th><th scope="col">Runs out</th><th scope="col">Start renewal by</th><th scope="col">Status</th></tr></thead><tbody>${rows.slice().sort((a, b) => order.indexOf(a.kind) - order.indexOf(b.kind) || b.amt - a.amt).map((r) => `<tr><td><b>${esc(r.d)}</b></td><td>${esc(r.kind)}</td><td>${r.restr ? "Restricted: " + esc(r.restr) : r.unr ? "Unrestricted: programs and admin" : "Families only"}</td><td class="num">${r.micro ? "ongoing" : money(r.amt)}</td><td class="num">${money(r.spent)}</td><td class="num">${r.admin ? money(r.admin) : "—"}</td><td class="num">${r.micro ? "—" : money(r.left)}</td><td class="num">${money(r.burn)}</td><td>${r.micro ? "—" : r.out ? dfmt(r.out) : "Lasts the year"}</td><td>${r.micro ? "—" : dfmt(weekDate(Math.max(1, Math.floor(r.promptW))))}</td><td>${r.micro ? '<span class="pill p-done">Ongoing</span>' : `<span class="pill ${r.status === "On track" ? "p-done" : r.status === "Urgent" ? "p-wait" : "p-paused"}">${r.status}</span>`}</td></tr>`).join("")}</tbody></table>`;
+      const byKind = order.map((k) => [k, rows.filter((r) => r.kind === k).reduce((s, r) => s + (r.micro ? r.spent : r.amt), 0), rows.filter((r) => r.kind === k).reduce((s, r) => s + r.spent, 0)]);
+      $("#fkinds").innerHTML = byKind.map(([k, a, sp]) => `<div class="rrow"><span class="nm">${k}</span><span class="v">${money(sp)} of ${money(a)}</span><span class="sh">${a ? Math.round((100 * sp) / a) : 0}%</span><span class="trk" aria-hidden="true"><i style="width:${a ? Math.min(100, (100 * sp) / a) : 0}%"></i></span></div>`).join("");
+      $("#fweeks").innerHTML = `<table class="data"><thead><tr><th scope="col">Week of</th><th class="num" scope="col">Families</th><th class="num" scope="col">Programs</th><th class="num" scope="col">Staff</th><th class="num" scope="col">Software</th><th class="num" scope="col">Operations</th><th class="num" scope="col">Admin total</th><th class="num" scope="col">Programs share</th></tr></thead><tbody>${F.weeks.slice(-8).reverse().map((w) => `<tr><td>${dfmt(weekDate(w.w))}</td><td class="num">${w.fams.toLocaleString()}</td><td class="num">${money(w.program)}</td><td class="num">${money(w.staff)}</td><td class="num">${money(w.software)}</td><td class="num">${money(w.ops)}</td><td class="num">${money(w.admin)}</td><td class="num">${Math.round(w.pct * 100)}%</td></tr>`).join("")}</tbody></table>`;
+      // burn-down for one commitment
+      const sel = $("#fsel"); if (!sel.options.length) { sel.innerHTML = rows.map((r, i) => r.micro ? "" : `<option value="${i}">${esc(r.d)} · ${esc(r.kind)}</option>`).join(""); sel.value = "0"; }
+      const r = rows[+sel.value] || rows[0];
+      if (window.d3) burnChart(r, F.wk);
+      // renewal pipeline
+      $("#renewals").innerHTML = rows.filter((x) => !x.micro).sort((a, b) => a.promptW - b.promptW).map((x, i) => { const key = x.d + x.kind, st = (B.renew[key] = B.renew[key] || "none");
+        return `<div class="draft"><span class="r1"><span><b>${esc(x.d)}</b> · ${esc(x.kind)}</span><span>${x.status}</span></span><p>${x.out ? `Runs out about ${dfmt(x.out)}` : "Lasts the fiscal year"}; start the renewal conversation by <b>${dfmt(weekDate(Math.max(1, Math.floor(x.promptW))))}</b>. Their stated cause: ${esc(x.cause)}${x.ref ? " " + cite(x.ref) : ""}.</p>
+          ${st === "none" ? (x.status === "On track" ? `<p class="note-sim">The Stewardship agent will draft an ask when the 2-month window opens.</p>` : `<div class="acts"><button class="btn primary" type="button" data-renew="${esc(key)}">Draft a renewal ask</button></div>`) : `<p>${esc(renewText(x))}</p>${st === "draft" ? `<div class="acts"><button class="btn primary" type="button" data-renewok="${esc(key)}">Approve</button><button class="btn" type="button" data-renewhold="${esc(key)}">Hold</button></div>` : `<p class="note-sim">${st === "approved" ? "Approved; ready to send (simulated)" : "Held"}</p>`}`}</div>`; }).join("");
+    }
+    function renewText(x) {
+      const fams = Math.round(x.spent / 310).toLocaleString();
+      return `Draft to ${x.d}: Your ${x.kind.toLowerCase()} has helped about ${fams} families waiting on SNAP this year, ${x.restr ? "all inside your restriction, " : ""}with every dollar reported by area. It will be fully used around ${x.out ? dfmt(x.out) : "the end of June"}. Because your work focuses on ${x.cause}, we'd like to propose a renewal of ${money(x.amt * 1.1)} for the next 12 months, with quarterly impact reports. Could we set a time to talk?`;
+    }
+    function burnChart(r, wk) {
+      const W = 620, H = 240, pad = { l: 56, r: 14, t: 14, b: 26 };
+      const x = d3.scaleLinear([1, 52], [pad.l, W - pad.r]), y = d3.scaleLinear([0, r.amt], [H - pad.b, pad.t]);
+      const host = d3.select("#fburn"); host.html("");
+      const svg = host.append("svg").attr("viewBox", `0 0 ${W} ${H}`).attr("role", "img").attr("aria-label", `Burn-down for ${r.d} ${r.kind}`);
+      y.ticks(4).forEach((v) => { svg.append("line").attr("x1", pad.l).attr("x2", W - pad.r).attr("y1", y(v)).attr("y2", y(v)).attr("class", "grid"); svg.append("text").attr("x", pad.l - 6).attr("y", y(v) + 4).attr("text-anchor", "end").text(d3.format("$.2s")(v)); });
+      [1, 13, 26, 39, 52].forEach((w) => svg.append("text").attr("x", x(w)).attr("y", H - 8).attr("text-anchor", "middle").text(weekDate(w).toLocaleDateString("en-US", { month: "short" })));
+      const act = r.hist.map((s, i) => [i + 1, Math.max(0, r.amt - s)]);
+      const proj = [[wk, r.left]]; for (let w = wk + 1; w <= 52; w++) proj.push([w, Math.max(0, r.left - r.burn * (w - wk))]);
+      const plan = [[1, r.amt], [52, 0]];
+      svg.append("path").attr("class", "plan").attr("d", d3.line().x((d) => x(d[0])).y((d) => y(d[1]))(plan));
+      svg.append("path").attr("class", "proj").attr("d", d3.line().x((d) => x(d[0])).y((d) => y(d[1]))(proj));
+      svg.append("path").attr("class", "act").attr("d", d3.line().x((d) => x(d[0])).y((d) => y(d[1]))(act));
+      if (r.promptW < 52) { svg.append("line").attr("class", "prompt").attr("x1", x(Math.max(1, r.promptW))).attr("x2", x(Math.max(1, r.promptW))).attr("y1", pad.t).attr("y2", H - pad.b); svg.append("text").attr("class", "plab2").attr("x", x(Math.max(1, r.promptW)) + 4).attr("y", pad.t + 12).text("Start renewal"); }
+      if (r.outW <= 52) svg.append("circle").attr("cx", x(r.outW)).attr("cy", y(0)).attr("r", 5).attr("class", "outdot");
+      svg.append("line").attr("class", "now").attr("x1", x(wk)).attr("x2", x(wk)).attr("y1", pad.t).attr("y2", H - pad.b);
+      $("#fburnnote").textContent = `${r.d} · ${r.kind}: ${money(r.left)} left of ${money(r.amt)}, burning ${money(r.burn)} a week. ${r.out ? "Runs out about " + dfmt(r.out) + ", " + Math.round((52 - r.outW) * 7) + " days before the 12 months end." : "On pace to last the 12 months."}`;
+    }
     // ---------- cart request and cart audit ----------
     const CATALOG = {
       produce: [["Bananas, 2 lb", 1.5], ["Apples, 3 lb", 4.5], ["Carrots, 2 lb", 2], ["Potatoes, 5 lb", 4], ["Onions, 3 lb", 3], ["Spinach", 3], ["Oranges, 4 lb", 5], ["Tomatoes", 3], ["Broccoli", 2.5]],
@@ -1883,15 +2159,18 @@ html[data-motion="off"] .flock { display: none; } html[data-motion="off"] .tree-
       processed: [["Pasta, 2 lb", 2.5], ["Pasta sauce", 3], ["Cereal", 4], ["Bread", 3], ["Rice, 5 lb", 5], ["Canned soup, 4 pk", 6], ["Frozen vegetables", 4], ["Frozen pizza", 6], ["Mac and cheese, 3 pk", 3.5], ["Chips", 4], ["Cookies", 3.5]],
       baby: [["Infant formula", 28], ["Baby food pouches, 8 pk", 11], ["Baby cereal", 4]],
       diapers: [["Diapers, 120 ct", 32], ["Baby wipes, 3 pk", 9]],
-      toilet: [["Toilet paper, 12 rolls", 11], ["Toothpaste", 3.5], ["Shampoo", 5], ["Bar soap, 6 pk", 6], ["Pads or tampons", 7], ["Deodorant", 4]],
-      cleaning: [["Laundry detergent", 11], ["Dish soap", 3], ["Paper towels", 8]]
+      toilet: [["Toothpaste", 3.5], ["Shampoo", 5], ["Bar soap, 6 pk", 6], ["Deodorant", 4]],
+      paper: [["Toilet paper, 12 rolls", 11], ["Paper towels, 6 rolls", 8], ["Tissues, 3 pk", 5]],
+      feminine: [["Pads, 36 ct", 7], ["Tampons, 36 ct", 8], ["Pantyliners", 4]],
+      child: [["Kids toothbrush and toothpaste", 5], ["Kids shampoo", 5], ["Training pants", 13]],
+      cleaning: [["Laundry detergent", 11], ["Dish soap", 3], ["All-purpose cleaner", 4]]
     };
     const BANNED = [["Beer, 12-pack", 16, "Alcohol"], ["Wine, 750 ml", 11, "Alcohol"], ["Hard seltzer, 12-pack", 18, "Alcohol"], ["Cigarettes, 1 carton", 70, "Tobacco"], ["Disposable vape", 20, "Vapes and e-cigarettes"], ["Nicotine pouches", 6, "Nicotine"], ["Lottery scratch tickets", 10, "Lottery and gambling"], ["Prepaid gift card", 25, "Cash equivalents"], ["CBD gummies", 30, "Cannabis and CBD"]];
     const AMBIG = [["Non-alcoholic beer, 6-pack", 9, "Labeled non-alcoholic but sold with alcohol"], ["Energy drinks, 12-pack", 18, "Not banned; high cost for low nutrition"], ["Kombucha, 4-pack", 12, "Can contain trace alcohol"]];
     const TREATS = ["Chips", "Cookies", "Frozen pizza"];
     function cartRequest(h) {
       const amt = LEVEL[h.level].amt, target = amt * 1.06, rnd = mulberry32(Math.floor(hashR(h.id + "cart") * 1e9)), items = [];
-      const topics = ["produce", "produce", "protein", "protein", "processed", "processed", "toilet", "cleaning", ...(rnd() < 0.55 ? ["organic", "organic"] : ["organic"]), ...(h.under5 ? ["baby", "diapers", "diapers"] : [])];
+      const topics = ["produce", "produce", "protein", "protein", "processed", "processed", "toilet", "cleaning", "paper", "feminine", ...(rnd() < 0.3 + orgOf(h.store || "") * 2 ? ["organic", "organic"] : ["organic"]), ...(h.under5 ? ["baby", "diapers", "diapers"] : []), ...(h.kids ? ["child"] : [])];
       if (h.under5) { items.push({ name: "Diapers, 120 ct", price: 32, topic: "diapers" }); items.push({ name: "Baby wipes, 3 pk", price: 9, topic: "diapers" }); }
       let tot = items.reduce((s, i) => s + i.price, 0), guard = 0;
       while (tot < target && guard++ < 200) { const t = topics[Math.floor(rnd() * topics.length)], [name, price] = CATALOG[t][Math.floor(rnd() * CATALOG[t].length)]; const ex = items.find((i) => i.name === name); if (ex) ex.qty = (ex.qty || 1) + 1; else items.push({ name, price, topic: t }); tot += price; }
@@ -1925,8 +2204,8 @@ html[data-motion="off"] .flock { display: none; } html[data-motion="off"] .tree-
       if (h.paidAt != null) s.push([h.paidAt, OSTAGES[2], `Paid from ${fund(h.fundKey).name}`]);
       if (h.orderAt != null) {
         const d = h.deliverAt - h.orderAt, a = h.ch === "amazon", pkgs = 2 + Math.floor(hashR(h.id + "pk") * 2), name = chName(h.ch);
-        s.push([h.orderAt, OSTAGES[3], `Order sent to ${name}`]);
-        s.push([h.orderAt + Math.round(d * 0.35), OSTAGES[4], a ? `${pkgs} of ${pkgs} packages shipped` : h.ch === "volunteer" ? "Picked up by the volunteer" : "Shopper finished the order"]);
+        s.push([h.orderAt, OSTAGES[3], ["walmart", "amazon"].includes(h.ch) ? `Order sent to ${name}` : `Order sent to ${name}; a ${name} shopper buys it at ${h.store}`]);
+        s.push([h.orderAt + Math.round(d * 0.35), OSTAGES[4], a ? `${pkgs} of ${pkgs} packages shipped` : `${name} shopper picked it up at ${h.store || "the store"}`]);
         s.push([h.orderAt + Math.round(d * 0.85), OSTAGES[5], a ? `${pkgs} packages on the truck` : "Driver on the way"]);
         s.push([h.deliverAt, OSTAGES[6], `Drop-off notice from ${name}'s delivery API`]);
         s.push([h.deliverAt + 2, OSTAGES[7], "Matched to the address on file; the Privacy guard checked it without showing it"]);
@@ -1961,12 +2240,13 @@ html[data-motion="off"] .flock { display: none; } html[data-motion="off"] .tree-
       if (!h.cartReq) return "";
       const rows = (h.cartFinal || h.cartReq).map((i) => `<tr><td>${esc(i.name)}${i.qty > 1 ? ` ×${i.qty}` : ""}</td><td>${i.topic ? esc(TOPIC[i.topic]) : "—"}</td><td class="num">${money(lineTotal(i))}</td></tr>`).join("");
       const rem = (h.cartRemoved || []).map((i) => `<li><s>${esc(i.name)}</s> <small>${esc(i.why)}</small></li>`).join("");
-      return `<h2 style="margin-top:4px">Cart audit <span>${h.auditAt != null ? money(h.cartTotal) + " of " + money(LEVEL[h.level].amt) : "waiting"}</span></h2>${rem ? `<ul class="removed">${rem}</ul>` : h.auditAt != null ? `<p class="empty" style="font-style:normal">Nothing needed removing.</p>` : ""}
+      const rv = ROSTER.find((v) => v.name === h.reviewer);
+      return `<h2 style="margin-top:4px">Cart audit <span>${h.auditAt != null ? money(h.cartTotal) + " of " + money(LEVEL[h.level].amt) : "waiting"}</span></h2>${rv ? `<p class="sub" style="margin:0">Reviewed by <b>${esc(rv.name)}</b>, volunteer · shift ${esc(shiftText(rv))}, Arizona time · ${hoursWorked(rv, S.t).toFixed(1)} h this week</p>` : h.cartReq ? `<p class="sub" style="margin:0">Will be reviewed by <b>${esc(onShift(S.t).name)}</b>, on shift now</p>` : ""}${rem ? `<ul class="removed">${rem}</ul>` : h.auditAt != null ? `<p class="empty" style="font-style:normal">Nothing needed removing.</p>` : ""}
         <details class="tbl"><summary>${h.auditAt != null ? "Final cart" : "Cart as requested"} (${(h.cartFinal || h.cartReq).length} items)</summary><div class="table-scroll"><table class="data"><thead><tr><th scope="col">Item</th><th scope="col">Topic</th><th class="num" scope="col">Cost</th></tr></thead><tbody>${rows}</tbody></table></div></details>`;
     }
-    const TOPIC = { produce: "Fresh produce", organic: "Organic / non-GMO", protein: "Protein and dairy", processed: "Pantry and packaged", baby: "Baby food and formula", diapers: "Diapers and wipes", toilet: "Toiletries and hygiene", cleaning: "Cleaning supplies" };
+    const TOPIC = { produce: "Fresh produce", organic: "Organic / non-GMO", protein: "Protein and dairy", processed: "Pantry and packaged", baby: "Baby food and formula", diapers: "Diapers and wipes", child: "Child items", feminine: "Feminine care", toilet: "Toiletries and hygiene", cleaning: "Cleaning supplies", paper: "Paper products", petfood: "Pet food", petrx: "Pet Rx and vet costs" };
     // ---------- all orders: radial network map on the dispatch desk ----------
-    const PNODES = ["walmart", "amazon", "instacart", "doordash", "uber", "shipt", "gopuff", "volunteer"];
+    const PNODES = ["walmart", "amazon", "instacart", "doordash", "uber", "shipt", "gopuff"];
     let ordState = null;
     function renderOrders() {
       if (!window.d3 || !$("#ordermap")) return;
@@ -2013,6 +2293,20 @@ html[data-motion="off"] .flock { display: none; } html[data-motion="off"] .tree-
       const f = B.ofilter || "all", all = B.list.flatMap((h) => h.msgs || []).filter((m) => f === "all" || (f === "sms" ? m.ch === "Text" : m.ch === "Email")).sort((a, b) => b.t - a.t).slice(0, 30);
       $("#inbox").innerHTML = all.length ? all.map((m) => `<li class="${m.dir}" data-mid="${m.id}"><span class="mh"><b>${esc(m.who)}</b> · ${m.ch} · <span class="mono">${m.id}</span> · ${fmtT(m.t)}</span><span class="mb">${esc(m.text)}</span></li>`).join("") : `<li class="empty">No messages yet.</li>`;
     }
+    let lastSig = "";
+    function citySelect() {
+      const g = cityGroups(), lab = (r) => `${r.name}, ${r.st}`, sig = JSON.stringify([g.active.map((r) => r.key), g.ordered.map((r) => r.key), g.delivered.map((r) => r.key), B.city]);
+      if (sig !== lastSig) {
+        lastSig = sig;
+        const opt = (r, tag) => `<option value="${r.key}"${r.key === B.city ? " selected" : ""}>${lab(r)}${tag || ""}</option>`;
+        $("#citysel").innerHTML = `<optgroup label="Active orders">${g.active.map((r) => opt(r, r.key === "phx" ? " · rescue pilot" : "")).join("") || opt(REGIONS[0], " · rescue pilot")}</optgroup><optgroup label="Recently ordered (24 h)">${g.ordered.map((r) => opt(r)).join("")}</optgroup><optgroup label="Recently delivered (24 h)">${g.delivered.map((r) => opt(r)).join("")}</optgroup><optgroup label="All cities">${REGIONS.map((r) => opt(r)).join("")}</optgroup>`;
+        $("#citysel").value = B.city;
+      }
+      const r = REGIONS.find((x) => x.key === B.city);
+      $("#cityname").textContent = lab(r);
+      $("#citysub").textContent = B.city === "phx" ? "Phoenix is the food-rescue pilot: couriers carry surplus food from donors to partners, and Feed-A-Friend orders appear as stores and families. A red ring needs you; click it." : `Feed-A-Friend orders in ${lab(r)}: delivery services carry groceries from each store (square) to families (circles). A red ring needs you; click it.`;
+    }
+    window.FAF = { cityData: (k) => cityData(k || B.city), city: () => B.city, open: (id) => { B.selected = id; document.getElementById("tab-bridge").click(); } };
     function purchasesCard() {
       const tot = {}; let n = 0; B.list.forEach((h) => { if (h.purchases && h.paidAt != null) { n++; Object.entries(h.purchases).forEach(([k, v]) => (tot[k] = (tot[k] || 0) + v)); } });
       const sum = Object.values(tot).reduce((a, b) => a + b, 0), rem = {}; B.list.forEach((h) => (h.cartRemoved || []).forEach((i) => { const k = i.why.startsWith("Over") ? "Trimmed: over the level's amount" : i.why.startsWith("Removed after") ? "Removed after a person's review" : i.why; rem[k] = (rem[k] || 0) + 1; }));
@@ -2020,9 +2314,10 @@ html[data-motion="off"] .flock { display: none; } html[data-motion="off"] .tree-
         <h3 style="font-size:1rem;margin:10px 0 4px">Removed by the Cart audit agent</h3><div class="rlist">${Object.entries(rem).sort((a, b) => b[1] - a[1]).map(([k, v]) => `<div class="rrow"><span class="nm">${esc(k)}</span><span class="v">${v}</span><span class="sh"></span><span class="trk" aria-hidden="true"><i style="width:${Math.min(100, v * 12)}%;background:var(--crit)"></i></span></div>`).join("") || `<p class="empty">Nothing removed yet.</p>`}</div>`;
     }
     // ---------- carts, stores, benefits, order tracking ----------
-    const CATS = [["produce", "Fresh produce", "#6fae5c"], ["organic", "Organic / non-GMO", "#2f6b3a"], ["protein", "Protein and dairy", "#2a63c4"], ["processed", "Processed and packaged", "#c95f24"], ["baby", "Baby food and formula", "#8e2a52"], ["diapers", "Diapers and wipes", "#c0567f"], ["toilet", "Toiletries and hygiene", "#5a3d7a"], ["cleaning", "Cleaning supplies", "#6b4a35"]];
+    const CATS = [["produce", "Fresh produce", "#6fae5c"], ["organic", "Organic / non-GMO", "#2f6b3a"], ["protein", "Protein and dairy", "#2a63c4"], ["processed", "Processed and packaged", "#c95f24"], ["baby", "Baby food and formula", "#8e2a52"], ["diapers", "Diapers and wipes", "#c0567f"], ["child", "Child items", "#e08aa8"], ["feminine", "Feminine care", "#a0527a"], ["toilet", "Toiletries and hygiene", "#5a3d7a"], ["cleaning", "Cleaning supplies", "#6b4a35"], ["paper", "Paper products", "#9a7b5f"], ["petfood", "Pet food", "#1f6b5c"], ["petrx", "Pet Rx and vet costs", "#2a8a8a"]];
     const ORGANIC = { Amazon: 0.22, Walmart: 0.13, Target: 0.18, "Fry's (Kroger)": 0.16, "Local grocery": 0.11 };
     function storeOf(h) {
+      if (h.store) return h.store;
       if (h.ch === "amazon") return "Amazon"; if (h.ch === "walmart" || h.ch === "volunteer") return "Walmart"; if (h.ch === "shipt") return "Target";
       if (h.ch === "instacart" && (h.fundKey === "kroger" || h.region.st === "AZ")) return "Fry's (Kroger)";
       return "Local grocery";
@@ -2031,7 +2326,7 @@ html[data-motion="off"] .flock { display: none; } html[data-motion="off"] .tree-
       if (h.purchases && h.paidAt != null) return { store: storeOf(h), lines: CATS.map(([k]) => [k, Math.round(h.purchases[k] || 0)]) };
       if (h._cart || !h.paid) return h._cart;
       const st = storeOf(h), r = (k) => hashR(h.id + k);
-      const w = { produce: 0.2 + r("p") * 0.1, organic: ORGANIC[st] * (0.75 + r("o") * 0.5), protein: 0.18 + r("q") * 0.08, processed: 0.24 + r("x") * 0.14, baby: h.under5 ? 0.1 + r("b") * 0.06 : 0, toilet: 0.07 + r("t") * 0.05 };
+      const w = { produce: 0.2 + r("p") * 0.1, organic: orgOf(st) * (0.75 + r("o") * 0.5), protein: 0.18 + r("q") * 0.08, processed: 0.24 + r("x") * 0.14, baby: h.under5 ? 0.1 + r("b") * 0.06 : 0, toilet: 0.07 + r("t") * 0.05 };
       const tot = Object.values(w).reduce((a, b) => a + b, 0);
       h._cart = { store: st, lines: CATS.map(([k]) => [k, Math.round((h.paid * w[k]) / tot)]) };
       return h._cart;
@@ -2078,10 +2373,11 @@ html[data-motion="off"] .flock { display: none; } html[data-motion="off"] .tree-
     }
     let cartState = null;
     function cartMix() {
-      const STORES = Object.keys(ORGANIC), rows = STORES.map((st) => { const o = { st }; CATS.forEach(([k]) => (o[k] = 0)); B.list.filter((h) => h.paid && storeOf(h) === st).forEach((h) => cartOf(h).lines.forEach(([k, v]) => (o[k] += v))); o.total = CATS.reduce((s, [k]) => s + o[k], 0); return o; });
+      const STORES = [...new Set(B.list.filter((h) => h.paid && h.paidAt != null).map(storeOf))], rows = STORES.map((st) => { const o = { st }; CATS.forEach(([k]) => (o[k] = 0)); B.list.filter((h) => h.paid && storeOf(h) === st).forEach((h) => cartOf(h).lines.forEach(([k, v]) => (o[k] += v))); o.total = CATS.reduce((s, [k]) => s + o[k], 0); return o; });
       const W = 460, rh = 30, padL = 112, H = rows.length * rh + 16, max = Math.max(300, ...rows.map((r) => r.total));
       const x = d3.scaleLinear([0, max], [padL, W - 150]);
-      if (!cartState) { cartState = d3.select("#cartmix").append("svg").attr("viewBox", `0 0 ${W} ${H}`).attr("role", "img").attr("aria-label", "Cart dollars by store and category"); $("#cartlegend").innerHTML = CATS.map(([, n, c]) => `<span><i class="sq" style="background:${c}"></i>${n}</span>`).join(""); }
+      if (cartState) cartState.attr("viewBox", `0 0 ${W} ${Math.max(40, H)}`);
+      if (!cartState) { cartState = d3.select("#cartmix").append("svg").attr("viewBox", `0 0 ${W} ${Math.max(40, H)}`).attr("role", "img").attr("aria-label", "Cart dollars by store and category"); $("#cartlegend").innerHTML = CATS.map(([, n, c]) => `<span><i class="sq" style="background:${c}"></i>${n}</span>`).join(""); }
       const segs = []; rows.forEach((r, i) => { let acc = 0; CATS.forEach(([k, n, c]) => { segs.push({ key: r.st + k, i, x0: acc, x1: acc + r[k], c, tip: `${r.st}: ${money(r[k])} ${n.toLowerCase()} (${r.total ? Math.round((100 * r[k]) / r.total) : 0}%)` }); acc += r[k]; }); });
       cartState.selectAll("text.st").data(rows, (d) => d.st).join("text").attr("class", "st").attr("x", padL - 8).attr("y", (d, i) => 12 + i * rh + 9).attr("text-anchor", "end").text((d) => d.st);
       cartState.selectAll("text.tot").data(rows, (d) => d.st).join("text").attr("class", "tot").attr("y", (d, i) => 12 + i * rh + 9).text((d) => d.total ? `${money(d.total)} · ${Math.round((100 * d.organic) / d.total)}% organic` : "no orders yet").attr("x", (d) => x(d.total) + 6).attr("font-size", 10);
@@ -2297,7 +2593,7 @@ html[data-motion="off"] .flock { display: none; } html[data-motion="off"] .tree-
       rows = rows.slice(0, 40);
       $("#bboard").innerHTML = rows.length ? rows.map((h) => `<tr data-bid="${h.id}" aria-selected="${h.id === B.selected}" tabindex="0">
         <td class="mono">${h.id}</td><td>${esc(h.region.name)}, ${h.region.st}</td><td>${esc(compact(h))}</td><td class="num">${h.wait} d</td><td>${levelPill(h)}</td>
-        <td>${h.ch ? esc(CH[h.ch] ? CH[h.ch].name : "Volunteer driver") : "—"}</td><td class="mono">${h.promise ? due(h.promise) : "—"}</td><td>${h.benefit ? `<span class="pill p-done">SNAP started</span>${h.lastFlag ? ` <span class="pill p-paused">Last purchase</span>` : ""}` : `<span class="pill p-decl">Waiting</span>`}</td><td>${status(h)}</td></tr>`).join("")
+        <td>${h.ch ? esc(CH[h.ch] ? CH[h.ch].name : "Delivery service") : "—"}</td><td class="mono">${h.promise ? due(h.promise) : "—"}</td><td>${h.benefit ? `<span class="pill p-done">SNAP started</span>${h.lastFlag ? ` <span class="pill p-paused">Last purchase</span>` : ""}` : `<span class="pill p-decl">Waiting</span>`}</td><td>${status(h)}</td></tr>`).join("")
         : `<tr><td colspan="9" class="empty">${B.filter === "active" ? "No families in progress right now." : "None yet."}</td></tr>`;
       detail();
       if (window.d3) { needMap(); delayIdx(); cartMix(); }
@@ -2337,7 +2633,7 @@ html[data-motion="off"] .flock { display: none; } html[data-motion="off"] .tree-
         ${h.stage < 4 && !h.outcome && h.level ? `<label class="check"><input type="checkbox" name="apply"> Also move this family one level ${"up or down"} now</label>` : ""}
         <button class="btn primary" type="submit">Log correction</button></form></details>`;
       el.innerHTML = `<h2>${h.id} <span>${esc(h.region.name)}, ${h.region.st}</span></h2>
-        <dl class="facts"><dt>Household</dt><dd>${esc(household(h))}</dd><dt>SNAP wait</dt><dd>${h.wait} days</dd><dt>Level</dt><dd>${h.level ? `${LEVEL[h.level].name} ${levelPill(h)}` : "Not set yet"}</dd>${h.promise ? `<dt>Promised by</dt><dd>${fmtT(h.promise)}</dd>` : ""}${h.ch ? `<dt>Delivery</dt><dd>${esc(CH[h.ch] ? CH[h.ch].name : "Volunteer driver")}, ${esc(h.via)}</dd>` : ""}${h.fundKey ? `<dt>Paid by</dt><dd>${esc(fund(h.fundKey).name)}${h.petFund ? `; pets: ${esc(fund(h.petFund).name)}` : ""}</dd>` : ""}<dt>Benefits</dt><dd>${h.benefit ? `SNAP confirmed ${fmtT(h.benefit)} by ${esc(AGENCY[h.region.st])}${h.lastFlag ? "; this is the last Feed-A-Friend purchase this month" : ""}` : `Waiting; checked with ${esc(AGENCY[h.region.st])} with consent`}</dd><dt>Status</dt><dd>${status(h)}</dd></dl>
+        <dl class="facts"><dt>Household</dt><dd>${esc(household(h))}</dd><dt>SNAP wait</dt><dd>${h.wait} days</dd><dt>Level</dt><dd>${h.level ? `${LEVEL[h.level].name} ${levelPill(h)}` : "Not set yet"}</dd>${h.promise ? `<dt>Promised by</dt><dd>${fmtT(h.promise)}</dd>` : ""}${h.ch ? `<dt>Delivery</dt><dd>${esc(CH[h.ch] ? CH[h.ch].name : "Delivery service")}, ${esc(h.via)}</dd>` : ""}${h.fundKey ? `<dt>Paid by</dt><dd>${esc(fund(h.fundKey).name)}${h.petFund ? `; pets: ${esc(fund(h.petFund).name)}` : ""}</dd>` : ""}<dt>Benefits</dt><dd>${h.benefit ? `SNAP confirmed ${fmtT(h.benefit)} by ${esc(AGENCY[h.region.st])}${h.lastFlag ? "; this is the last Feed-A-Friend purchase this month" : ""}` : `Waiting; checked with ${esc(AGENCY[h.region.st])} with consent`}</dd><dt>Status</dt><dd>${status(h)}</dd></dl>
         ${decide}
         ${h.case ? `<p style="margin:0"><button class="btn" type="button" data-case="${h.id}">Open case file</button></p>` : ""}
         <h2 style="margin-top:4px">Why this level <span>score ${sc} of 100</span></h2>
@@ -2430,14 +2726,14 @@ html[data-motion="off"] .flock { display: none; } html[data-motion="off"] .tree-
     const PARTNERS_D = [
       { name: "Walmart", roles: ["Gift-card money", "Delivery", "Surplus food", "Corporate cash"], model: "Gift-card money pays for Walmart delivery orders; the only partner that reaches every area here, including rural ones.", fact: `Walmart and Sam's Club donated 769 million pounds of food in the U.S. in fiscal 2026 and are Feeding America's largest food donor; Walmart gave $15 million in September 2026 for cold storage and technology ${cite("axios26")}. Walmart is approaching 40% of U.S. online grocery sales ${cite("dc360")}.`, funds: ["walmart"], ch: "walmart" },
       { name: "Amazon", roles: ["Delivery", "Delivery credit"], model: "Delivery credit pays for same-day grocery orders in metro areas.", fact: `Amazon's food bank delivery program has delivered more than 60 million free meals in the U.S. and UK, with free delivery for partners through 2028 ${cite("amazon")}. Amazon was one of the eight retailers in USDA's first SNAP online pilot ${cite("usda")}.`, funds: ["amazon"], ch: "amazon" },
-      { name: "Instacart", roles: ["Delivery platform", "Delivery credit", "SNAP online"], model: "Carries orders from Kroger, Albertsons and Aldi stores; Kroger and Albertsons gift-card money is spent here.", fact: `Instacart powers online EBT SNAP payments for more than 60 retail banners and 8,000 stores in 49 states and D.C. ${cite("instacart")}. In the November 2025 SNAP lapse it expanded Community Carts to more than 300 food banks as part of $5 million in relief ${cite("axios25")}.`, funds: ["instacart"], ch: "instacart" },
-      { name: "DoorDash", roles: ["Delivery", "Delivery credit"], model: "Fast metro delivery for Level 2 and Level 3 families.", fact: `Project DASH, running since 2018, has made more than 6 million deliveries, an estimated 100 million meals, for food banks and community groups ${cite("doordash")}. In November 2025 DoorDash delivered 1 million free meals through food banks and waived fees on 300,000 SNAP grocery orders ${cite("axios25")}.`, funds: ["doordash"], ch: "doordash" },
-      { name: "Uber", roles: ["Delivery", "Delivery credit", "Rides"], model: "Uber Eats grocery and Uber Direct carry metro orders; rides to pantries are a future add.", fact: `Albertsons uses Uber Direct to move surplus store food to food banks; a 2023 D.C. pilot made more than 100 deliveries before expanding to Boston, Chicago and Denver ${cite("grocerydive")}. Uber's 2019 Feeding America partnership also covered rides to pantries through Uber Health ${cite("uber")}.`, funds: ["uber"], ch: "uber" },
-      { name: "Target (Shipt)", roles: ["Gift-card money", "Delivery"], model: "Target gift-card money pays for Shipt delivery from Target stores.", fact: `Shipt shoppers pick up Target food donations and deliver them to Feeding America food banks in a pilot in Dallas, Fort Worth and Minneapolis ${cite("shipt")}.`, funds: ["target"], ch: "shipt" },
-      { name: "Kroger", roles: ["Gift-card money", "Surplus food"], model: "Gift-card money for Kroger-family stores, delivered through Instacart.", fact: `Kroger reports about 3.9 billion meals donated and about 815 million pounds of surplus food rescued under Zero Hunger | Zero Waste ${cite("kroger")}.`, funds: ["kroger"] },
-      { name: "Albertsons", roles: ["Gift-card money", "Surplus food"], model: "Gift-card money for Safeway and other Albertsons stores, delivered through Instacart.", fact: `Albertsons gave $13 million in holiday gift cards to community food banks through Nourishing Neighbors during the 2025 SNAP lapse ${cite("axios25")}.`, funds: ["albertsons"] },
-      { name: "Gopuff", roles: ["Delivery", "Delivery credit"], model: "Under-two-hour delivery for Level 3 crises in the metros it serves.", fact: `Gopuff pledged up to $10 million in free groceries to SNAP recipients in November 2025, with two $25 credits and free delivery ${cite("axios25")}.`, funds: ["gopuff"], ch: "gopuff" },
-      { name: "Aldi", roles: ["Low-cost basket"], model: "Lower prices stretch each level's dollars; reached through Instacart. Not yet in the simulation.", fact: `Instacart became Aldi's exclusive U.S. fulfillment partner in April 2026; Aldi has been on Uber Eats since September 2025 ${cite("dc360")}.`, funds: [] },
+      { name: "Instacart", roles: ["Delivery platform", "Delivery credit", "SNAP online"], model: "Delivery only: Instacart shoppers buy from Costco, Albertsons, Safeway, Fry's, Kroger, Aldi, Sprouts and other grocers. Delivery credit pays the delivery; gift-card money pays the store.", fact: `Instacart powers online EBT SNAP payments for more than 60 retail banners and 8,000 stores in 49 states and D.C. ${cite("instacart")}. In the November 2025 SNAP lapse it expanded Community Carts to more than 300 food banks as part of $5 million in relief ${cite("axios25")}.`, funds: ["instacart"], ch: "instacart" },
+      { name: "DoorDash", roles: ["Delivery", "Delivery credit"], model: "Delivery only: DoorDash picks up from grocers such as Albertsons, Safeway, Aldi, Sprouts and Costco. Fast metro delivery for Level 2 and Level 3 families.", fact: `Project DASH, running since 2018, has made more than 6 million deliveries, an estimated 100 million meals, for food banks and community groups ${cite("doordash")}. In November 2025 DoorDash delivered 1 million free meals through food banks and waived fees on 300,000 SNAP grocery orders ${cite("axios25")}.`, funds: ["doordash"], ch: "doordash" },
+      { name: "Uber", roles: ["Delivery", "Delivery credit", "Rides"], model: "Delivery only: Uber picks up from grocers such as Costco, Albertsons, Safeway and Aldi; rides to pantries are a future add.", fact: `Albertsons uses Uber Direct to move surplus store food to food banks; a 2023 D.C. pilot made more than 100 deliveries before expanding to Boston, Chicago and Denver ${cite("grocerydive")}. Uber's 2019 Feeding America partnership also covered rides to pantries through Uber Health ${cite("uber")}.`, funds: ["uber"], ch: "uber" },
+      { name: "Target (Shipt)", roles: ["Gift-card money", "Delivery"], model: "Target gift-card money pays for groceries at Target; Shipt delivers them (Shipt also delivers from Costco and other grocers).", fact: `Shipt shoppers pick up Target food donations and deliver them to Feeding America food banks in a pilot in Dallas, Fort Worth and Minneapolis ${cite("shipt")}.`, funds: ["target"], ch: "shipt" },
+      { name: "Kroger", roles: ["Gift-card money", "Surplus food"], model: "Gift-card money for Kroger-family stores, including Fry's in Arizona; a delivery service brings the order.", fact: `Kroger reports about 3.9 billion meals donated and about 815 million pounds of surplus food rescued under Zero Hunger | Zero Waste ${cite("kroger")}.`, funds: ["kroger"] },
+      { name: "Albertsons", roles: ["Gift-card money", "Surplus food"], model: "Gift-card money for Albertsons, Safeway and Jewel-Osco stores; a delivery service brings the order.", fact: `Albertsons gave $13 million in holiday gift cards to community food banks through Nourishing Neighbors during the 2025 SNAP lapse ${cite("axios25")}.`, funds: ["albertsons"] },
+      { name: "Gopuff", roles: ["Delivery", "Delivery credit"], model: "Delivery only: Gopuff picks up from local grocers such as Aldi, Sprouts and Safeway for fast Level 3 deliveries.", fact: `Gopuff pledged up to $10 million in free groceries to SNAP recipients in November 2025, with two $25 credits and free delivery ${cite("axios25")}.`, funds: ["gopuff"], ch: "gopuff" },
+      { name: "Aldi", roles: ["Low-cost basket"], model: "A grocer the delivery services shop at; lower prices stretch each level's dollars.", fact: `Instacart became Aldi's exclusive U.S. fulfillment partner in April 2026; Aldi has been on Uber Eats since September 2025 ${cite("dc360")}.`, funds: [] },
       { name: "H-E-B", roles: ["Expansion state", "Corporate cash"], model: "Texas partner for the multi-state year. Not yet in the simulation.", fact: `H-E-B gave $5 million to Texas food banks and $1 million to Meals on Wheels programs in November 2025 ${cite("axios25")}.`, funds: [] },
       { name: "Regional grocers", roles: ["Expansion", "SNAP online"], model: "Hy-Vee, FreshDirect, ShopRite and others for later states. Not yet in the simulation.", fact: `Hy-Vee, FreshDirect, ShopRite and Safeway were among the eight retailers chosen for USDA's 2017 SNAP online pilot; SNAP online now works in all 50 states and D.C. ${cite("usda")}.`, funds: [] },
       { name: "Chewy", roles: ["Pet supplies", "Pet delivery"], model: "Ships pet food and supplies for the pet bonus.", fact: `By July 2022 Chewy had donated more than $100 million in pet food and supplies, including over 64 million pounds of food, to more than 9,000 shelter and rescue partners ${cite("chewy")}.`, funds: ["chewy"] },
@@ -2454,11 +2750,11 @@ html[data-motion="off"] .flock { display: none; } html[data-motion="off"] .tree-
         ["Receipts sent", B.receipts, "to micro-donors, automatically"], ["Impact updates", delivered.length, "one per delivered family, to its funder"], ["Funds running low", low, "under 25% left"], ["Drafts for you", waiting, "company and sponsor messages"]];
       $("#dkpis").innerHTML = k.map(([l, v, s]) => `<div class="kpi"><span class="lab">${l}</span><span class="val">${v}</span><span class="sub">${s}</span></div>`).join("");
       $("#pools").innerHTML = F.map((f) => { const p = Math.max(0, Math.min(1, f.bal / Math.max(f.start, f.bal))), isLow = f.bal < f.start * 0.25 && f.type !== "Individual gifts";
-        return `<div class="rrow"><span class="nm">${esc(f.name)}<small>${esc(f.type)}${f.lock ? " · " + esc(CH[f.lock].name) + " only" : ""}</small></span><span class="v">${money(f.bal)}</span><span class="sh">${f.uses}×</span><span class="trk" aria-hidden="true"><i class="${isLow ? "low" : ""}" style="width:${p * 100}%"></i></span></div>`; }).join("") + `<p class="sub" style="margin:6px 4px 0">Donated vet clinic slots left: <b>${B.vetSlots}</b>. The number after each balance is how many families it has paid for.</p>`;
+        return `<div class="rrow"><span class="nm">${esc(f.name)}<small>${esc(f.type)}${f.lockStore ? " · " + esc(f.lockStore.join(", ")) + " only" : f.lock ? " · " + esc(CH[f.lock].name) + " only" : ""}</small></span><span class="v">${money(f.bal)}</span><span class="sh">${f.uses}×</span><span class="trk" aria-hidden="true"><i class="${isLow ? "low" : ""}" style="width:${p * 100}%"></i></span></div>`; }).join("") + `<p class="sub" style="margin:6px 4px 0">Donated vet clinic slots left: <b>${B.vetSlots}</b>. The number after each balance is how many families it has paid for.</p>`;
       $("#drafts").innerHTML = B.drafts.length ? B.drafts.slice().reverse().map((d) => `<div class="draft"><span class="r1"><span>${d.kind === "topup" ? "Top-up request" : "Impact report"} to <b>${esc(d.to)}</b></span><span class="mono">${fmtT(d.at)}</span></span><p>${esc(d.text)}</p>
         ${d.state === "waiting" ? `<div class="acts"><button class="btn primary" type="button" data-draft="${d.id}" data-act="sent">Approve and send</button><button class="btn" type="button" data-draft="${d.id}" data-act="held">Hold</button></div>` : `<p class="note-sim">${d.state === "sent" ? "Sent (simulated)" : "Held by you"}${d.result ? ` · ${esc(d.result)}` : d.kind === "topup" && d.state === "sent" && !B.toppedUp ? " · top-up arrives Friday 09:00 if approved" : ""}</p>`}</div>`).join("")
         : `<p class="empty">No drafts yet. The Donor care agent writes one when a fund drops under 25%, and impact reports on Friday evening.</p>`;
-      const mix = CHANNELS.map((c) => ({ k: c.name, v: B.list.filter((h) => h.ch === c.key && h.stage >= 5).length, c: "#2f6b3a" })).concat([{ k: "Volunteer driver", v: B.list.filter((h) => h.ch === "volunteer" && h.stage >= 5).length, c: "#5a3d7a" }]);
+      const mix = CHANNELS.map((c) => ({ k: c.name, v: B.list.filter((h) => h.ch === c.key && h.stage >= 5).length, c: "#2f6b3a" }));
       if (window.d3) hbars("#mixchart", mix, Math.max(4, ...mix.map((d) => d.v)), (v) => v, { label: "Bridge deliveries by delivery partner" });
       const kinds = {}; give.forEach((g) => (kinds[g.kind] = (kinds[g.kind] || 0) + g.amt));
       $("#micro").innerHTML = `<div class="rlist">${Object.entries(kinds).sort((a, b) => b[1] - a[1]).map(([n, v]) => `<div class="rrow"><span class="nm">${n}</span><span class="v">${money(v)}</span><span class="sh">${raised ? Math.round((100 * v) / raised) : 0}%</span><span class="trk" aria-hidden="true"><i style="width:${raised ? (100 * v) / raised : 0}%"></i></span></div>`).join("")}</div>
@@ -2475,7 +2771,9 @@ html[data-motion="off"] .flock { display: none; } html[data-motion="off"] .tree-
       if (!$("#view-bridge").hidden) render();
       if (!$("#view-donors").hidden) renderDonors();
       if (!$("#view-cases").hidden) { renderCases(); purchasesCard(); }
-      if (!$("#view-desk").hidden) renderOrders();
+      if (!$("#view-desk").hidden) { renderOrders(); citySelect(); }
+      if (!$("#view-bridge").hidden) rosterCard();
+      if (!$("#view-finance").hidden) renderFinance();
       if (!$("#view-reports").hidden) renderReports();
     }
     function wire() {
@@ -2484,6 +2782,18 @@ html[data-motion="off"] .flock { display: none; } html[data-motion="off"] .tree-
       $("#bboard").addEventListener("keydown", (e) => { if (e.key !== "Enter") return; const r = e.target.closest("tr[data-bid]"); if (r) { B.selected = r.dataset.bid; paint(); } });
       $("#bagents").addEventListener("click", (e) => { const b = e.target.closest("[data-bagent]"); if (!b) return; B.paused[b.dataset.bagent] = !B.paused[b.dataset.bagent]; paint(); });
       document.querySelectorAll("[data-bfilter]").forEach((b) => b.addEventListener("click", () => { B.filter = b.dataset.bfilter; document.querySelectorAll("[data-bfilter]").forEach((x) => x.setAttribute("aria-pressed", String(x === b))); paint(); }));
+      $("#fin-enter").addEventListener("click", () => { B.exec = true; paint(); });
+      $("#fin-exit").addEventListener("click", () => { B.exec = false; paint(); });
+      $("#fsel").addEventListener("change", () => paint());
+      $("#renewals").addEventListener("click", (e) => { const a = e.target.closest("[data-renew]"), ok = e.target.closest("[data-renewok]"), hd = e.target.closest("[data-renewhold]"); if (a) B.renew[a.dataset.renew] = "draft"; if (ok) B.renew[ok.dataset.renewok] = "approved"; if (hd) B.renew[hd.dataset.renewhold] = "held"; if (a || ok || hd) paint(); });
+      $("#citysel").addEventListener("change", (e) => { B.city = e.target.value; paint(); });
+      const cs = $("#citysearch"), cr = $("#cityresults");
+      const showRes = () => { const res = searchAll(cs.value); cr.hidden = !res.length; cr.innerHTML = res.map((r, i) => `<li role="option" tabindex="-1" data-i="${i}"><small>${r.kind}</small> ${esc(r.label)}</li>`).join(""); cr._res = res; };
+      cs.addEventListener("input", showRes);
+      cs.addEventListener("keydown", (e) => { if (e.key === "Enter" && cr._res && cr._res[0]) { e.preventDefault(); pickRes(cr._res[0]); } if (e.key === "Escape") cr.hidden = true; });
+      const pickRes = (r) => { cr.hidden = true; cs.value = r.label; if (r.city) B.city = r.city; if (r.id) B.selected = r.id; paint(); };
+      cr.addEventListener("click", (e) => { const li = e.target.closest("li[data-i]"); if (li) pickRes(cr._res[+li.dataset.i]); });
+      document.addEventListener("click", (e) => { if (!e.target.closest(".csearch")) cr.hidden = true; });
       document.querySelectorAll("[data-ofilter]").forEach((b) => b.addEventListener("click", () => { B.ofilter = b.dataset.ofilter; document.querySelectorAll("[data-ofilter]").forEach((x) => x.setAttribute("aria-pressed", String(x === b))); paint(); }));
       $("#inbox").addEventListener("click", (e) => { const li = e.target.closest("[data-mid]"); if (li) { B.selected = li.dataset.mid; document.getElementById("tab-bridge").click(); } });
       document.querySelectorAll("[data-cfilter]").forEach((b) => b.addEventListener("click", () => { B.cfilter = b.dataset.cfilter; document.querySelectorAll("[data-cfilter]").forEach((x) => x.setAttribute("aria-pressed", String(x === b))); paint(); }));
@@ -2511,11 +2821,11 @@ html[data-motion="off"] .flock { display: none; } html[data-motion="off"] .tree-
   $("#board").addEventListener("keydown", (e) => { if (e.key !== "Enter") return; const r = e.target.closest("tr[data-id]"); if (!r) return; S.selected = r.dataset.id; render(); });
   document.querySelectorAll("[data-filter]").forEach((b) => b.addEventListener("click", () => { S.filter = b.dataset.filter; document.querySelectorAll("[data-filter]").forEach((x) => x.setAttribute("aria-pressed", String(x === b))); render(); }));
   $("#reset").addEventListener("click", () => { start(); });
-  const TABS = ["desk", "bridge", "results", "donors", "cases", "reports", "rules"];
+  const TABS = ["desk", "bridge", "results", "donors", "cases", "reports", "finance", "rules"];
   function selectTab(name, focus) {
     TABS.forEach((t) => { const on = t === name, tab = $("#tab-" + t); tab.setAttribute("aria-selected", on); tab.tabIndex = on ? 0 : -1; $("#view-" + t).hidden = !on; if (on && focus) tab.focus(); });
     if (name === "results") renderResults();
-    if (["bridge", "donors", "cases", "reports"].includes(name)) Bridge.paint();
+    if (["bridge", "donors", "cases", "reports", "finance"].includes(name)) Bridge.paint();
   }
   TABS.forEach((t, i) => { const tab = $("#tab-" + t); tab.addEventListener("click", () => selectTab(t)); tab.addEventListener("keydown", (e) => { if (e.key === "ArrowRight") selectTab(TABS[(i + 1) % TABS.length], true); if (e.key === "ArrowLeft") selectTab(TABS[(i + TABS.length - 1) % TABS.length], true); }); });
   Bridge.wire();
@@ -2542,7 +2852,7 @@ html[data-motion="off"] .flock { display: none; } html[data-motion="off"] .tree-
   }
   start();
   requestAnimationFrame(frame);
-  if (["bridge", "results", "donors", "cases", "reports", "rules"].includes(location.hash.slice(1))) selectTab(location.hash.slice(1));
+  if (["bridge", "results", "donors", "cases", "reports", "finance", "rules"].includes(location.hash.slice(1))) selectTab(location.hash.slice(1));
 })();
 </script>
 <script id="motion-js">
@@ -2652,27 +2962,52 @@ html[data-motion="off"] .flock { display: none; } html[data-motion="off"] .tree-
 (() => {
   "use strict";
   // A tree that grows with your time on the dashboard today, and seagulls that fly over once an hour.
+  // The species follows where the viewer is signed in (from the browser's time zone, never their location).
   const root = document.documentElement, NS = "http://www.w3.org/2000/svg";
   const motion = () => root.dataset.motion !== "off";
   let seed = 4242; const rnd = () => { seed = (seed * 1664525 + 1013904223) >>> 0; return seed / 4294967296; };
+  const tz = (Intl.DateTimeFormat().resolvedOptions().timeZone || "");
+  const SPECIES = {
+    eucalyptus: { name: "eucalyptus", place: "Arizona", trunk: "#e3dccd", patch: "#bfae90", branch: "#cfc6b4", len: 150, decay: 0.74, spread: 0.36, depth: 6, leaf: "blade", leaves: ["#8fae9a", "#6f9a86", "#a9c3b4", "#7c9f8c"], droop: true },
+    redwood: { name: "coast redwood", place: "the Pacific coast", trunk: "#8a4632", patch: "#6e3426", branch: "#7a3b2a", len: 175, decay: 0.62, spread: 0.95, depth: 5, leaf: "needle", leaves: ["#2f5d3a", "#3c7350", "#2a4f33"], conical: true },
+    aspen: { name: "quaking aspen", place: "the Rockies", trunk: "#eeeee6", patch: "#3a3a3a", branch: "#d8d8cf", len: 140, decay: 0.7, spread: 0.42, depth: 6, leaf: "round", leaves: ["#6fae5c", "#8cc46c", "#4f8f4a"] },
+    oak: { name: "oak", place: "the Midwest and South", trunk: "#5b3d2b", patch: "#4a3122", branch: "#6b4a35", len: 110, decay: 0.68, spread: 0.6, depth: 7, leaf: "round", leaves: ["#3f8a4a", "#6fae5c", "#2f6b3a", "#9cb894"] },
+    maple: { name: "sugar maple", place: "the Northeast", trunk: "#5e4a3c", patch: "#4a3a2e", branch: "#6b5444", len: 115, decay: 0.7, spread: 0.55, depth: 7, leaf: "round", leaves: ["#3f8a4a", "#2f6b3a", "#b4452e", "#8e2a52"] }
+  };
+  const sp = /Phoenix|Hermosillo/.test(tz) ? SPECIES.eucalyptus : /Los_Angeles|Vancouver|Tijuana/.test(tz) ? SPECIES.redwood : /Denver|Boise|Edmonton/.test(tz) ? SPECIES.aspen : /New_York|Toronto|Detroit|Montreal|Halifax/.test(tz) ? SPECIES.maple : SPECIES.oak;
   const wrap = document.createElement("div"); wrap.className = "tree-wrap"; wrap.setAttribute("aria-hidden", "true");
   const svg = document.createElementNS(NS, "svg"); svg.setAttribute("viewBox", "0 0 400 520"); svg.setAttribute("preserveAspectRatio", "xMidYMax meet");
   wrap.appendChild(svg); document.body.prepend(wrap);
   const el = (tag, a, p = svg) => { const e = document.createElementNS(NS, tag); for (const k in a) e.setAttribute(k, a[k]); p.appendChild(e); return e; };
-  const MAXD = 7, branches = [], leaves = [];
-  (function grow(x, y, len, ang, d) {
-    const x2 = x + Math.cos(ang) * len, y2 = y + Math.sin(ang) * len;
-    branches.push({ x, y, x2, y2, w: Math.max(1.2, 15 * Math.pow(0.68, d)), born: d === 0 ? 0 : 0.05 + (d / MAXD) * 0.62 + rnd() * 0.05, len });
-    if (d >= MAXD) { leaves.push({ x: x2, y: y2, born: 0.32 + (d / MAXD) * 0.4 + rnd() * 0.12, r: 9 + rnd() * 9, c: rnd() }); return; }
-    if (d >= 3 && rnd() < 0.45) leaves.push({ x: x2, y: y2, born: 0.3 + (d / MAXD) * 0.4 + rnd() * 0.1, r: 7 + rnd() * 8, c: rnd() });
-    const n = d < 2 ? 2 : rnd() < 0.3 ? 3 : 2;
-    for (let i = 0; i < n; i++) grow(x2, y2, len * (0.7 + rnd() * 0.12), ang + (i - (n - 1) / 2) * (0.42 + rnd() * 0.25) + (rnd() - 0.5) * 0.2, d + 1);
-  })(200, 515, 110, -Math.PI / 2, 0);
-  const bG = el("g", {}), lG = el("g", {}), fG = el("g", {});
-  const bEls = branches.map((b) => el("line", { x1: b.x, y1: b.y, x2: b.x2, y2: b.y2, stroke: b.w > 6 ? "#5b3d2b" : "#6b4a35", "stroke-width": b.w, "stroke-linecap": "round", "stroke-dasharray": b.len, "stroke-dashoffset": b.len }, bG));
-  const LEAF = ["#3f8a4a", "#6fae5c", "#2f6b3a", "#9cb894"];
-  const lEls = leaves.map((l) => el("circle", { cx: l.x, cy: l.y, r: l.r, fill: LEAF[Math.floor(l.c * LEAF.length)], opacity: 0.85, transform: `translate(${l.x} ${l.y}) scale(0) translate(${-l.x} ${-l.y})` }, lG));
-  const flowers = leaves.filter((l, i) => i % 5 === 0).map((l) => el("circle", { cx: l.x + 4, cy: l.y - 3, r: 3, fill: l.c > 0.5 ? "#efe8f5" : "#c9b6e0", opacity: 0 }, fG));
+  const branches = [], leaves = [];
+  function grow(x, y, len, ang, d) {
+    const bend = sp.name === "eucalyptus" ? (rnd() - 0.5) * 0.35 : 0;
+    const x2 = x + Math.cos(ang + bend) * len, y2 = y + Math.sin(ang + bend) * len;
+    const cx = (x + x2) / 2 + Math.cos(ang + Math.PI / 2) * len * bend * 0.6, cy = (y + y2) / 2 + Math.sin(ang + Math.PI / 2) * len * bend * 0.6;
+    branches.push({ x, y, x2, y2, cx, cy, w: Math.max(1, (sp.name === "eucalyptus" ? 13 : 15) * Math.pow(0.66, d)), born: d === 0 ? 0 : 0.05 + (d / sp.depth) * 0.62 + rnd() * 0.05, len, d });
+    if (d >= sp.depth) { leaves.push({ x: x2, y: y2, ang, born: 0.32 + (d / sp.depth) * 0.4 + rnd() * 0.12, r: 9 + rnd() * 9, c: rnd() }); return; }
+    if (d >= 3 && rnd() < 0.5) leaves.push({ x: x2, y: y2, ang, born: 0.3 + (d / sp.depth) * 0.4 + rnd() * 0.1, r: 7 + rnd() * 8, c: rnd() });
+    const n = d < 1 ? 2 : rnd() < 0.3 ? 3 : 2;
+    for (let i = 0; i < n; i++) grow(x2, y2, len * (sp.decay + rnd() * 0.1), ang + (i - (n - 1) / 2) * (sp.spread + rnd() * 0.2) + (rnd() - 0.5) * 0.2, d + 1);
+  }
+  if (sp.conical) {
+    branches.push({ x: 200, y: 515, x2: 200, y2: 70, cx: 200, cy: 300, w: 16, born: 0, len: 445, d: 0 });
+    for (let i = 0; i < 16; i++) { const y = 470 - i * 25, L = 22 + (16 - i) * 7.5; [-1, 1].forEach((s) => { const x2 = 200 + s * L, y2 = y + 10; branches.push({ x: 200, y, x2, y2, cx: 200 + s * L / 2, cy: y + 2, w: 3.2 - i * 0.12, born: 0.1 + (i / 16) * 0.6, len: L, d: 2 }); for (let k = 0; k < 3; k++) leaves.push({ x: 200 + s * L * (0.45 + k * 0.25), y: y + 6 + k * 2, ang: s > 0 ? 0 : Math.PI, born: 0.25 + (i / 16) * 0.6, r: 12 - i * 0.3, c: rnd() }); }); }
+  } else grow(200, 515, sp.len, -Math.PI / 2, 0);
+  const sway = el("g", { class: "tsway" });
+  const bG = el("g", {}, sway), lG = el("g", {}, sway), fG = el("g", {}, sway);
+  const bEls = branches.map((b) => el("path", { d: `M${b.x},${b.y} Q${b.cx},${b.cy} ${b.x2},${b.y2}`, stroke: b.d === 0 ? sp.trunk : sp.branch, "stroke-width": b.w, "stroke-linecap": "round", fill: "none", pathLength: 1, "stroke-dasharray": 1, "stroke-dashoffset": 1 }, bG));
+  const bark = sp.name === "eucalyptus" || sp.name === "quaking aspen" ? branches.filter((b) => b.d <= 1).flatMap((b) => Array.from({ length: b.d === 0 ? 9 : 3 }, (_, i) => { const k = 0.12 + rnd() * 0.8, x = b.x + (b.x2 - b.x) * k + (rnd() - 0.5) * b.w * 0.5, y = b.y + (b.y2 - b.y) * k; return { b, e: el("ellipse", { cx: x, cy: y, rx: b.w * (sp.name === "eucalyptus" ? 0.22 : 0.3), ry: sp.name === "eucalyptus" ? 5 + rnd() * 9 : 1.6, fill: sp.patch, opacity: 0 }, bG) }; })) : [];
+  const leafNode = (l) => {
+    const g = el("g", { class: "lf", style: `--ld:${(3 + rnd() * 3).toFixed(1)}s;--la:${(2 + rnd() * 4).toFixed(1)}deg;--lo:${(-rnd() * 4).toFixed(1)}s` }, lG);
+    const col = () => sp.leaves[Math.floor(rnd() * sp.leaves.length)];
+    if (sp.leaf === "blade") for (let i = 0; i < 6; i++) { const a = (sp.droop ? 90 : 0) + (rnd() - 0.5) * 70, len = 9 + rnd() * 9; el("ellipse", { cx: l.x, cy: l.y + len * 0.55, rx: 1.8 + rnd(), ry: len, fill: col(), opacity: 0.9, transform: `rotate(${(a - 90).toFixed(0)} ${l.x} ${l.y})` }, g); }
+    else if (sp.leaf === "needle") for (let i = 0; i < 4; i++) el("ellipse", { cx: l.x + (rnd() - 0.5) * 10, cy: l.y + (rnd() - 0.5) * 6, rx: l.r * 0.9, ry: l.r * 0.42, fill: col(), opacity: 0.92 }, g);
+    else el("circle", { cx: l.x, cy: l.y, r: l.r, fill: col(), opacity: 0.85 }, g);
+    return g;
+  };
+  const lEls = leaves.map(leafNode);
+  const flowers = sp.name === "eucalyptus" ? leaves.filter((l, i) => i % 6 === 0).map((l) => el("circle", { cx: l.x + 3, cy: l.y + 6, r: 2.6, fill: "#f4f0f7", opacity: 0 }, fG)) : leaves.filter((l, i) => i % 5 === 0).map((l) => el("circle", { cx: l.x + 4, cy: l.y - 3, r: 3, fill: l.c > 0.5 ? "#efe8f5" : "#c9b6e0", opacity: 0 }, fG));
   const day = () => new Date().toLocaleDateString("en-CA");
   const KEY = () => "tree-seconds-" + day();
   let secs = 0; try { secs = +localStorage.getItem(KEY()) || 0; } catch (e) {}
@@ -2682,12 +3017,13 @@ html[data-motion="off"] .flock { display: none; } html[data-motion="off"] .tree-
   const clamp = (v) => Math.max(0, Math.min(1, v));
   function draw() {
     const g = 0.06 + 0.94 * Math.sqrt(Math.min(1, secs / (6 * 3600)));
-    branches.forEach((b, i) => bEls[i].setAttribute("stroke-dashoffset", (b.len * (1 - clamp((g - b.born) / 0.12))).toFixed(1)));
-    leaves.forEach((l, i) => { const k = clamp((g - l.born) / 0.1); lEls[i].setAttribute("transform", `translate(${l.x} ${l.y}) scale(${k.toFixed(3)}) translate(${-l.x} ${-l.y})`); });
+    branches.forEach((b, i) => bEls[i].setAttribute("stroke-dashoffset", (1 - clamp((g - b.born) / 0.12)).toFixed(3)));
+    bark.forEach(({ b, e }) => e.setAttribute("opacity", clamp((g - b.born - 0.1) / 0.1) * 0.7));
+    leaves.forEach((l, i) => { const k = clamp((g - l.born) / 0.1); lEls[i].style.transform = `scale(${k.toFixed(3)})`; lEls[i].style.opacity = k ? 1 : 0; });
     flowers.forEach((f) => f.setAttribute("opacity", g > 0.9 ? 0.95 : 0));
     const m = Math.floor(secs / 60);
-    chip.textContent = `Your tree · ${m < 60 ? m + " min" : Math.floor(m / 60) + " h " + (m % 60) + " min"} today`;
-    chip.title = "This tree grows while the dashboard is open and in view. It starts again as a seedling each morning.";
+    chip.textContent = `Your ${sp.name} · ${m < 60 ? m + " min" : Math.floor(m / 60) + " h " + (m % 60) + " min"} today`;
+    chip.title = `A ${sp.name}, the tree for ${sp.place}, chosen from your time zone. It grows while the dashboard is open and in view, and starts again as a seedling each morning.`;
   }
   draw();
   setInterval(() => {
