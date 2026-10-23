@@ -733,6 +733,8 @@ html[data-motion="off"] .flock { display: none; } html[data-motion="off"] .tree-
     <div class="card" style="margin-top:16px"><h2>EBT check before every cart <span class="livedot" style="color:var(--good)">Live</span></h2>
       <p class="sub">Feed-A-Friend pays only while a family has no SNAP money to use. With the family's consent, the EBT check agent reads their EBT account after the cart audit and before payment: no card yet or a balance under $25 clears; live SNAP funds go to a person; a balance drained by skimming is approved and flagged for help. It never asks for the PIN, never stores the full card number, and keeps only the balance band and deposit dates in the case.</p>
       <div id="ebtsum"></div>
+      <h3 style="font-size:1rem;margin:12px 0 4px">Integration route by state</h3>
+      <div class="table-scroll" id="ebtroutes"></div>
       <details class="tbl"><summary>How Propel tracks EBT, and how Feed-A-Friend does the same</summary><div class="policy-wrap">
         <ol class="policy">
           <li><b>Propel's method:</b> the family enters their EBT login in the app, and Propel connects to the state's EBT portal with their permission to show the balance and transactions. It does not ask for the PIN and does not store PINs, full card numbers or Social Security numbers; data is encrypted in transit (<a href="https://www.propel.app/snap/what-is-the-propel-app-how-does-it-work/" target="_blank" rel="noopener noreferrer">Propel, n.d.-a</a>).</li>
@@ -2004,7 +2006,8 @@ html[data-motion="off"] .flock { display: none; } html[data-motion="off"] .tree-
       } else if (st === "ebt") {
         const e = ebtOf(h); h.ebt = e;
         if (!e.linked && !h.ebtOk) { blog(h, "EBT check", "You", "ebt.unlinked", "The family has not linked their EBT account, so the balance can't be checked before payment", "alert"); return raise(h, "ebtnolink", past); }
-        const shown = e.state === "none" ? "No EBT card yet: the SNAP application is still pending" : e.state === "theft" ? `Balance ${money(e.bal)} after ${e.theftTx} card-skimming-style purchases out of state on ${fmtT(e.theftAt)}` : `SNAP balance ${money(e.bal)}; last deposit ${e.lastDep}; next deposit ${e.nextDep}`;
+        const portal = EBT_PORTAL[h.region.st] ? EBT_PORTAL[h.region.st][0] : "the state EBT portal";
+        const shown = e.state === "none" ? `No EBT card yet on ${portal}: the SNAP application is still pending` : e.state === "theft" ? `Balance ${money(e.bal)} after ${e.theftTx} card-skimming-style purchases out of state on ${fmtT(e.theftAt)}` : `SNAP balance ${money(e.bal)} on ${portal}; last deposit ${e.lastDep}; next deposit ${e.nextDep}`;
         (h.notes = h.notes || []).push({ t: S.t, text: `EBT check before payment: ${shown}` });
         if (e.state === "live" && !h.ebtOk) { blog(h, "EBT check", "You", "ebt.live", `Live SNAP funds on the card: ${money(e.bal)}. Feed-A-Friend covers the wait, so a person decides before paying.`, "alert"); return raise(h, "ebtlive", past, { bal: e.bal }); }
         if (e.state === "theft") { blog(h, "EBT check", "Security", "ebt.theft", `Benefits look stolen: ${shown}. The cart is approved; a person helps the family report it.`, "alert"); secWarn({ sev: "warning", agent: "EBT check", cause: "theft", fam: h.id, title: "SNAP benefits drained by card skimming", detail: `The card's balance dropped to ${money(e.bal)} through ${e.theftTx} quick purchases out of state, a known skimming pattern. The family still needs food, so the cart is approved. A person should help them lock the card, report it to the state and ask for a replacement card.`, evidence: ["Out-of-state purchases minutes apart", "No matching purchases at the family's usual stores", "Balance now under the spent-up threshold"], options: [["help", "Call the family to lock the card and report the theft", "Most state portals let them lock the card right away"], ["ok", "Mark as reviewed", ""]] }); }
@@ -2248,6 +2251,22 @@ html[data-motion="off"] .flock { display: none; } html[data-motion="off"] .tree-
     }
     // ---------- EBT check: confirm no live SNAP funds before paying (consent-based, read-only) ----------
     const EBT_SPENT = 25;   // a balance under $25 counts as spent up
+    // Cardholder portals from USDA FNS, EBT customer service information (July 25, 2024)
+    const EBT_PORTAL = { AZ: ["ebtEDGE", "ebtedge.com"], TX: ["ebtEDGE", "ebtedge.com"], MI: ["ebtEDGE", "ebtedge.com"], NY: ["ebtEDGE", "ebtedge.com"], TN: ["ConnectEBT", "connectebt.com"], MS: ["ConnectEBT", "connectebt.com"], GA: ["ConnectEBT", "connectebt.com/gaebtclient"], CA: ["California EBT (state site)", "cdss.ca.gov/ebt-card"], IL: ["Illinois Link (state site)", "link.illinois.gov"] };
+    const EBT_ROUTE = {
+      AZ: ["Family-linked login now; data-sharing agreement with DES next", "Pilot state. DES already partners with Propel on case linking, so an agreement is the strongest route."],
+      TX: ["Family-linked login (ebtEDGE)", "Same vendor as AZ, MI and NY: one connection pattern covers four states."],
+      MI: ["Family-linked login (ebtEDGE)", "Same connection pattern as AZ."],
+      NY: ["Family-linked login (ebtEDGE)", "NYC residents also use ACCESS HRA for case status; keep that with the Benefits link agent."],
+      TN: ["Family-linked login (ConnectEBT)", "One ConnectEBT pattern covers TN, MS and GA."],
+      MS: ["Family-linked login (ConnectEBT)", "Rural Delta families: allow the balance-photo fallback when phone data is limited."],
+      GA: ["Family-linked login (ConnectEBT)", "Georgia uses its own ConnectEBT client path."],
+      CA: ["Balance photo or receipt for now; seek a CDSS data agreement", "State-run cardholder site; Propel also lists ebtEDGE for California balance checks, so confirm before building."],
+      IL: ["Balance photo or receipt for now; seek an IDHS data agreement", "State-run Link site; build only after a state agreement."]
+    };
+    function ebtRoutes() {
+      $("#ebtroutes").innerHTML = `<table class="data"><thead><tr><th scope="col">State</th><th scope="col">Cardholder portal</th><th scope="col">Feed-A-Friend route</th><th scope="col">Why</th></tr></thead><tbody>${Object.keys(EBT_ROUTE).map((st) => `<tr><td><b>${st}</b></td><td>${esc(EBT_PORTAL[st][0])}<br><small>${esc(EBT_PORTAL[st][1])}</small></td><td>${esc(EBT_ROUTE[st][0])}</td><td>${esc(EBT_ROUTE[st][1])}</td></tr>`).join("")}</tbody></table><p class="sub" style="margin:6px 0 0">Portals: <a href="https://fns-prod.azureedge.us/sites/default/files/resource-files/ebt-customer-service-info-20240725.pdf" target="_blank" rel="noopener noreferrer">USDA FNS, 2024</a>. Two vendors, ebtEDGE and ConnectEBT, cover 7 of the 9 states, so two connection patterns reach most families.</p>`;
+    }
     function ebtOf(h) {
       const r = hashR(h.id + "ebt"), linked = h.ebtLinkedLater || h.ebtOk || hashR(h.id + "lk") < 0.92;
       const dep = Math.floor(hashR(h.id + "dd") * 20) + 1, last = `${["Oct", "Sep"][dep > 20 ? 1 : 0]} ${dep}`, next = `Nov ${dep}`;
@@ -2258,6 +2277,7 @@ html[data-motion="off"] .flock { display: none; } html[data-motion="off"] .tree-
       return { linked, state: "theft", bal: Math.round(hashR(h.id + "tb") * 6), theftTx: 3 + Math.floor(hashR(h.id + "tx") * 4), theftAt: S.t - 600 - Math.round(hashR(h.id + "ta") * 2000), lastDep: last, nextDep: next };
     }
     function ebtCard() {
+      if (!$("#ebtroutes").innerHTML) ebtRoutes();
       const L = B.list.filter((h) => h.ebt), c = (st) => L.filter((h) => h.ebt.state === st).length;
       $("#ebtsum").innerHTML = `<div class="kpis" style="grid-template-columns:repeat(5,minmax(0,1fr))">${[["Checked before payment", L.length, "every cart, with consent"], ["No card yet", c("none"), "application still pending"], ["Spent up", c("spent"), `balance under $${EBT_SPENT}`], ["Live funds: held", L.filter((h) => h.ebtHeld).length, "a person decided"], ["Stolen by skimming", c("theft"), "approved; help reporting"]].map(([l, v, s2]) => `<div class="kpi"><span class="lab">${l}</span><span class="val">${v}</span><span class="sub">${s2}</span></div>`).join("")}</div>`;
     }
