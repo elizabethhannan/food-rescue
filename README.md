@@ -79,3 +79,7 @@ Feed-A-Friend covers the time families spend waiting on slow government and corp
 
 - **EBT check agent:** with the family's consent, reads their EBT account after the cart audit and before Feed-A-Friend pays. No card yet (application pending) or a balance under $25 clears. Live SNAP funds go to a person, who can hold the order until the balance is spent down. A balance drained by skimming-style out-of-state purchases is approved and flagged so a person can help lock and report the card. It never asks for the PIN, never stores the full card number, and keeps only the balance band and deposit dates.
 - **Modeled on Propel:** the family links their EBT login and Propel reads balance and transactions from the state's EBT portal with permission, without PINs or full card numbers (Propel's public help pages, cited on the page). State portals are run by vendors such as ebtEDGE and ConnectEBT, so coverage varies by state; where a state signs a data-sharing agreement, the Benefits link agent replaces the family login.
+
+### Light and dark
+
+- A Light/Dark switch sits at the top right with the Motion switch. The page opens light; your choice is remembered in this browser.
