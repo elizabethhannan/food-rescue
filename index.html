@@ -469,6 +469,7 @@ html[data-motion="off"] .garden .sway { animation: none !important; }
 .draft p { margin: 0; font-size: .9375rem; color: var(--ink-2); }
 .draft .acts { display: flex; flex-wrap: wrap; gap: 8px; }
 .trace li.pend { opacity: .55; }
+.policy-wrap a { color: var(--focus); }
 .policy { margin: 8px 0 0; padding-left: 20px; display: grid; gap: 6px; font-size: .9375rem; color: var(--ink-2); } .policy a { color: var(--focus); }
 .notes { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; font-size: .875rem; color: var(--ink-2); } .notes .mono { color: var(--ink-3); font-size: .8125rem; margin-right: 6px; }
 @media (max-width: 1200px) { .levels { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; } }
@@ -729,6 +730,17 @@ html[data-motion="off"] .flock { display: none; } html[data-motion="off"] .tree-
       <div class="card"><h2>Food kept out of the landfill <span class="livedot" style="color:var(--good)">Live</span></h2><p class="sub">Surplus food the rescue agents delivered instead of letting it go to waste, in tons (2,000 lb), next to what was lost when a safe window closed. From the dispatch desk's simulated week.</p><div id="waste"></div></div>
       <div class="card"><h2>What's in the carts, by store <span class="livedot" style="color:var(--good)">Live</span></h2><p class="sub">Dollars in every family's cart, grouped by where it was bought. Organic and non-GMO items are counted on their own, apart from processed food, baby food and toiletries.</p><div id="cartmix"></div><div class="mlegend" id="cartlegend" aria-hidden="true"></div></div>
     </div>
+    <div class="card" style="margin-top:16px"><h2>EBT check before every cart <span class="livedot" style="color:var(--good)">Live</span></h2>
+      <p class="sub">Feed-A-Friend pays only while a family has no SNAP money to use. With the family's consent, the EBT check agent reads their EBT account after the cart audit and before payment: no card yet or a balance under $25 clears; live SNAP funds go to a person; a balance drained by skimming is approved and flagged for help. It never asks for the PIN, never stores the full card number, and keeps only the balance band and deposit dates in the case.</p>
+      <div id="ebtsum"></div>
+      <details class="tbl"><summary>How Propel tracks EBT, and how Feed-A-Friend does the same</summary><div class="policy-wrap">
+        <ol class="policy">
+          <li><b>Propel's method:</b> the family enters their EBT login in the app, and Propel connects to the state's EBT portal with their permission to show the balance and transactions. It does not ask for the PIN and does not store PINs, full card numbers or Social Security numbers; data is encrypted in transit (<a href="https://www.propel.app/snap/what-is-the-propel-app-how-does-it-work/" target="_blank" rel="noopener noreferrer">Propel, n.d.-a</a>).</li>
+          <li><b>What it can see:</b> current balance, deposit history and up to two years of transactions with store names, dates and amounts (<a href="https://www.propel.app/snap/can-i-look-at-my-ebt-transactions-online/" target="_blank" rel="noopener noreferrer">Propel, n.d.-b</a>).</li>
+          <li><b>No single API:</b> state EBT portals are run by vendors, such as ebtEDGE in about three dozen states and territories (including Arizona and New York) and ConnectEBT in 14 states (including Georgia) (<a href="https://www.propel.app/snap/propel-vs-ebtedge-vs-connectebt/" target="_blank" rel="noopener noreferrer">Propel, n.d.-c</a>). Coverage and security features vary by state.</li>
+          <li><b>Feed-A-Friend's version:</b> a consent screen and a secure link the family taps; a read-only check right before payment; only three things kept: balance band, last deposit date, next deposit date. The link is removed when the bridge closes. Where a state agrees, the Benefits link agent's data-sharing agreement replaces the family login entirely.</li>
+          <li><b>Rule:</b> no card yet or under $25 clears; live funds wait for a person, who can hold the order until the balance is spent down; skimming-style drains are approved and flagged so a person can help lock and report the card.</li>
+        </ol></div></details></div>
     <div class="card" style="margin-top:16px"><h2>Returns <span class="livedot" style="color:var(--good)">Live</span></h2>
       <p class="sub">Families can report a damaged, spoiled or wrong item by text with a photo. Feed-A-Friend files the claim on its own account and asks the delivery service for a replacement. If the replacement is not completed within 48 hours, the item's value goes back to the donor fund that paid, never to the family as cash. The Returns watch agent checks every claim.</p>
       <div class="table-scroll" id="returns"></div>
@@ -918,6 +930,7 @@ html[data-motion="off"] .flock { display: none; } html[data-motion="off"] .tree-
           <tr><td><b>Fraud detection</b></td><td>Finds repeat and duplicate orders and decides the likely cause: a family's mistake, staff error, an AI agent's error, a bot, malware or fraud; merges honest duplicates</td><td>A second order at one address this month, or anything that looks like fraud; it never denies help alone</td><td class="mono">fraud.repeat, fraud.duplicate</td></tr>
           <tr><td><b>Bot defense, Malware scan, Account security, API integrity, Payment guard, Data access audit</b></td><td>Always-on security agents: rate limits, upload scanning, MFA and login watch, signed partner messages, monthly limits, access logs</td><td>Any critical warning pages the on-call lead</td><td class="mono">security.warning</td></tr>
           <tr><td><b>Warning</b></td><td>Routes every alert by severity to the ribbon on every tab, the security queue and the on-call lead</td><td>Critical warnings until a person acknowledges them</td><td class="mono">warning.raised</td></tr>
+          <tr><td><b>EBT check</b></td><td>With consent, reads the family's EBT account right before payment: no card yet or under $25 clears; flags skimming-style drains; never asks for the PIN and keeps only the balance band and deposit dates</td><td>Live SNAP funds on the card, or the account is not linked</td><td class="mono">ebt.cleared, ebt.live, ebt.unlinked, ebt.theft</td></tr>
           <tr><td><b>Delivery window</b></td><td>After each cart is paid, pulls the delivery window from the partner, saves it to the case notes and texts the family; watches the window</td><td>A delivery runs past its window (warning) or is not made (Feed-A-Friend is alerted and a person chooses how to reorder)</td><td class="mono">window.recorded, delivery.late, delivery.failed</td></tr>
           <tr><td><b>Returns</b></td><td>Takes a family's return report by text with a photo, files the claim on Feed-A-Friend's account and asks for a replacement; after 48 hours without one, the item's value goes back to the donor fund</td><td>The Returns watch agent flags a claim</td><td class="mono">return.requested, return.replaced, return.refunded</td></tr>
           <tr><td><b>Returns watch</b></td><td>Checks every claim: photo present, reused images, repeat claims at one address, item value, refunds owed by partners</td><td>High-risk claims wait for a person; food support is never cut</td><td class="mono">return.checked</td></tr>
@@ -966,6 +979,7 @@ html[data-motion="off"] .flock { display: none; } html[data-motion="off"] .tree-
           <tr><td><b>Roster, Treasury and Stewardship</b></td><td><span class="status built">In this prototype</span></td><td>Volunteer reviewers and hours; fund separation, admin against funds, burn-down and renewal timing</td><td>Executives approve every renewal ask</td></tr>
           <tr><td><b>Executive sign-in</b></td><td><span class="status next">Next</span></td><td>Real executive accounts and server-side access control for the finance view</td><td>An administrator grants each executive access</td></tr>
           <tr><td><b>Security and fraud</b></td><td><span class="status built">In this prototype</span></td><td>Always-on security agents, fraud causes, "Are we under attack?" status, MFA on executive access, monthly limits</td><td>A person decides every open warning</td></tr>
+          <tr><td><b>EBT check</b></td><td><span class="status built">In this prototype</span></td><td>Confirms there is no live SNAP money before Feed-A-Friend pays, the way Propel reads balances through state EBT portals</td><td>A person decides live balances and unlinked accounts</td></tr>
           <tr><td><b>Delivery window, Returns, Returns watch, Pet ride</b></td><td><span class="status built">In this prototype</span></td><td>Delivery windows in case notes, late and missed delivery alerts, returns with refunds to donor funds, pet medical bonus with rides</td><td>A person decides missed deliveries and flagged returns</td></tr>
           <tr><td><b>Car repair bridge</b></td><td><span class="status later">Later</span></td><td>A possible branch: pays licensed repair shops directly so a family keeps the car they need for work, school and appointments while benefits are pending</td><td>A person approves every repair estimate; no cash goes to families</td></tr>
           <tr><td><b>Policy brief</b></td><td><span class="status next">Next</span></td><td>Turns a quarter of state reports into a plain-language brief for legislators and agency leaders</td><td>A person edits and signs it</td></tr>
@@ -1746,9 +1760,9 @@ html[data-motion="off"] .flock { display: none; } html[data-motion="off"] .tree-
       { key: "petmed", name: "Pet medical fund", type: "Vet care grants", vet: true, bal: 1500 }
     ];
     const LEVEL = { 1: { name: "Level 1 · Bridge", amt: 200, hrs: 72 }, 2: { name: "Level 2 · Priority", amt: 200, hrs: 24 }, 3: { name: "Level 3 · Crisis", amt: 200, hrs: 8 } };  // one order per address per month: $200 household, +$100 pets
-    const BREASON = { borderline: "Close call on level", medical: "Medical need mentioned", gap: "No delivery inside the promise", spend: "Over $500 for one family", nofund: "No fund can pay", vet: "Sick pet", survey: "Survey not answered", cart: "Cart item needs a decision", repeat: "Second order this month at one address", dfailed: "Delivery not made" };
-    const BAGENTS = ["Need", "Privacy guard", "Survey", "Document reader", "Fulfillment", "Cart audit", "Roster", "Fund", "Pet care", "Benefits link", "Donor care"];
-    const stepAgent = { audit: "Cart audit", survey: "Survey", survey_stall: "Survey", survey_done: "Survey", docs: "Document reader", need: "Need", privacy: "Privacy guard", route: "Fulfillment", fund: "Fund", pet: "Pet care", order: "Fulfillment" };
+    const BREASON = { borderline: "Close call on level", medical: "Medical need mentioned", gap: "No delivery inside the promise", spend: "Over $500 for one family", nofund: "No fund can pay", vet: "Sick pet", survey: "Survey not answered", cart: "Cart item needs a decision", repeat: "Second order this month at one address", dfailed: "Delivery not made", ebtlive: "Live SNAP funds on the card", ebtnolink: "EBT account not linked" };
+    const BAGENTS = ["Need", "Privacy guard", "Survey", "Document reader", "Fulfillment", "Cart audit", "Roster", "EBT check", "Fund", "Pet care", "Benefits link", "Donor care"];
+    const stepAgent = { ebt: "EBT check", audit: "Cart audit", survey: "Survey", survey_stall: "Survey", survey_done: "Survey", docs: "Document reader", need: "Need", privacy: "Privacy guard", route: "Fulfillment", fund: "Fund", pet: "Pet care", order: "Fulfillment" };
     const chName = (k) => (CH[k] ? CH[k].name : "Delivery service");
     const money = (n) => "$" + Math.round(n).toLocaleString();
     const hashR = (s) => { let h = 2166136261; for (const c of s) h = Math.imul(h ^ c.charCodeAt(0), 16777619); return ((h >>> 0) % 10000) / 10000; };
@@ -1986,7 +2000,16 @@ html[data-motion="off"] .flock { display: none; } html[data-motion="off"] .tree-
         blog(h, "Cart audit", "Case manager", "cms.purchases", `Logged by topic: ${Object.entries(h.purchases).sort((a, b) => b[1] - a[1]).map(([k, v]) => `${TOPIC[k].toLowerCase()} ${money(v)}`).join(", ")}`);
         if (bad.length) msg(h, "Text", "out", "Feed-A-Friend", `We took ${bad.map((i) => i.name.split(",")[0].toLowerCase()).join(" and ")} off your list. Feed-A-Friend can't buy alcohol, tobacco, vapes, lottery tickets, gift cards or CBD. Everything else is going ahead.`);
         else if (rm.length) msg(h, "Text", "out", "Feed-A-Friend", `Your list came to a little over ${money(LEVEL[h.level].amt)}, so we left off ${rm.length} item${rm.length > 1 ? "s" : ""}, snacks first. Reply if you want to swap something.`);
-        sched(S.t + 2, h, "fund", curTag);
+        sched(S.t + 2, h, "ebt", curTag);
+      } else if (st === "ebt") {
+        const e = ebtOf(h); h.ebt = e;
+        if (!e.linked && !h.ebtOk) { blog(h, "EBT check", "You", "ebt.unlinked", "The family has not linked their EBT account, so the balance can't be checked before payment", "alert"); return raise(h, "ebtnolink", past); }
+        const shown = e.state === "none" ? "No EBT card yet: the SNAP application is still pending" : e.state === "theft" ? `Balance ${money(e.bal)} after ${e.theftTx} card-skimming-style purchases out of state on ${fmtT(e.theftAt)}` : `SNAP balance ${money(e.bal)}; last deposit ${e.lastDep}; next deposit ${e.nextDep}`;
+        (h.notes = h.notes || []).push({ t: S.t, text: `EBT check before payment: ${shown}` });
+        if (e.state === "live" && !h.ebtOk) { blog(h, "EBT check", "You", "ebt.live", `Live SNAP funds on the card: ${money(e.bal)}. Feed-A-Friend covers the wait, so a person decides before paying.`, "alert"); return raise(h, "ebtlive", past, { bal: e.bal }); }
+        if (e.state === "theft") { blog(h, "EBT check", "Security", "ebt.theft", `Benefits look stolen: ${shown}. The cart is approved; a person helps the family report it.`, "alert"); secWarn({ sev: "warning", agent: "EBT check", cause: "theft", fam: h.id, title: "SNAP benefits drained by card skimming", detail: `The card's balance dropped to ${money(e.bal)} through ${e.theftTx} quick purchases out of state, a known skimming pattern. The family still needs food, so the cart is approved. A person should help them lock the card, report it to the state and ask for a replacement card.`, evidence: ["Out-of-state purchases minutes apart", "No matching purchases at the family's usual stores", "Balance now under the spent-up threshold"], options: [["help", "Call the family to lock the card and report the theft", "Most state portals let them lock the card right away"], ["ok", "Mark as reviewed", ""]] }); }
+        else blog(h, "EBT check", "Fund", "ebt.cleared", `${shown}. Cleared for payment.`);
+        sched(S.t + 1, h, "fund", curTag);
       } else if (st === "fund") {
         const total = LEVEL[h.level].amt + petBonus(h);
         if (total > 500 && !h.spendOk) { blog(h, "Fund", "You", "fund.escalated", `${money(total)} for one family is over the $500 line (${money(LEVEL[h.level].amt)} groceries + ${money(petBonus(h))} pet bonus)`, "alert"); return raise(h, "spend", past, { total }); }
@@ -2057,6 +2080,12 @@ html[data-motion="off"] .flock { display: none; } html[data-motion="off"] .tree-
         ...(alt ? [{ key: "alt", label: `Pay from ${alt.name}`, note: `${money(alt.bal)} left`, rec: true, fund: alt.key }] : []),
         { key: "partial", label: "Send $150 of groceries now from what is left", note: "The rest follows when a fund is topped up", rec: !alt },
         { key: "hold", label: "Hold until Friday's top-ups", note: "Only if a top-up request was approved" }]; }
+      if (reason === "ebtlive") return [
+        { key: "hold", label: `Hold: the family can use their ${money(x.bal)} SNAP balance first`, note: "Text them; the order goes ahead once the balance is spent down", rec: true },
+        { key: "approve", label: "Approve anyway", note: "For example, the balance is earmarked for formula or a medical diet; logged with your reason" }];
+      if (reason === "ebtnolink") return [
+        { key: "link", label: "Text the family a secure link to connect their EBT account", note: "Takes about a minute; no PIN is ever asked for", rec: true },
+        { key: "receipt", label: "Accept a photo of their latest EBT receipt or balance screen", note: "A person reads the balance" }];
       if (reason === "dfailed") { const alt = CHANNELS.find((c) => c.key !== h.ch && c.covers(h.region) && !["walmart", "amazon"].includes(c.key)) || CH.walmart; return [
         { key: "alt", label: `Reorder now with ${alt.name}`, note: "The first partner's refund goes back to the fund; the same money pays the new order", rec: true, ch: alt.key },
         { key: "same", label: `Rebook with ${chName(h.ch)} for a new time`, note: "About 2 hours; text the family to confirm access to the address" }]; }
@@ -2081,7 +2110,7 @@ html[data-motion="off"] .flock { display: none; } html[data-motion="off"] .tree-
       if (!B.selected || !openEsc(B.selected)) B.selected = h.id;
     }
     const openEsc = (id) => { const h = B.list.find((x) => x.id === id); return h && h.esc && !h.esc.resolved && !h.outcome; };
-    const SNAPKEYS = ["cartAmbig", "level", "levelSet", "medOk", "callFirst", "routeFix", "spendOk", "amtOverride", "fundFix", "vetOk", "vetBooked", "stage"];
+    const SNAPKEYS = ["ebtOk", "cartAmbig", "level", "levelSet", "medOk", "callFirst", "routeFix", "spendOk", "amtOverride", "fundFix", "vetOk", "vetBooked", "stage"];
     function resolve(h, key, past, mins) {
       const e = h.esc; if (!e || e.resolved || h.outcome) return;
       const opt = e.options.find((o) => o.key === key);
@@ -2100,6 +2129,8 @@ html[data-motion="off"] .flock { display: none; } html[data-motion="off"] .tree-
       if (e.reason === "spend") { h.spendOk = true; if (key === "cap") h.petCap = 500 - LEVEL[h.level].amt; go("fund"); }
       if (e.reason === "nofund") { if (key === "alt") h.fundFix = opt.fund; if (key === "partial") { h.amtOverride = 150; if (h.cartReq) auditCart(h); } if (key === "hold") { sched(Math.max(at + 1, 4 * 1440 + 9 * 60 + 5), h, "fund", e.tag); return; } go("fund"); }
       if (e.reason === "cart") { h.cartAmbig = key; go("audit"); }
+      if (e.reason === "ebtlive") { if (key === "hold") { h.ebtHeld = true; msg(h, "Text", "out", "Feed-A-Friend", `Your EBT card shows ${money(e.x.bal)} in SNAP. Please use that first; we'll send your Feed-A-Friend order when it runs low. Reply anytime.`); (h.notes = h.notes || []).push({ t: at, text: "Held: live SNAP funds on the card; recheck in 3 days" }); h.ebtRecheck = true; sched(at + 3 * 1440, h, "ebt", e.tag); h.ebtSpent = true; } else { h.ebtOk = true; go("ebt"); } }
+      if (e.reason === "ebtnolink") { h.ebtOk = key === "receipt"; if (key === "link") { h.ebtLinkedLater = true; msg(h, "Text", "out", "Feed-A-Friend", "Please tap this secure link to connect your EBT account so we can confirm your balance. We never ask for your PIN."); } sched(at + (key === "link" ? 20 : 30), h, "ebt", e.tag); }
       if (e.reason === "dfailed") { h.retry = true; if (key === "alt") { h.ch = opt.ch; h.store = storeFor(h); const [lo, hi] = CH[h.ch].eta(h.region); h.eta = Math.round(lo + hashR(h.id + "re") * (hi - lo)); h.via = `delivery from ${h.store}`; go("order"); } else sched(at + 120, h, "order", e.tag); }
       if (e.reason === "repeat") { if (key === "limit") { h.outcome = "limit"; h.doneAt = at; msg(h, "Text", "out", "Feed-A-Friend", "We've already helped this address this month, so we can't send another order right now. Here is a food bank near you, and you're welcome to ask again next month."); } else { h.repeatOk = true; go("privacy"); } }
       if (e.reason === "survey") { if (key === "phone") { h.case.survey = "phone"; sched(at + 40, h, "survey_done", e.tag); } else { sched(at + 1, h, "route", e.tag); sched(at + 1440, h, "survey_done", e.tag); } }
@@ -2121,7 +2152,7 @@ html[data-motion="off"] .flock { display: none; } html[data-motion="off"] .tree-
 
 
     // ---------- security, fraud and warnings: always on, even when other agents are stopped ----------
-    const CAUSE = { partner: "Delivery partner issue", returnfraud: "Return abuse risk", family: "Human error: family", staff: "Human error: staff", ai: "AI agent error", bot: "Bot attack", malware: "Malware", account: "Account attack", spoof: "Spoofed API message", policy: "Policy limit" };
+    const CAUSE = { theft: "Benefit theft (skimming)", partner: "Delivery partner issue", returnfraud: "Return abuse risk", family: "Human error: family", staff: "Human error: staff", ai: "AI agent error", bot: "Bot attack", malware: "Malware", account: "Account attack", spoof: "Spoofed API message", policy: "Policy limit" };
     const SEV = { info: 0, warning: 1, critical: 2 };
     const SECAGENTS = [
       ["Fraud detection", "Repeat and duplicate orders, address and device patterns; decides if a problem is a family's mistake, staff error, an AI agent's error, a bot, malware or fraud"],
@@ -2214,6 +2245,21 @@ html[data-motion="off"] .flock { display: none; } html[data-motion="off"] .tree-
         if (bot[i]) svg.append("rect").attr("x", pad.l + i * bw - 1).attr("width", Math.max(3, bw + 2)).attr("y", y(fam[i] + bot[i])).attr("height", y(fam[i]) - y(fam[i] + bot[i])).attr("fill", "#b42a22");
       }
       svg.append("line").attr("class", "now").attr("x1", pad.l + upto * bw).attr("x2", pad.l + upto * bw).attr("y1", pad.t).attr("y2", H - pad.b);
+    }
+    // ---------- EBT check: confirm no live SNAP funds before paying (consent-based, read-only) ----------
+    const EBT_SPENT = 25;   // a balance under $25 counts as spent up
+    function ebtOf(h) {
+      const r = hashR(h.id + "ebt"), linked = h.ebtLinkedLater || h.ebtOk || hashR(h.id + "lk") < 0.92;
+      const dep = Math.floor(hashR(h.id + "dd") * 20) + 1, last = `${["Oct", "Sep"][dep > 20 ? 1 : 0]} ${dep}`, next = `Nov ${dep}`;
+      if (h.ebtSpent) return { linked: true, state: "spent", bal: Math.round(hashR(h.id + "sb") * 18), lastDep: last, nextDep: next };
+      if (r < 0.6) return { linked, state: "none", bal: 0 };
+      if (r < 0.9) return { linked, state: "spent", bal: Math.round(hashR(h.id + "sb") * 22), lastDep: last, nextDep: next };
+      if (r < 0.97) return { linked, state: "live", bal: 60 + Math.round(hashR(h.id + "lb") * 190), lastDep: last, nextDep: next };
+      return { linked, state: "theft", bal: Math.round(hashR(h.id + "tb") * 6), theftTx: 3 + Math.floor(hashR(h.id + "tx") * 4), theftAt: S.t - 600 - Math.round(hashR(h.id + "ta") * 2000), lastDep: last, nextDep: next };
+    }
+    function ebtCard() {
+      const L = B.list.filter((h) => h.ebt), c = (st) => L.filter((h) => h.ebt.state === st).length;
+      $("#ebtsum").innerHTML = `<div class="kpis" style="grid-template-columns:repeat(5,minmax(0,1fr))">${[["Checked before payment", L.length, "every cart, with consent"], ["No card yet", c("none"), "application still pending"], ["Spent up", c("spent"), `balance under $${EBT_SPENT}`], ["Live funds: held", L.filter((h) => h.ebtHeld).length, "a person decided"], ["Stolen by skimming", c("theft"), "approved; help reporting"]].map(([l, v, s2]) => `<div class="kpi"><span class="lab">${l}</span><span class="val">${v}</span><span class="sub">${s2}</span></div>`).join("")}</div>`;
     }
     // ---------- grocers the delivery services shop at ----------
     const STATE_STORES = {
@@ -2857,6 +2903,8 @@ html[data-motion="off"] .flock { display: none; } html[data-motion="off"] .tree-
       gap: (h) => [`Checked every partner that serves ${h.region.name}`, `None arrives inside ${LEVEL[h.level].hrs} h; fastest is ${CH[h.gapBest.c.key].name}, about ${Math.round(h.gapBest.eta)} h`, "Choose how the food gets there", "The promise clock keeps running"],
       spend: (h) => ["Found the delivery and priced the full level with the pet bonus", `${money(h.esc.x.total)} is over the $500 line for one family`, "Approve the amount or trim it", "Nothing is charged until you decide"],
       nofund: (h) => ["Tried gift-card money for this retailer, micro-donor gifts, matching DAF grants and corporate cash", `None has ${money(h.esc.x.amt)} left that can buy from ${chName(h.ch)}`, "Pick another fund, send less, or hold", "Nothing is charged until you decide"],
+      ebtlive: (h) => ["Checked the family's EBT account with their consent", `The card has ${money(h.esc.x.bal)} of live SNAP funds; Feed-A-Friend is for the wait before benefits arrive`, "Decide whether to hold or pay", "Nothing is charged; the cart waits"],
+      ebtnolink: () => ["Asked the family to link their EBT account", "Whether they have live SNAP funds right now", "Choose how to confirm it", "Nothing is charged; the cart waits"],
       dfailed: (h) => [`Watched the ${h.window} window and the partner's tracking`, `${chName(h.ch)} reports the driver could not reach the address`, "Choose how to get the groceries there", "The family has no food from this order; the refund is already requested"],
       repeat: (h) => [`Matched this address to ${h.repeatOf}, helped earlier this month`, "Whether this is a second household, an emergency or a repeat ask; the patterns look human, not a bot", "Decide if the limit applies", "Nothing is sent; the family waits for a reply"],
       cart: (h) => ["Removed anything on the banned list and checked the total", `"${h.esc.x.item.name}" is not banned, but ${h.esc.x.item.ambig.toLowerCase()}`, "Keep it or take it off", "The cart waits; nothing is paid"],
@@ -3030,7 +3078,7 @@ html[data-motion="off"] .flock { display: none; } html[data-motion="off"] .tree-
       if (!$("#view-donors").hidden) renderDonors();
       if (!$("#view-cases").hidden) { renderCases(); purchasesCard(); }
       if (!$("#view-desk").hidden) { renderOrders(); citySelect(); }
-      if (!$("#view-bridge").hidden) { rosterCard(); returnsCard(); }
+      if (!$("#view-bridge").hidden) { rosterCard(); returnsCard(); ebtCard(); }
       if (!$("#view-finance").hidden) renderFinance();
       if (!$("#view-security").hidden) renderSecurity();
       ribbon();
