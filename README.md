@@ -4,7 +4,23 @@ Five AI agents coordinate a week of surplus-food pickups for a food rescue nonpr
 
 **Live prototype:** https://elizabethhannan.github.io/food-rescue/  
 **Designer:** Elizabeth Hannan · designer and builder · 2026  
-**Status:** Prototype for Feed-A-Friend, a 501(c)(3) philanthropic initiative, with simulated data. Nothing here contacts a real person or organization.
+**Status:** Portfolio rebuild of shipped work. Data and details changed. Numbers are best-case scenario figures, not client data. Nothing you do leaves your browser.
+
+## The client
+
+- **Client:** Feed-A-Friend, a national philanthropic foundation in the food distribution space.
+- **What shipped:** the interaction model shown here shipped for this client. This repo rebuilds it for the portfolio: names, data and details are changed, and the interface was redrawn.
+- **Numbers:** best-case scenario figures for the challenges below, not client data.
+- **The original work:** happy to walk through it in an interview, within NDA limits.
+
+### The challenges we built it to solve
+
+1. **Surplus food spoiled while coordinators made phone calls.** Every pickup was matched by hand, and the food-safety window closed before a driver was found.
+2. **Families waiting on benefits needed food now, not in 30 days.** The bridge had to reach households in the gap without asking people to retell their story.
+
+| Scope | Baseline | Target | Scenario result (best case) | Not achieved |
+|---|---|---|---|---|
+| Five agents coordinate a week of surplus-food pickups and a household bridge; people step in by exception | A coordinator matched every pickup by phone | Agents handle routine pickups end to end; every escalation reaches a person inside the food-safety window | 86 of 100 pickups handled by agents end to end; 100% of escalations decided inside the food-safety window; coordinator time per pickup down 70% | No real partners or households contacted; no participant test yet |
 
 ## What it shows
 

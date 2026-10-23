@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow, noarchive, noai, noimageai">
 <title>Food Rescue Agents</title>
-<meta name="description" content="A working prototype: AI agents coordinate a week of surplus-food pickups, and a person steps in only when the agents escalate. Feed-A-Friend, a 501(c)(3) philanthropic initiative.">
+<meta name="description" content="A working prototype: AI agents coordinate a week of surplus-food pickups, and a person steps in only when the agents escalate. Feed-A-Friend, a national philanthropic foundation in the food distribution space. Portfolio rebuild of shipped work.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Familjen+Grotesk:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
@@ -623,6 +623,15 @@ html[data-theme="dark"] #ordermap .pnode, html[data-theme="dark"] #ordermap .hub
 html[data-theme="dark"] .tree-wrap { opacity: .55; }
 .theme-toggle .knob::after { background: var(--ink-3); }
 </style>
+<style id="clientband-css">
+.clientband{background:var(--surface);border-bottom:1px solid var(--line);color:var(--ink-2);font-size:.875rem;line-height:1.4}
+.clientband .cb{max-width:1280px;margin:0 auto;padding:8px 16px;display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center}
+.clientband svg{width:34px;height:34px;flex:none}
+.clientband .who{display:flex;flex-direction:column;min-width:0;flex:1 1 220px}
+.clientband .who b{color:var(--ink);font-weight:600}
+.clientband .nda{margin-left:auto;font-size:.8125rem;color:var(--ink-3);max-width:60ch}
+@media (max-width:720px){.clientband .nda{margin-left:0}}
+</style>
 </head>
 <body>
 <div class="garden" aria-hidden="true"><svg id="garden" viewBox="0 0 1440 200" preserveAspectRatio="xMidYMax slice"></svg></div>
@@ -634,10 +643,14 @@ html[data-theme="dark"] .tree-wrap { opacity: .55; }
     </div>
     <div class="tags">
       <span class="tag">Simulated week · example data</span>
-      <span class="tag">Feed-A-Friend · 501(c)(3) Philanthropic Initiative</span>
+      <span class="tag">Feed-A-Friend · National philanthropic foundation</span>
     </div>
   </div>
 </header>
+<div class="clientband" role="note" aria-label="About the client">
+  <div class="cb"><svg viewBox="0 0 40 40" role="img" aria-label="Feed-A-Friend mark"><rect width="40" height="40" rx="9" fill="#2f6b3a"/><path d="M8 21h24a12 12 0 0 1-24 0z" fill="#fff"/><path d="M20.5 19c.3-5.2 3.4-8.4 8.6-9-.3 5.2-3.4 8.4-8.6 9z" fill="#bfe3b4"/><path d="M19.5 19c-.2-4.2-2.6-6.9-6.8-7.4.2 4.2 2.6 6.9 6.8 7.4z" fill="#e2d4f2"/><path d="M15 27.5c1.6 1.6 3.2 2.3 5 2.3s3.4-.7 5-2.3" fill="none" stroke="#2f6b3a" stroke-width="1.8" stroke-linecap="round"/></svg><div class="who"><b>Feed-A-Friend</b><span>National philanthropic foundation in the food distribution space</span></div><p class="nda" style="margin-block:0">Portfolio rebuild of shipped work. Data and details changed for the portfolio. Numbers are best-case scenario figures, not client data.</p></div>
+</div>
+
 <div class="secribbon" id="secribbon" hidden role="status"></div>
 <div class="tabbar"><div class="wrap">
   <nav class="tabs" role="tablist" aria-label="Views">
@@ -1037,7 +1050,7 @@ html[data-theme="dark"] .tree-wrap { opacity: .55; }
 
   <footer class="foot">
     <p>Built by Elizabeth Hannan with HXO. <span class="hxo">HXO (Human Experience Optimization) is a design methodology that starts from human outcomes, not features, technology or business requirements, and tests every system with one question: does it help or hurt the full spectrum of human experience?</span></p>
-    <p>Feed-A-Friend is a 501(c)(3) philanthropic initiative. In this prototype, donors, partners, drivers and every number are simulated; nothing here contacts a real person or organization, and nothing you do leaves your browser.</p>
+    <p>Feed-A-Friend is a national philanthropic foundation in the food distribution space. This is a portfolio rebuild of shipped work, with data and details changed. In this prototype, donors, partners, drivers and every number are simulated; nothing here contacts a real person or organization, and nothing you do leaves your browser.</p>
   </footer>
 </main>
 
